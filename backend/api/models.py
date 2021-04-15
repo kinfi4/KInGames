@@ -2,9 +2,21 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+USER = 'USER'
+MANAGER = 'MANAGER'
+ADMIN = 'ADMIN'
+
+ROLES = (
+    (USER, 'Simple KinGames user'),
+    (MANAGER, 'Manager'),
+    (ADMIN, 'admin of the service')
+)
+
+
 class KinGamesUser(models.Model):
     django_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='kin_user')
     avatar = models.ImageField(upload_to='user_avatars', default='user_avatars/default_avatar.png')
+    role = models.CharField(max_length=10, choices=ROLES, default=USER)
 
 
 class Category(models.Model):
@@ -25,6 +37,8 @@ class Game(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(KinGamesUser, on_delete=models.CASCADE, related_name='comments')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='comments')
+    body = models.CharField(max_length=600, default='None')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class Cart(models.Model):
