@@ -1,0 +1,21 @@
+.header{
+    width: 100%;
+    height: 70px;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    position: fixed;
+}
+
+.header * {
+    font-weight: bold;
+    font-size: 15px;
+    margin: 0 10px;
+}
+
+.navigation{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}

@@ -1,0 +1,73 @@
+.upper_caption{
+    width: 80%;
+    margin: auto;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+.form{
+    width: 90%;
+    margin: auto;
+}
+
+.inputBlock{
+    margin: auto;
+    width: 80%;
+    text-align: center;
+}
+
+.authInput{
+    border: none;
+    border-bottom: 1px solid #c1c1c1;
+    background-color: #4b4b4b;
+    color: white;
+
+    width: 100%;
+    font-size: 20px;
+
+    margin-bottom: 40px;
+}
+
+.authInput:last-child{
+    margin-bottom: 50px;
+}
+
+.authInput:focus{
+    outline: none;
+}
+
+.submitButton{
+    font-size: 20px;
+    background-color: #ffffff;
+    transition: linear 0.2s;
+    width: 100%;
+    font-weight: bold;
+
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+.submitButton:hover{
+    background-color: #424242;
+    color: #ffffff;
+}
+
+.bottomTextLogin{
+    color: #cdcdcd;
+    margin: auto;
+    width: fit-content;
+    margin-top: 20%;
+}
+
+.bottomTextRegister{
+    color: #cdcdcd;
+    margin: auto;
+    width: fit-content;
+    margin-top: 10%;
+}
+
+.bottomTextRegister span, .bottomTextLogin span{
+    color: #000000;
+    cursor: pointer;
+}

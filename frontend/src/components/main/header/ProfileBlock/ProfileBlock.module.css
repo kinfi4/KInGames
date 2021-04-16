@@ -1,0 +1,16 @@
+.profileBlock{
+    margin: 10px;
+}
+
+.singInButton{
+    color: grey;
+    border-radius: 10px;
+    padding: 5px 10px;
+
+    transition: linear 0.2s;
+}
+
+.singInButton:hover{
+    color: #000000;
+    background-color: #ffffff;
+}

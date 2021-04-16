@@ -37,7 +37,7 @@ export const loadUser = () => (dispatch, getState) => {
         headers['Authorization'] = `Token ${token}`
     }
 
-    axios.get(BASE_URL + 'api/v2/rest-auth/user', {
+    axios.get(BASE_URL + 'api/v1/rest-auth/user', {
         headers: headers
     }).then(res => {
         if(res.status === 200)
@@ -62,7 +62,7 @@ export const login = (username, password) => (dispatch) => {
         email: ''
     })
 
-    axios.post(BASE_URL + 'api/v2/rest-auth/login/', body,{
+    axios.post(BASE_URL + 'api/v1/rest-auth/login/', body,{
         headers: headers,
     }).then(res => {
         dispatch({ type: HIDE_MODAL_WINDOW })
@@ -75,7 +75,7 @@ export const login = (username, password) => (dispatch) => {
 // LOGOUT
 export const logout = (authToken) => (dispatch) => {
     dispatch({type: USER_LOADING})
-    axios.post(BASE_URL + 'api/v2/rest-auth/logout/', {}, {
+    axios.post(BASE_URL + 'api/v1/rest-auth/logout/', {}, {
         headers: {
             'Authorization': `Token ${authToken}`
         }
@@ -93,7 +93,7 @@ export const register = (username, email, password1, password2) => (dispatch) =>
         password2
     }
 
-    axios.post(BASE_URL + 'api/v2/rest-auth/registration/', JSON.stringify(body), {
+    axios.post(BASE_URL + 'api/v1/rest-auth/registration/', JSON.stringify(body), {
         headers: {
             'Content-Type': 'application/json',
         }
