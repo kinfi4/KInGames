@@ -1,10 +1,11 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
+import {auth} from "./reducers/authReducer";
 
 let store = createStore(
-    combineReducers(
-
-    ),
+    combineReducers({
+        auth: auth
+    }),
     applyMiddleware(thunk)
 )
 
