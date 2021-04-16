@@ -35,6 +35,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = Comment
         fields = '__all__'
@@ -47,7 +49,8 @@ class GetGameSerializer(serializers.Serializer):
     price = serializers.DecimalField(max_digits=7, decimal_places=2)
     slug = serializers.SlugField()
 
-    categories = CategorySerializer(many=True)
+    comments = CommentSerializer(many=True, required=False, allow_null=True)
+    categories = CategorySerializer(many=True, required=False, allow_null=True)
 
     def update(self, instance, validated_data):
         pass
