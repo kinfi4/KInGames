@@ -7,7 +7,7 @@ from api.models import Cart, CartGame, Game, KinGamesUser, User, Category, Comme
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = 'name'
+        fields = ('name', 'slug')
 
     def save(self, **kwargs):
         super().save(**kwargs)
