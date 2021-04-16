@@ -2,9 +2,10 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.exceptions import ObjectDoesNotExist
 
-from api.handlers import get_list_games
-from api.serializers import GetGameSerializer, CreateGameSerializer
+from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug
+from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 
 
 class GamesListView(APIView):
@@ -36,21 +37,39 @@ class GamesListView(APIView):
 
 
 class GameView(APIView):
-    def get(self, request: Request):
-        pass
+    @staticmethod
+    def _get_game(slug):
+        try:
+            return get_game_by_slug(slug)
+        except ObjectDoesNotExist:
+            return None
 
-    def put(self, request: Request):
-        pass
+    def get(self, request: Request, slug):
+        if not (game := self._get_game(slug)):
+            return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
-    def delete(self, request: Request):
-        pass
+        game_serialized = GetGameSerializer(game)
+        return Response(status=status.HTTP_200_OK, data=game_serialized.data)
 
+    def put(self, request: Request, slug):
+        if not (game := self._get_game(slug)):
+            return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
+        game_serialized = UpdateGameSerializer(game, data=request.data)
 
+        if game_serialized.is_valid():
+            game_serialized.save()
+            return Response(data=game_serialized.data)
 
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=game_serialized.errors)
 
+    def delete(self, request: Request, slug):
+        try:
+            delete_game_by_slug(slug)
+        except AttributeError:  # use AttributeError because in handler method delete evoke on None, if game not exist
+            return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
-
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 

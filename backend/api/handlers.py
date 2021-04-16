@@ -8,9 +8,7 @@ def create_game(**game_data):
 
 
 def add_categories_for_game_creation(categories_raw: list, game: Game):
-    cats = Category.objects.filter(slug__in=[cat['slug'] for cat in categories_raw])
-    print(cats)
-    game.categories.set(cats)
+    game.categories.set(Category.objects.filter(slug__in=[cat['slug'] for cat in categories_raw]))
     game.save()
 
     return game
@@ -18,3 +16,11 @@ def add_categories_for_game_creation(categories_raw: list, game: Game):
 
 def get_list_games(skip=0, amount=settings.PAGE_SIZE, **filters):
     return Game.objects.filter(**filters).prefetch_related('categories')[skip*amount:amount]
+
+
+def delete_game_by_slug(slug: str):
+    Game.objects.filter(slug=slug).first().delete()
+
+
+def get_game_by_slug(slug: str):
+    return Game.objects.prefetch_related('categories').get(slug=slug)
