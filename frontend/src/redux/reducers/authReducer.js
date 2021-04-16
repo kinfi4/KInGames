@@ -1,6 +1,6 @@
 import axios from "axios";
 import {BASE_URL} from "../../config";
-// import {HIDE_MODAL_WINDOW} from "./ModalWindowReducer";
+import {HIDE_MODAL_WINDOW} from "./modalWindowReducer";
 // import {showMessage} from "../../utils/messages";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -65,7 +65,7 @@ export const login = (username, password) => (dispatch) => {
     axios.post(BASE_URL + 'api/v2/rest-auth/login/', body,{
         headers: headers,
     }).then(res => {
-        // dispatch({ type: HIDE_MODAL_WINDOW })
+        dispatch({ type: HIDE_MODAL_WINDOW })
         dispatch({ type: LOGIN_SUCCESS, payload: res.data })
     }).catch(err => {
         dispatch({type: LOGIN_FAIL})
@@ -99,7 +99,7 @@ export const register = (username, email, password1, password2) => (dispatch) =>
         }
     }).then(
         res => {
-            // dispatch({ type: HIDE_MODAL_WINDOW })
+            dispatch({ type: HIDE_MODAL_WINDOW })
             dispatch({type: LOGIN_SUCCESS, payload: res.data})
         }
     ).catch(err => {
