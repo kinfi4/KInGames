@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from api.handlers import create_game, add_categories_for_game_creation
 from api.models import Cart, CartGame, Game, KinGamesUser, User, Category, Comment
+from api.utils.generate_slug import generate_slug_from_title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -9,8 +10,14 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('name', 'slug')
 
-    def save(self, **kwargs):
-        super().save(**kwargs)
+
+class GameCreateCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('slug',)
+        extra_kwargs = {
+            'slug': {'validators': []},
+        }
 
 
 class KinUserSerializer(serializers.ModelSerializer):
@@ -55,10 +62,13 @@ class CreateGameSerializer(serializers.Serializer):
     preview_image = serializers.ImageField(required=False, allow_null=True)
     price = serializers.DecimalField(max_digits=7, decimal_places=2, required=True)
 
-    categories = CategorySerializer(many=True)
+    categories = GameCreateCategorySerializer(many=True)
 
     def create(self, validated_data: dict):
         categories_raw = validated_data.pop('categories', [])
+        print(categories_raw)
+        validated_data['slug'] = generate_slug_from_title(validated_data.get('title'))
+
         game = create_game(**validated_data)
 
         add_categories_for_game_creation(categories_raw, game)
