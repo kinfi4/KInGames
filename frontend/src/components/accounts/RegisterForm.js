@@ -7,9 +7,9 @@ import LoginForm from "./LoginForm";
 
 
 let RegisterForm = (props) => {
-    const [details, setDetails] = useState({username: '', email: '', password1: '', password2: ''})
+    const [details, setDetails] = useState({first_name: '', last_name: '', username: '', email: '', password1: '', password2: ''})
     let onRegisterSubmit = () => {
-        props.registerHandler(details.username, details.email, details.password1, details.password2)
+        props.registerHandler(details.first_name, details.last_name, details.username, details.email, details.password1, details.password2)
     }
 
     let onLoginButtonClick = () => {
@@ -24,6 +24,14 @@ let RegisterForm = (props) => {
             </div>
 
             <div className={s.inputBlock + ' form-group'}>
+                <input type="text" className={s.authInput} id={'first_name'}
+                       onChange={e => setDetails({...details, first_name: e.target.value})}
+                       value={details.first_name} placeholder={'First Name'}/>
+
+                <input type="text" className={s.authInput} id={'last_name'}
+                       onChange={e => setDetails({...details, last_name: e.target.value})}
+                       value={details.last_name} placeholder={'Last Name'}/>
+
                 <input type="text" className={s.authInput} id={'username'}
                        onChange={e => setDetails({...details, username: e.target.value})}
                        value={details.username} placeholder={'Username'}/>
@@ -56,8 +64,8 @@ let matStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        registerHandler: (username, email, password1, password2) =>
-            dispatch(register(username, email, password1, password2)),
+        registerHandler: (first_name, last_name, username, email, password1, password2) =>
+            dispatch(register(first_name, last_name, username, email, password1, password2)),
         hideWindow: () => dispatch(hideModalWindow),
         showModalWindow: (content, width=null, height=null) => dispatch(showModalWindow(content, width, height))
     }

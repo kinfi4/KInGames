@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from api.models import Game, Category
+from api.models import Game, Category, KinGamesUser, User
 
 
 def create_game(**game_data):
@@ -28,3 +28,11 @@ def get_game_by_slug(slug: str):
 
 def get_all_categories():
     return Category.objects.all()
+
+
+def create_default_kin_user(user):
+    return KinGamesUser.objects.create(django_user=user)
+
+
+def delete_user(user: User):
+    user.delete()

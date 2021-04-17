@@ -38,7 +38,7 @@ export const loadUser = () => (dispatch, getState) => {
         headers['Authorization'] = `Token ${token}`
     }
 
-    axios.get(BASE_URL + 'api/v1/rest-auth/user', {
+    axios.get(BASE_URL + 'api/v1/user', {
         headers: headers
     }).then(res => {
         if(res.status === 200)
@@ -67,7 +67,7 @@ export const login = (username, password) => (dispatch) => {
         headers: headers,
     }).then(res => {
         dispatch({ type: HIDE_MODAL_WINDOW })
-        dispatch({ type: LOGIN_SUCCESS, payload: res.data })
+        dispatch({ type: LOGIN_SUCCESS, token: res.data.key })
     }).catch(err => {
         dispatch({type: LOGIN_FAIL})
     })
@@ -85,10 +85,12 @@ export const logout = (dispatch) => {
 }
 
 // REGISTER
-export const register = (username, email, password1, password2) => (dispatch) => {
+export const register = (first_name, last_name, username, email, password1, password2) => (dispatch) => {
     dispatch({type: USER_LOADING})
 
     let body = {
+        first_name,
+        last_name,
         username,
         email,
         password1,
@@ -101,8 +103,15 @@ export const register = (username, email, password1, password2) => (dispatch) =>
         }
     }).then(
         res => {
-            dispatch({ type: HIDE_MODAL_WINDOW })
-            dispatch({type: LOGIN_SUCCESS, payload: res.data})
+            const authToken = res.data.key
+            axios.post(BASE_URL + 'api/v1/user', {}, {
+                headers: {
+                    'Authorization': `Token ${authToken}`
+                }
+            }).then(res => {
+                dispatch({ type: HIDE_MODAL_WINDOW })
+                dispatch({type: LOGIN_SUCCESS, token: authToken})
+            }).catch(err => dispatch({type: REGISTRATION_ERROR, errors: err.response.data}))
         }
     ).catch(err => {
         dispatch({type: REGISTRATION_ERROR, errors: err.response.data})
@@ -129,10 +138,10 @@ export function auth (state=initialState, action){
                 user: action.payload
             }
         case LOGIN_SUCCESS:
-            localStorage.setItem('token', action.payload.key)
+            localStorage.setItem('token', action.token)
             return {
                 ...state,
-                token: action.payload.key,
+                token: action.token,
                 isAuthenticated: true,
                 isLoading: false,
             }
