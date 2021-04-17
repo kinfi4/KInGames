@@ -1,6 +1,7 @@
 import axios from "axios";
 import {BASE_URL} from "../../config";
 import {HIDE_MODAL_WINDOW} from "./modalWindowReducer";
+import {showMessage} from "../../utils/messages";
 // import {showMessage} from "../../utils/messages";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -137,9 +138,9 @@ export function auth (state=initialState, action){
             }
         case REGISTRATION_ERROR:
             let errors = Object.values(action.errors).flat()
-            // showMessage(errors.map((err) => {
-            //     return {message: err, type: 'danger'}
-            // }))
+            showMessage(errors.map((err) => {
+                return {message: err, type: 'danger'}
+            }))
 
             return {
                 isAuthenticated: false,
@@ -149,7 +150,7 @@ export function auth (state=initialState, action){
             }
         case AUTH_ERROR:
         case LOGIN_FAIL:
-            // showMessage([{message: 'Username or password is incorrect', type: 'danger'}])
+            showMessage([{message: 'Username or password is incorrect', type: 'danger'}])
             return {
                 isAuthenticated: false,
                 isLoading: false,
