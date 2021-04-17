@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect, useLayoutEffect} from "react";
 import s from './Profile.module.css'
 import {connect} from "react-redux";
 import {logout} from "../../../../../redux/reducers/authReducer";
+import {loadUser} from "../../../../../redux/reducers/authReducer";
 import {BASE_URL} from "../../../../../config";
 
 
@@ -9,7 +10,10 @@ let Profile = (props) => {
     return (
         <div className={s.profile}>
             <div className={s.profileInfo}>
-                <div className={s.avatar}><img src={BASE_URL + props.user.kin_user.avatar.slice(1)} alt=""/></div>
+                <div className={s.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
+                                                  backgroundPosition: "center",
+                                                  backgroundRepeat: 'no-repeat',
+                                                  backgroundSize: 'cover'}}> </div>
                 {props.user.first_name} {props.user.last_name}
             </div>
 
@@ -29,7 +33,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        logout: () => dispatch(logout)
+        logout: () => dispatch(logout),
     }
 }
 

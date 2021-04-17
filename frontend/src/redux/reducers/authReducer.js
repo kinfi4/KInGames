@@ -2,7 +2,7 @@ import axios from "axios";
 import {BASE_URL} from "../../config";
 import {HIDE_MODAL_WINDOW} from "./modalWindowReducer";
 import {showMessage} from "../../utils/messages";
-// import {showMessage} from "../../utils/messages";
+
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -66,8 +66,16 @@ export const login = (username, password) => (dispatch) => {
     axios.post(BASE_URL + 'api/v1/rest-auth/login/', body,{
         headers: headers,
     }).then(res => {
-        dispatch({ type: HIDE_MODAL_WINDOW })
-        dispatch({ type: LOGIN_SUCCESS, token: res.data.key })
+        let authToken = res.data.key
+        axios.get(BASE_URL + 'api/v1/user', {
+            headers: {
+                'Authorization': `Token ${authToken}`
+            }
+        }).then(res => {
+            dispatch({type: USER_LOADED, payload: res.data})
+            dispatch({ type: HIDE_MODAL_WINDOW })
+            dispatch({ type: LOGIN_SUCCESS, token: authToken })
+        }).catch(err => dispatch({type: LOGIN_FAIL}))
     }).catch(err => {
         dispatch({type: LOGIN_FAIL})
     })
