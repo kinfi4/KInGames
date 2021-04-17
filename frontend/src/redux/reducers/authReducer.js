@@ -73,7 +73,8 @@ export const login = (username, password) => (dispatch) => {
 }
 
 // LOGOUT
-export const logout = (authToken) => (dispatch) => {
+export const logout = (dispatch) => {
+    let authToken = localStorage.getItem('token')
     dispatch({type: USER_LOADING})
     axios.post(BASE_URL + 'api/v1/rest-auth/logout/', {}, {
         headers: {

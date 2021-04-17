@@ -2,12 +2,13 @@ import React from "react";
 import s from './Header.module.css'
 import {connect} from "react-redux";
 import ProfileBlock from "./ProfileBlock/ProfileBlock";
+import image from '../../../images/logo.png'
 
 
 let Header = (props) => {
     return (
         <header className={s.header}>
-            <div className={s.logo}><h1>KinGames</h1></div>
+            <div className={s.logo}> </div>
             <nav className={s.navigation}>
                 <h3>Games</h3>
                 <h3>Community</h3>

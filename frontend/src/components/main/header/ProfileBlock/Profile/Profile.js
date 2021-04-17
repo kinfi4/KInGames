@@ -1,6 +1,7 @@
 import React from "react";
 import s from './Profile.module.css'
 import {connect} from "react-redux";
+import {logout} from "../../../../../redux/reducers/authReducer";
 
 
 let Profile = (props) => {
@@ -10,6 +11,8 @@ let Profile = (props) => {
                 <div className={s.avatar}>IMG</div>
                 Ilya Makarov
             </div>
+
+            <div onClick={props.logout}>Logout</div>
         </div>
     )
 }
@@ -23,7 +26,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-
+        logout: () => dispatch(logout)
     }
 }
 

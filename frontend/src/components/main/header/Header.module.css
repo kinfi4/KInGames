@@ -5,6 +5,7 @@
     display: flex;
     justify-content: center;
     flex-direction: row;
+    align-items: center;
     position: fixed;
 }
 
@@ -18,4 +19,12 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
+}
+
+.logo{
+    background-image: url(../../../../src/images/logo.png);
+    width: 100px;
+    height: 100px;
+
+    background-size: cover;
 }
