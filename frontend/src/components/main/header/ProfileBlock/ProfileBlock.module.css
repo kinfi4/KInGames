@@ -2,15 +2,16 @@
     margin: 10px;
 }
 
-.singInButton{
-    color: grey;
+.greyButton{
+    color: #b8b8b8;
     border-radius: 10px;
     padding: 5px 10px;
+    text-align: center;
 
     transition: linear 0.2s;
 }
 
-.singInButton:hover{
+.greyButton:hover{
     color: #000000;
     background-color: #ffffff;
 }

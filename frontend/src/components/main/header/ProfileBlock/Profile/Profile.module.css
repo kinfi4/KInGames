@@ -1,5 +1,12 @@
 .profile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+.profileInfo{
+    display: flex;
+    align-items: center;
 }
 
 .avatar{

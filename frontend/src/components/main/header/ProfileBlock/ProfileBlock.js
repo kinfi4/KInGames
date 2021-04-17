@@ -9,7 +9,7 @@ import LoginForm from "../../../accounts/LoginForm";
 let ProfileBlock = (props) => {
     let get_block_content = () => {
         if(!props.isAuthenticated)
-            return <div className={s.singInButton} onClick={() => props.showModalWindow(<LoginForm />, 500, 540)}>Sing in</div>
+            return <div className={s.greyButton} onClick={() => props.showModalWindow(<LoginForm />, 500, 540)}>Sing in</div>
         else
             return <Profile />
     }

@@ -1,9 +1,10 @@
-import React, {useEffect, useLayoutEffect} from "react";
+import React from "react";
 import s from './Profile.module.css'
+import s2 from './../ProfileBlock.module.css'
 import {connect} from "react-redux";
 import {logout} from "../../../../../redux/reducers/authReducer";
-import {loadUser} from "../../../../../redux/reducers/authReducer";
 import {BASE_URL} from "../../../../../config";
+import {FiLogOut, RiShoppingCart2Fill} from "react-icons/all";
 
 
 let Profile = (props) => {
@@ -17,7 +18,9 @@ let Profile = (props) => {
                 {props.user.first_name} {props.user.last_name}
             </div>
 
-            <div onClick={props.logout}>Logout</div>
+            <div><RiShoppingCart2Fill />0</div>
+
+            <div onClick={props.logout} className={s2.greyButton}><FiLogOut /></div>
         </div>
     )
 }
