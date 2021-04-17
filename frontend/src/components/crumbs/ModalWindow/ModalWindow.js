@@ -6,9 +6,10 @@ import {hideModalWindow} from "../../../redux/reducers/modalWindowReducer";
 let ModalWindow = (props) => {
     return (
         <div className={props.active ? `${s.overflow} ${s.active}` : s.overflow} onClick={() => props.hideWindow() }>
-            <div className={s.inner} style={{width: props.width ? props.width : 500 + 'px',
-                height: props.height ? props.height : 600 + 'px'}}
-                 onClick={e => e.stopPropagation() }>
+            <div className={s.inner} style={{
+                width: props.width ? props.width + 'px' : 500 + 'px',
+                height: props.height ? props.height + 'px' : 600 + 'px'
+            }} onClick={e => e.stopPropagation() }>
 
                 {props.child}
             </div>

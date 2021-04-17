@@ -1,0 +1,53 @@
+.previewImage {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.previewImageLabel {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    transition: linear 0.5s;
+}
+.inner{
+    width: 86%;
+    display: flex;
+    margin: 20px auto;
+    position: relative;
+}
+.inner label{
+    color: #000000;
+
+}
+.inputBlock{
+    margin-left: 30px;
+}
+.title{
+    width: fit-content;
+    margin: 20px auto;
+}
+.saveButton{
+    border-radius: 10px;
+    background-color: #fff;
+    color: black;
+    width: fit-content;
+    padding: 5px 20px;
+    font-size: 20px;
+
+    position: absolute;
+    right: 20px;
+    bottom: 10px;
+
+    transition: linear 0.2s;
+
+    cursor: pointer;
+}
+.saveButton:hover{
+    background-color: black;
+    color: white;
+}

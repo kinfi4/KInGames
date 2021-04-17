@@ -13,7 +13,7 @@ const AUTH_ERROR = ' AUTH_ERROR'
 
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 const LOGIN_FAIL = 'LOGIN_FAIL'
-const LOGOUT = 'LOGOUT'
+export const LOGOUT = 'LOGOUT'
 
 const REGISTRATION_ERROR = 'REGISTRATION_ERROR'
 
@@ -68,17 +68,14 @@ export const login = (username, password) => (dispatch) => {
     }).then(res => {
         let authToken = res.data.key
         axios.get(BASE_URL + 'api/v1/user', {
-            headers: {
-                'Authorization': `Token ${authToken}`
-            }
+            headers: {'Authorization': `Token ${authToken}`}
         }).then(res => {
             dispatch({type: USER_LOADED, payload: res.data})
-            dispatch({ type: HIDE_MODAL_WINDOW })
             dispatch({ type: LOGIN_SUCCESS, token: authToken })
+            dispatch({ type: HIDE_MODAL_WINDOW })
         }).catch(err => dispatch({type: LOGIN_FAIL}))
-    }).catch(err => {
-        dispatch({type: LOGIN_FAIL})
-    })
+
+    }).catch(err => dispatch({type: LOGIN_FAIL}))
 }
 
 // LOGOUT
@@ -86,9 +83,7 @@ export const logout = (dispatch) => {
     let authToken = localStorage.getItem('token')
     dispatch({type: USER_LOADING})
     axios.post(BASE_URL + 'api/v1/rest-auth/logout/', {}, {
-        headers: {
-            'Authorization': `Token ${authToken}`
-        }
+        headers: {'Authorization': `Token ${authToken}`}
     }).then(res => dispatch({type: LOGOUT}))
 }
 
@@ -97,8 +92,6 @@ export const register = (first_name, last_name, username, email, password1, pass
     dispatch({type: USER_LOADING})
 
     let body = {
-        first_name,
-        last_name,
         username,
         email,
         password1,
@@ -112,19 +105,26 @@ export const register = (first_name, last_name, username, email, password1, pass
     }).then(
         res => {
             const authToken = res.data.key
-            axios.post(BASE_URL + 'api/v1/user', {}, {
+            axios.post(BASE_URL + 'api/v1/user', JSON.stringify({first_name, last_name}), {
                 headers: {
-                    'Authorization': `Token ${authToken}`
+                    'Authorization': `Token ${authToken}`,
+                    'Content-Type': 'application/json',
                 }
             }).then(res => {
-                dispatch({ type: HIDE_MODAL_WINDOW })
-                dispatch({type: LOGIN_SUCCESS, token: authToken})
-            }).catch(err => dispatch({type: REGISTRATION_ERROR, errors: err.response.data}))
-        }
-    ).catch(err => {
-        dispatch({type: REGISTRATION_ERROR, errors: err.response.data})
-    })
+                axios.get(BASE_URL + 'api/v1/user', {
+                    headers: {'Authorization': `Token ${authToken}`}
+                }).then(res => {
+                    dispatch({type: USER_LOADED, payload: res.data})
+                    dispatch({ type: LOGIN_SUCCESS, token: authToken })
+                    dispatch({ type: HIDE_MODAL_WINDOW })
+                }).catch(err => dispatch({type: REGISTRATION_ERROR, errors: err.response.data}))
+            }).catch(err => {
+                    dispatch({type: REGISTRATION_ERROR, errors: err.response.data})
+               })
 
+        }).catch(err => {
+            dispatch({type: REGISTRATION_ERROR, errors: err.response.data})
+        })
 }
 
 
@@ -154,7 +154,7 @@ export function auth (state=initialState, action){
                 isLoading: false,
             }
         case REGISTRATION_ERROR:
-            let errors = Object.values(action.errors).flat()
+            let errors = Object.entries(action.errors).map(el => `${el[0]}: ${el[1]}`)
             showMessage(errors.map((err) => {
                 return {message: err, type: 'danger'}
             }))

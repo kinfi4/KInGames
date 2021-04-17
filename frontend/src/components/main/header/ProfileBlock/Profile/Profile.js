@@ -1,21 +1,26 @@
-import React from "react";
+import React, {useState} from "react";
 import s from './Profile.module.css'
 import s2 from './../ProfileBlock.module.css'
 import {connect} from "react-redux";
 import {logout} from "../../../../../redux/reducers/authReducer";
 import {BASE_URL} from "../../../../../config";
 import {FiLogOut, RiShoppingCart2Fill} from "react-icons/all";
+import ManageProfileBlock from "./ManageProfileBlock/ManageProfileBlock";
 
 
 let Profile = (props) => {
+    const [manageButtonsShow, setManageButtonsShow] = useState(false)
+
     return (
         <div className={s.profile}>
-            <div className={s.profileInfo}>
+            <div className={s.profileInfo} onMouseEnter={() => setManageButtonsShow(true)} onMouseLeave={() => setManageButtonsShow(false)}>
                 <div className={s.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
                                                   backgroundPosition: "center",
                                                   backgroundRepeat: 'no-repeat',
                                                   backgroundSize: 'cover'}}> </div>
                 {props.user.first_name} {props.user.last_name}
+
+                <ManageProfileBlock visible={manageButtonsShow} />
             </div>
 
             <div><RiShoppingCart2Fill />0</div>

@@ -1,0 +1,33 @@
+.manageProfileBlock{
+    width: 100%;
+    position: absolute;
+    top: 100%;
+
+    border-radius: 10px;
+    background-color: #aaaaaa;
+    min-width: 200px;
+}
+
+.manageProfileBlock div{
+    width: 100%;
+    color: #181818;
+    text-align: left;
+    font-size: 15px;
+    padding: 5px 10px;
+
+    cursor: pointer;
+
+    transition: linear 0.2s;
+}
+.manageProfileBlock div:hover{
+    color: white;
+}
+
+
+.active{
+    display: block;
+}
+
+.hidden{
+    display: none;
+}
