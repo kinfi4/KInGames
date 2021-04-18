@@ -29,7 +29,7 @@ let EditProfileForm = (props) => {
 
     let onSave = () => {
         props.hideWindow()
-        updateUserInfo(details.first_name, details.last_name, details.imageOnLoad)
+        props.updateUserInfo(details.first_name, details.last_name, details.imageOnLoad)
     }
 
     return (
@@ -73,6 +73,7 @@ let mapStateToProps = (state) => {
 let mapDispatchToProps = (dispatch) => {
     return {
         hideWindow: () => dispatch(hideModalWindow),
+        updateUserInfo: (first_name, last_name, image) => dispatch(updateUserInfo(first_name, last_name, image))
     }
 }
 

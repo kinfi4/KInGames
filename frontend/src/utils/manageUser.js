@@ -1,6 +1,7 @@
 import axios from "axios";
 import {BASE_URL} from "../config";
 import {showMessage} from "./messages";
+import {loadUser} from "../redux/reducers/authReducer";
 
 export let deleteAccount = () => {
     const token = localStorage.getItem('token')
@@ -17,12 +18,14 @@ export let deleteAccount = () => {
       })
 }
 
-export let updateUserInfo = (first_name, last_name, avatar) => {
+export let updateUserInfo = (first_name, last_name, avatar) => (dispatch) => {
     let formData = new FormData()
     let authToken = localStorage.getItem('token')
 
     formData.append('first_name', first_name)
     formData.append('last_name', last_name)
+    formData.append('avatar', avatar, avatar.name)
+    formData.append('role', 'ADMIN')
 
     axios.put(BASE_URL + 'api/v1/user', formData, {
         headers: {
@@ -31,6 +34,7 @@ export let updateUserInfo = (first_name, last_name, avatar) => {
         }
     }).then(res => {
         console.log(res.data)
+        dispatch(loadUser())
         showMessage([{message: 'Profile updated', type: 'success'}])
     })//.catch(er => showMessage({message: er.response.data, type: 'danger'}))
 }

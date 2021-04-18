@@ -24,6 +24,9 @@ class KinUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = KinGamesUser
         fields = '__all__'
+        extra_kwargs = {
+            'django_user': {'validators': []},
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):
