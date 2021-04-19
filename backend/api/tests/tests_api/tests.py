@@ -9,6 +9,8 @@ from api.models import Category, Game, User
 
 
 class TestGameAPI(TestCase):
+    TEST_TITLE, TEST_PRICE, NEW_TEST_TITLE = 'TEST_TITLE', 999.00, 'NEW_TEST_TITLE'
+
     def setUp(self) -> None:
         test_user = User.objects.create_user(username=TestData.TEST_USERNAME, password=TestData.TEST_USER_PASSWORD)
         token = Token.objects.create(user=test_user)
@@ -30,8 +32,6 @@ class TestGameAPI(TestCase):
             self.assertEqual(response_game['title'], db_game.title)
             self.assertEqual(float(response_game['price']), float(db_game.price))
             self.assertEqual(response_game['slug'], db_game.slug)
-
-    TEST_TITLE, TEST_PRICE, NEW_TEST_TITLE = 'TEST_TITLE', 999.00, 'NEW_TEST_TITLE'
 
     def object_game_equal_response(self, db_tested_game, title=TEST_TITLE):
         self.assertEqual(db_tested_game.title, title)

@@ -11,3 +11,9 @@
     color: white;
     font-size: 12px;
 }
+.gamesList{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: start;
+}

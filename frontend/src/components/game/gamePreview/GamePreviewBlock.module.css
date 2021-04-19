@@ -1,0 +1,44 @@
+.gamePreviewBlock{
+    background-color: #393939;
+    box-shadow: 2px 2px 5px black;
+
+    display: flex;
+
+    margin: 20px;
+}
+.gamePreviewBlock.wide{
+    width: 100%;
+    height: 600px;
+}
+.gamePreviewBlock.thin{
+    width: 30%;
+    height: 200px;
+}
+.innerPreviewBlock{
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+.previewImage{
+    height: 350px;
+}
+.wideTitleBlock{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    padding: 10px 20px;
+
+    background-color: rgba(35, 35, 35, 0.8);
+    height: 30%;
+
+    display: flex;
+    flex-direction: column;
+}
+.wideTitleBlock h2{
+    font-weight: bold;
+    font-size: 35px;
+}
+.wideTitleBlock h3{
+    font-size: 30px;
+}
