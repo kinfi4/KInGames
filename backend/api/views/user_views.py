@@ -63,7 +63,8 @@ class ConfigUserView(APIView):
         if updated_user.is_valid():
             updated_user.save()
             return Response(data=updated_user.data)
-        
+
+        print(updated_user.errors)
         errors = updated_user.errors.update(updated__kin_user_errors)
 
         return Response(status=status.HTTP_400_BAD_REQUEST, data=errors)

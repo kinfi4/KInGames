@@ -69,7 +69,7 @@ class CreateGameSerializer(serializers.Serializer):
     preview_image = serializers.ImageField(required=False, allow_null=True)
     price = serializers.DecimalField(max_digits=7, decimal_places=2, required=True)
 
-    categories = GameCreateCategorySerializer(many=True)
+    categories = GameCreateCategorySerializer(many=True, required=False)
 
     def create(self, validated_data: dict):
         categories_raw = validated_data.pop('categories', [])
@@ -90,9 +90,9 @@ class UpdateGameSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255, required=False)
     description = serializers.CharField(required=False)
     preview_image = serializers.ImageField(required=False, allow_null=True)
-    price = serializers.DecimalField(max_digits=7, decimal_places=2, required=True)
+    price = serializers.DecimalField(max_digits=7, decimal_places=2, required=False)
 
-    categories = CategorySerializer(many=True)
+    categories = CategorySerializer(many=True, required=False)
 
     def create(self, validated_data):
         pass

@@ -24,8 +24,9 @@ export let updateUserInfo = (first_name, last_name, avatar) => (dispatch) => {
 
     formData.append('first_name', first_name)
     formData.append('last_name', last_name)
-    formData.append('avatar', avatar, avatar.name)
-    formData.append('role', 'ADMIN')
+
+    if (avatar !== null)
+        formData.append('avatar', avatar, avatar.name)
 
     axios.put(BASE_URL + 'api/v1/user', formData, {
         headers: {
@@ -36,5 +37,5 @@ export let updateUserInfo = (first_name, last_name, avatar) => (dispatch) => {
         console.log(res.data)
         dispatch(loadUser())
         showMessage([{message: 'Profile updated', type: 'success'}])
-    })//.catch(er => showMessage({message: er.response.data, type: 'danger'}))
+    }).catch(er => showMessage({message: er.response.data, type: 'danger'}))
 }

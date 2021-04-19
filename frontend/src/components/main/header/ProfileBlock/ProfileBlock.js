@@ -1,9 +1,9 @@
 import React from "react";
 import s from './ProfileBlock.module.css'
 import {connect} from "react-redux";
-import Profile from "./Profile/Profile";
 import {showModalWindow} from "../../../../redux/reducers/modalWindowReducer";
 import LoginForm from "../../../accounts/LoginForm";
+import Profile from "./Profile/Profile";
 
 
 let ProfileBlock = (props) => {

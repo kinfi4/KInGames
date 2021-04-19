@@ -1,0 +1,13 @@
+.mainPageBody{
+    width: 60%;
+    margin: auto;
+    background-color: #242424;
+    border-radius: 1px;
+    height: 800px;
+    position: relative;
+    top: 100px;
+}
+.mainPageBody *{
+    color: white;
+    font-size: 12px;
+}

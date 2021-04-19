@@ -29,10 +29,11 @@ class GamesListView(APIView):
     def post(self, request: Request):
         game_serialized = CreateGameSerializer(data=request.data)
 
-        if game_serialized.is_valid(raise_exception=True):
+        if game_serialized.is_valid():
             game_serialized.save()
             return Response(status=status.HTTP_200_OK, data=game_serialized.data)
 
+        print(game_serialized.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST, data=game_serialized.errors)
 
 
@@ -56,11 +57,11 @@ class GameView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
         game_serialized = UpdateGameSerializer(game, data=request.data)
-
         if game_serialized.is_valid():
             game_serialized.save()
             return Response(data=game_serialized.data)
 
+        print(game_serialized.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST, data=game_serialized.errors)
 
     def delete(self, request: Request, slug):

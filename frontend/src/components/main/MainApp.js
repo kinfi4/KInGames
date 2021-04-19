@@ -3,6 +3,7 @@ import s from './MainApp.module.css'
 import Header from "./header/Header";
 import ModalWindow from "../crumbs/ModalWindow/ModalWindow";
 import ReactNotifications from 'react-notifications-component';
+import MainPageBody from "./body/MainPageBody";
 
 
 let MainApp = (props) => {
@@ -11,6 +12,8 @@ let MainApp = (props) => {
             <ReactNotifications />
             <ModalWindow />
             <Header />
+
+            <MainPageBody />
         </>
     )
 }
