@@ -52,6 +52,7 @@ class GetGameSerializer(serializers.Serializer):
     preview_image = serializers.ImageField()
     price = serializers.DecimalField(max_digits=7, decimal_places=2)
     slug = serializers.SlugField()
+    is_wide = serializers.BooleanField()
 
     comments = CommentSerializer(many=True, required=False, allow_null=True)
     categories = CategorySerializer(many=True, required=False, allow_null=True)

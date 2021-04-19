@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image
 
 
 USER = 'USER'
@@ -36,8 +37,18 @@ class Game(models.Model):
     preview_image = models.ImageField(upload_to='games_previews', default='games_previews/default.png')
     price = models.DecimalField(max_digits=7, decimal_places=2)
     slug = models.SlugField(unique=True)
+    is_wide = models.BooleanField(default=False)
 
     categories = models.ManyToManyField(Category, related_name='games')
+
+    def save(self, *args, **kwargs):
+        image = Image.open(self.preview_image)
+        w, h = image.size
+
+        print(w, h)
+        self.is_wide = w > h * 1.5
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
