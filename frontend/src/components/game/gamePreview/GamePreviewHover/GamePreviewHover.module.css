@@ -1,0 +1,34 @@
+.previewHover{
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    background-color: rgba(255, 255, 255, 0.75);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    transition: linear 0.1s;
+}
+.hidden{
+    opacity: 0;
+}
+.active{
+    opacity: 1;
+}
+
+.manageButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+}
+.manageButton *{
+    color: #1f1f1f;
+    font-size: 40px;
+    margin: 5px;
+}

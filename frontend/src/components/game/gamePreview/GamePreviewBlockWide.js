@@ -4,7 +4,7 @@ import {BASE_URL} from "../../../config";
 
 const GamePreviewBlockWide = (props) => {
     return (
-        <div className={`${s.gamePreviewBlock} ${s.wide}`}>
+        <>
             <div className={s.innerPreviewBlock} style={{
                 backgroundImage: `url(${BASE_URL}${props.game.preview_image.slice(1)})`,
                 backgroundPosition: 'center',
@@ -21,7 +21,7 @@ const GamePreviewBlockWide = (props) => {
 
             </div>
 
-        </div>
+        </>
     );
 };
 
