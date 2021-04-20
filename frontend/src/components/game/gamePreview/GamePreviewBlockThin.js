@@ -12,8 +12,12 @@ const GamePreviewBlockThin = (props) => {
                 backgroundColor: `#404040`,
                 backgroundRepeat: 'no-repeat'
             }}>
-                <h2>{props.game.title}</h2>
+            </div>
 
+            <div className={s.thinTitleBlock}>
+                <h4>{props.game.categories.map(el => el.name)}</h4>
+                <h2>{props.game.title}</h2>
+                <h3>${props.game.price}</h3>
             </div>
 
         </div>

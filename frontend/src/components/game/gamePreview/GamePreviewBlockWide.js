@@ -17,7 +17,6 @@ const GamePreviewBlockWide = (props) => {
                     <h4>{props.game.categories.map(el => el.name)}</h4>
                     <h2>{props.game.title}</h2>
                     <h3>${props.game.price}</h3>
-
                 </div>
 
             </div>

@@ -1,4 +1,6 @@
 body, html {
     background-color: #000000;
     color: whitesmoke;
+    margin: 0;
+    padding: 0;
 }

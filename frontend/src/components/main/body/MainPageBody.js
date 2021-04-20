@@ -3,6 +3,7 @@ import s from './MainPageBody.module.css'
 import {connect} from "react-redux";
 import {fetchListGames} from "../../../redux/reducers/gameListReducer";
 import GamePreviewBlockWide from "../../game/gamePreview/GamePreviewBlockWide";
+import GamePreviewBlockThin from "../../game/gamePreview/GamePreviewBlockThin";
 
 
 const MainPageBody = (props) => {
@@ -14,7 +15,7 @@ const MainPageBody = (props) => {
         <div className={s.mainPageBody}>
             <div className={s.gamesList}>
                 {
-                    props.games.map((el, index) => <GamePreviewBlockWide key={index} game={el}/>)
+                    props.games.map((el, index) => el.is_wide ? <GamePreviewBlockWide key={index} game={el}/> : <GamePreviewBlockThin key={index} game={el}/>)
                 }
             </div>
         </div>

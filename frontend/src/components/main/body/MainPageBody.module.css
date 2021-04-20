@@ -3,7 +3,7 @@
     margin: auto;
     background-color: #242424;
     border-radius: 1px;
-    height: 800px;
+    height: auto;
     position: relative;
     top: 100px;
 }
