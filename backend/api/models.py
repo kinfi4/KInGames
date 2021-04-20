@@ -38,14 +38,14 @@ class Game(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2)
     slug = models.SlugField(unique=True)
     is_wide = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False)
+    number_of_licences = models.PositiveIntegerField(default=1000)
 
     categories = models.ManyToManyField(Category, related_name='games')
 
     def save(self, *args, **kwargs):
         image = Image.open(self.preview_image)
         w, h = image.size
-
-        print(w, h)
         self.is_wide = w > h * 1.5
 
         super().save(*args, **kwargs)

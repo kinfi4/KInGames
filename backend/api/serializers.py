@@ -53,6 +53,8 @@ class GetGameSerializer(serializers.Serializer):
     price = serializers.DecimalField(max_digits=7, decimal_places=2)
     slug = serializers.SlugField()
     is_wide = serializers.BooleanField()
+    number_of_licences = serializers.IntegerField()
+    hidden = serializers.BooleanField()
 
     comments = CommentSerializer(many=True, required=False, allow_null=True)
     categories = CategorySerializer(many=True, required=False, allow_null=True)
@@ -69,6 +71,7 @@ class CreateGameSerializer(serializers.Serializer):
     description = serializers.CharField(required=False)
     preview_image = serializers.ImageField(required=False, allow_null=True)
     price = serializers.DecimalField(max_digits=7, decimal_places=2, required=True)
+    number_of_licences = serializers.IntegerField(required=False, default=1000)
 
     categories = GameCreateCategorySerializer(many=True, required=False)
 
@@ -92,6 +95,8 @@ class UpdateGameSerializer(serializers.Serializer):
     description = serializers.CharField(required=False)
     preview_image = serializers.ImageField(required=False, allow_null=True)
     price = serializers.DecimalField(max_digits=7, decimal_places=2, required=False)
+    number_of_licences = serializers.IntegerField(required=False)
+    hidden = serializers.BooleanField(required=False)
 
     categories = CategorySerializer(many=True, required=False)
 
