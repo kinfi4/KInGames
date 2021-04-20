@@ -6,9 +6,12 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
+from api.permissions import IsManagerOrAdminOrReadonly
 
 
 class GamesListView(APIView):
+    permission_classes = [IsManagerOrAdminOrReadonly]
+
     def get(self, request: Request):
         try:
             page = int(request.query_params.get('page', 0))
@@ -38,6 +41,8 @@ class GamesListView(APIView):
 
 
 class GameView(APIView):
+    permission_classes = [IsManagerOrAdminOrReadonly]
+
     @staticmethod
     def _get_game(slug):
         try:

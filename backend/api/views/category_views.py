@@ -5,9 +5,12 @@ from rest_framework.views import APIView
 
 from api.handlers import get_all_categories
 from api.serializers import CategorySerializer
+from api.permissions import IsManagerOrAdminOrReadonly
 
 
 class CategoryListView(APIView):
+    permission_classes = [IsManagerOrAdminOrReadonly]
+
     def get(self, request: Request):
         categories = get_all_categories()
         categories_serialized = CategorySerializer(categories, many=True)
