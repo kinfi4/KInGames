@@ -1,0 +1,15 @@
+.categoriesFilterBlock{
+    position: absolute;
+    padding: 20px;
+    background-color: #747474;
+
+    grid-column: 2;
+}
+
+
+.active{
+    display: grid;
+}
+.hidden{
+    display: none;
+}

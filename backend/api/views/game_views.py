@@ -3,6 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
@@ -34,14 +35,14 @@ class GamesListView(APIView):
 
         if game_serialized.is_valid():
             game_serialized.save()
-            return Response(status=status.HTTP_200_OK, data=game_serialized.data)
+            return Response(status=status.HTTP_201_CREATED, data=game_serialized.data)
 
         print(game_serialized.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST, data=game_serialized.errors)
 
 
 class GameView(APIView):
-    permission_classes = [IsManagerOrAdminOrReadonly]
+    permission_classes = [IsManagerOrAdminOrReadonly, IsAuthenticatedOrReadOnly]
 
     @staticmethod
     def _get_game(slug):

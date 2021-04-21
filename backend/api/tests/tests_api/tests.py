@@ -1,11 +1,9 @@
-import unittest
-
 from django.test import TestCase, Client
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
 
-from api.tests.constants import TestData, TestAnswers, APIUrls
-from api.models import Category, Game, User
+from api.tests.constants import TestData, APIUrls
+from api.models import Category, Game, User, KinGamesUser
 
 
 class TestGameAPI(TestCase):
@@ -13,6 +11,7 @@ class TestGameAPI(TestCase):
 
     def setUp(self) -> None:
         test_user = User.objects.create_user(username=TestData.TEST_USERNAME, password=TestData.TEST_USER_PASSWORD)
+        KinGamesUser.objects.create(django_user=test_user, role='ADMIN')
         token = Token.objects.create(user=test_user)
 
         self.client = Client(HTTP_AUTHORIZATION=f'Token {token.key}')
