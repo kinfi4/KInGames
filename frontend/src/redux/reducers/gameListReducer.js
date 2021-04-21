@@ -14,8 +14,12 @@ const FETCH_SINGLE_GAME = 'FETCH_SINGLE_GAME'
 const FETCH_ERROR = 'FETCH_ERROR'
 
 
-export let fetchListGames = (page) => (dispatch) => {
-    axios.get(BASE_URL + 'api/v1/games?page=' + page)
+export let fetchListGames = (page, categories=[]) => (dispatch) => {
+    let categoriesFilter = ''
+    if(categories.length !== 0)
+        categoriesFilter = `&categories=${categories.join('%')}`
+
+    axios.get(BASE_URL + 'api/v1/games?page=' + page + categoriesFilter)
         .then(res => dispatch({type: GET_GAMES_LIST, games: res.data}))
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }

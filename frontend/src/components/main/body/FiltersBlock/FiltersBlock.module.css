@@ -1,0 +1,26 @@
+.filterBlock{
+    padding: 20px;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+}
+.filterBlock *{
+    font-size: 24px;
+}
+
+.outterSearch{
+
+}
+
+.searchField{
+    width: 350px;
+    background-color: #323232;
+    border: none;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 20px;
+}
+.searchField:focus{
+    outline: none;
+}

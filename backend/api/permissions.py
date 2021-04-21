@@ -6,12 +6,12 @@ from api.models import ADMIN, MANAGER
 
 class IsAdmin(BasePermission):
     def has_permission(self, request: Request, view):
-        return request.user.role == ADMIN
+        return request.user.kin_user.role == ADMIN
 
 
 class IsManagerOrAdminOrReadonly(BasePermission):
     def has_permission(self, request: Request, view):
-        return request.method in SAFE_METHODS or request.user.role in (ADMIN, MANAGER)
+        return request.method in SAFE_METHODS or request.user.kin_user.role in (ADMIN, MANAGER)
 
 
 class CommentManagePermission(BasePermission):
@@ -22,4 +22,4 @@ class CommentManagePermission(BasePermission):
         if request.method == 'PUT' and request.user != obj.user:
             return False
 
-        return request.user.role in (ADMIN, MANAGER) or request.user == obj.user
+        return request.user.kin_user.role in (ADMIN, MANAGER) or request.user == obj.user

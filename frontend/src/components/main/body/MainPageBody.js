@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import s from './MainPageBody.module.css'
 import {connect} from "react-redux";
 import {fetchListGames} from "../../../redux/reducers/gameListReducer";
 import GamePreviewBase from "../../game/gamePreview/GamePreviewBase";
+import FiltersBlock from "./FiltersBlock/FiltersBlock";
 
 
 const MainPageBody = (props) => {
@@ -12,6 +13,11 @@ const MainPageBody = (props) => {
 
     return (
         <div className={s.mainPageBody}>
+
+            <FiltersBlock />
+
+            <hr style={{backgroundColor: '#3b3b3b'}}/>
+
             <div className={s.gamesList}>
                 {
                     props.games.map((el, index) => <GamePreviewBase game={el} key={index}/>)
