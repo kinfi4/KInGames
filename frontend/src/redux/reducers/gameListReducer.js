@@ -12,15 +12,24 @@ let initialState = {
 const GET_GAMES_LIST = 'GET_GAMES_LIST'
 const FETCH_SINGLE_GAME = 'FETCH_SINGLE_GAME'
 const FETCH_ERROR = 'FETCH_ERROR'
+const CLEAR_STATE = 'CLEAR_STATE'
 
 
-export let fetchListGames = (page, categories=[]) => (dispatch) => {
+export let fetchListGames = (page) => (dispatch, getState) => {
     let categoriesFilter = ''
+    let categories = getState().categories.chosenCategories
     if(categories.length !== 0)
-        categoriesFilter = `&categories=${categories.join('%')}`
+        categoriesFilter = `&category=${categories.join('%')}`
 
-    axios.get(BASE_URL + 'api/v1/games?page=' + page + categoriesFilter)
-        .then(res => dispatch({type: GET_GAMES_LIST, games: res.data}))
+    let searchingString = ''
+    let searchingField = getState().categories.searchingField
+    if(searchingField.length !== 0)
+        searchingString = `&title=${searchingField}`
+
+    dispatch({type: CLEAR_STATE})
+
+    axios.get(BASE_URL + 'api/v1/games?page=' + page + categoriesFilter + searchingString)
+        .then(res => dispatch({type: GET_GAMES_LIST, games: res.data, page: page}))
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
@@ -37,7 +46,7 @@ export let gameListReducer = (state=initialState, action) => {
             if(action.games.length === 0)
                 return state
 
-            return {...state, page: state.page + 1, games: action.games}
+            return {...state, page: action.page, games: action.games}
         case FETCH_SINGLE_GAME:
             return {...state, activeGame: action.game}
         case FETCH_ERROR:
@@ -47,6 +56,8 @@ export let gameListReducer = (state=initialState, action) => {
             }))
 
             return state
+        case CLEAR_STATE:
+            return initialState
         default:
             return state
     }

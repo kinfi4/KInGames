@@ -1,9 +1,25 @@
 .categoriesFilterBlock{
     position: absolute;
     padding: 20px;
-    background-color: #747474;
+    background-color: #a0a0a0;
+    border-radius: 4px;
 
-    grid-column: 2;
+    grid-template-columns: 50% 50%;
+    justify-items: start;
+    /*grid-column-gap: 20px;*/
+}
+.checkboxBlock{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 20px;
+}
+.checkboxBlock *{
+    font-size: 20px;
+    margin: 0 5px;
+    padding: 0;
+
+    cursor: pointer;
 }
 
 

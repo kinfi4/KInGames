@@ -20,10 +20,13 @@ class GamesListView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Page must be an integer'})
 
         categories = request.query_params.get('category', '').split('%')
+        title = request.query_params.get('title', '')
 
-        filters = {}
+        filters = {} 
         if categories[0]:
-            filters['categories__in'] = categories
+            filters['categories__slug__in'] = categories
+        if title:
+            filters['title__icontains'] = title
 
         games = get_list_games(skip=page, **filters)
         games_serialized = GetGameSerializer(games, many=True)
