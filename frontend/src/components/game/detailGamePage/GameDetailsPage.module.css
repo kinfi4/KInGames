@@ -1,0 +1,61 @@
+.gameDetailsBlock{
+    position: relative;
+    top: 100px;
+
+    background-color: #242424;
+    padding: 50px;
+    height: auto;
+    width: 80%;
+    margin: auto;
+    z-index: 10;
+}
+.gameDetailsBlock.thin{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-column-gap: 40px;
+}
+.gameDetailsBlock.wide{
+    display: flex;
+    flex-direction: column;
+}
+.previewImage{
+    position: relative;
+}
+.previewImage.thin{
+    height: 500px;
+}
+.previewImage.wide{
+    width: 100%;
+    height: 600px;
+}
+.detailsBlock{
+    display: flex;
+    flex-direction: column;
+}
+.descriptionBlock{
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #383838;
+    width: 90%;
+    border-radius: 5px;
+}
+.detailsBlock.wide{
+    margin-top: 30px;
+}
+.buyButton{
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 25%;
+    margin: 20px 0;
+    text-align: center;
+    color: #4b4b4b;
+    transition: linear 0.2s;
+    cursor: pointer;
+}
+.buyButton:hover{
+    background-color: #000000;
+    color: white;
+}

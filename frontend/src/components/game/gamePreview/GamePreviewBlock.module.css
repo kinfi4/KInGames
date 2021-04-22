@@ -1,12 +1,13 @@
 .gamePreviewBlock{
     background-color: #393939;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 15px 15px 20px #000000;
 
     position: relative;
 
     display: flex;
 
     margin: 20px;
+    cursor: pointer;
 }
 .gamePreviewBlock.wide{
     width: 100%;
