@@ -34,7 +34,6 @@ const CategoriesFilterOnHover = (props) => {
 };
 
 let mapStateToProps = (state) => {
-    console.log(state.categories.chosenCategories)
     return {
         categories: state.categories.categories,
         chosenCategories: state.categories.chosenCategories

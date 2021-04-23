@@ -54,7 +54,9 @@ export let addGame = (title, price, description, numberOfLicence, categories, pr
     data.append('description', description)
     data.append('number_of_licences', numberOfLicence)
     data.append('categories', JSON.stringify(categories))
-    data.append('preview_image', preview, preview.name)
+
+    if(preview)
+        data.append('preview_image', preview, preview.name)
 
     axios.post(BASE_URL + 'api/v1/games', data, {
         headers: {

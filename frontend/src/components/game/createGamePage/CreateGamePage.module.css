@@ -1,0 +1,124 @@
+.addGameBlock{
+    width: 80%;
+    margin: auto;
+    background-color: #1c1c1c;
+    padding: 50px;
+
+    position: relative;
+    top: 100px;
+}
+.addDataBlock{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.previewImage {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.previewImageLabel {
+    object-fit: contain;
+    width: 90%;
+    height: 500px;
+    margin-top: 15px;
+    margin-bottom: 40px;
+    border-radius: 2px;
+
+    text-align: center;
+    vertical-align: middle;
+
+    font-size: 40px;
+    font-weight: 700;
+    background-size: contain;
+    color: #313131;
+    background-color: #ff3030;
+
+    display: flex;
+    justify-content: center;
+    align-items: start;
+
+    cursor: pointer;
+
+    transition: linear 0.5s;
+}
+.previewImageLabel:hover{
+    background-color: #ff0000;
+    color: #ffffff;
+}
+.previewImageLabel{
+    padding: 10px;
+}
+
+.inputTextBlock{
+    border: #6c6c6c 1px solid;
+    padding: 30px;
+}
+
+.inputLine{
+    background-color: #1c1c1c;
+    border: none;
+    border-bottom: 1px solid #8d8d8d;
+    width: 70%;
+    color: white;
+    font-size: 32px;
+
+    margin-bottom: 20px;
+}
+.inputLine.shortInput{
+    width: 40%;
+}
+.inputLine:last-child{
+    margin-bottom: 0;
+}
+.inputLine:focus{
+    outline: none;
+}
+
+
+.descriptionInput{
+    border: 1px solid #a3a3a3;
+    border-radius: 7px;
+}
+.descriptionInputInner{
+    min-height: 150px;
+    max-height: 250px;
+    overflow: auto;
+
+    padding: 10px;
+    color: #bdbdbd;
+}
+.descriptionInputInner:focus{
+    outline: none;
+}
+.descriptionInputInner:empty:before{
+    content: attr(data-placeholder);
+}
+
+
+.gameCategoriesWrapper{
+    margin-top: 20px;
+}
+.genres{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    margin-top: 10px;
+}
+.categoryButton{
+    background-color: #fff;
+    color: black;
+    border-radius: 15px;
+    padding: 10px 14px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.chosen{
+    background-color: black;
+    color: white;
+
+}
