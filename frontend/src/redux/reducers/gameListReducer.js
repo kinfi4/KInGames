@@ -2,6 +2,8 @@ import axios from "axios";
 import {BASE_URL} from "../../config";
 import {showMessage} from "../../utils/messages";
 
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 let initialState = {
     page: 0,

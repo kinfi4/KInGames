@@ -7,6 +7,7 @@ import store from "./redux/store";
 import {loadUser} from "./redux/reducers/authReducer";
 import 'react-notifications-component/dist/theme.css';
 import 'animate.css';
+import ReactNotifications from "react-notifications-component";
 
 
 function App() {

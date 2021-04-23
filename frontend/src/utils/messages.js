@@ -7,8 +7,8 @@ export let showMessage = (messages) => {
             message: el.message,
             type: el.type,                           // 'default', 'success', 'info', 'warning'
             container: 'top-right',                  // where to position the notifications
-            animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-            animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
+            animationIn: ["animated", "fadeIn"],
+            animationOut: ["animated", "fadeOut"],
             dismiss: {
                 duration: 10000
             }
