@@ -73,16 +73,16 @@ class CreateGameSerializer(serializers.Serializer):
     price = serializers.DecimalField(max_digits=7, decimal_places=2, required=True)
     number_of_licences = serializers.IntegerField(required=False, default=1000)
 
-    categories = GameCreateCategorySerializer(many=True, required=False)
+    categories = serializers.ListSerializer(child=serializers.CharField(), required=False)
 
     def create(self, validated_data: dict):
-        categories_raw = validated_data.pop('categories', [])
-        print(categories_raw)
+        categories_slugs = validated_data.pop('categories', [])
+        print(categories_slugs)
         validated_data['slug'] = generate_slug_from_title(validated_data.get('title'))
 
         game = create_game(**validated_data)
 
-        add_categories_for_game_creation(categories_raw, game)
+        add_categories_for_game_creation(categories_slugs, game)
 
         return game
 

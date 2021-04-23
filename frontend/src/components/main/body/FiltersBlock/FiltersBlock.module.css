@@ -24,3 +24,20 @@
 .searchField:focus{
     outline: none;
 }
+
+.addGameButtonBlock{
+    text-align: right;
+    padding: 10px;
+}
+.addGameButton{
+    font-size: 20px;
+    padding: 10px 20px;
+    background-color: #000000;
+    border-radius: 5px;
+
+    transition: linear 0.2s;
+}
+.addGameButton:hover{
+    color: black;
+    background-color: #fff;
+}

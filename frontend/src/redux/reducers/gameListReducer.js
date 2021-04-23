@@ -39,6 +39,34 @@ export let fetchGame = (slug) => (dispatch) => {
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
+export let addGame = (title, price, description, numberOfLicence, categories, preview) => (dispatch) => {
+    let token = localStorage.getItem('token')
+    if(!token){
+        showMessage([{message: 'You have to be authenticated', type: 'danger'}])
+        return
+    }
+
+    let data = new FormData()
+    data.append('title', title)
+    data.append('price', price)
+    data.append('description', description)
+    data.append('number_of_licences', numberOfLicence)
+    data.append('categories', JSON.stringify(categories))
+    data.append('preview_image', preview, preview.name)
+
+    axios.post(BASE_URL + 'api/v1/games', data, {
+        headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'multipart/form-data',
+        }
+    }).catch(err => {
+        let errors = Object.entries(err.response.data.errors).map(el => `${el[0]}: ${el[1]}`)
+        showMessage(errors.map((err) => {
+            return {message: err, type: 'danger'}
+        }))
+    })
+
+}
 
 export let gameListReducer = (state=initialState, action) => {
     switch (action.type){

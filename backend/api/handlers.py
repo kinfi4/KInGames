@@ -7,8 +7,8 @@ def create_game(**game_data):
     return Game.objects.create(**game_data)
 
 
-def add_categories_for_game_creation(categories_raw: list, game: Game):
-    game.categories.set(Category.objects.filter(slug__in=[cat['slug'] for cat in categories_raw]))
+def add_categories_for_game_creation(categories_slugs: list, game: Game):
+    game.categories.set(Category.objects.filter(slug__in=categories_slugs))
     game.save()
 
     return game
