@@ -72,6 +72,26 @@ export let addGame = (title, price, description, numberOfLicence, categories, pr
 
 }
 
+export let deleteGame = (slug) => (dispatch) => {
+    let token = localStorage.getItem('token')
+    if(!token){
+        showMessage([{message: 'You have to be authenticated', type: 'danger'}])
+        return
+    }
+
+    axios.delete(BASE_URL + 'api/v1/games/' + slug, {
+        headers: {'Authorization': `Token ${token}`}
+    }).catch(err => {
+        let errors = Object.entries(err.response.data).map(el => `${el[0]}: ${el[1]}`)
+        showMessage(errors.map((err) => {
+            return {message: err, type: 'danger'}
+        }))
+    })
+
+    // dispatch(fetchListGames(0))
+}
+
+
 export let gameListReducer = (state=initialState, action) => {
     switch (action.type){
         case GET_GAMES_LIST:

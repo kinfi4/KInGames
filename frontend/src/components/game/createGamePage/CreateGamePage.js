@@ -12,14 +12,16 @@ const CreateGamePage = (props) => {
         props.fetchListCategories()
     }, [])
 
-    const [details, setDetails] = useState({
+    const initialState = {
         title: '',
         price: 0,
         description: '',
         imageOnLoad: null,
         categories: [],
         previewImage: `${BASE_URL}media/games_previews/default.png`
-    })
+    }
+
+    const [details, setDetails] = useState(initialState)
     let onLoadImage = (file) => {
         let reader = new FileReader()
         reader.onload = (ev) => {
@@ -33,7 +35,8 @@ const CreateGamePage = (props) => {
     }
     let onSave = () => {
         props.addGame(details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
-        // showMessage([{message: 'Saved'}])
+        showMessage([{message: 'Saved', type: 'success'}])
+        setDetails(initialState)
     }
 
     return (
@@ -61,7 +64,7 @@ const CreateGamePage = (props) => {
                            onInput={(e) => setDetails({...details, title: e.target.value})}
                            value={details.title}/>
 
-                    <input type="number" className={`${s.inputLine} ${s.shortInput}`} placeholder={'Price'}
+                    <input type="number" className={`${s.inputLine} ${s.shortInput}`} placeholder={'Price'} id={'price'}
                            onInput={(e) => setDetails({...details, price: e.target.value})}
                            value={details.price}/>
 

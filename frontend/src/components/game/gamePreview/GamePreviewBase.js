@@ -17,7 +17,7 @@ const GamePreviewBase = (props) => {
                 onMouseEnter={() => setHoverActive(true)}
                      onMouseLeave={() => setHoverActive(false)}>
                     {props.game.is_wide ? <GamePreviewBlockWide game={props.game} /> : <GamePreviewBlockThin game={props.game} />}
-                    <GamePreviewHover is_active={hoverActive} />
+                    <GamePreviewHover is_active={hoverActive} slug={props.game.slug} />
             </NavLink>
         )
 }
