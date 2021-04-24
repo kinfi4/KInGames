@@ -2,11 +2,11 @@ import React from 'react';
 import {connect} from "react-redux";
 
 import {AiOutlineEdit, RiDeleteBin6Fill} from 'react-icons/all'
-import {useHistory} from 'react-router-dom'
 
 import s from './GamePreviewHover.module.css'
 import {deleteGame} from "../../../../redux/reducers/gameListReducer";
 import {showMessage} from "../../../../utils/messages";
+import {NavLink} from "react-router-dom";
 
 
 const GamePreviewHover = (props) => {
@@ -23,8 +23,8 @@ const GamePreviewHover = (props) => {
     return (
         <div className={s.previewHover + ` ${activeClass}`}>
 
-            <div className={s.manageButton}><AiOutlineEdit /> <span> Edit </span></div>
-            <div className={s.manageButton} onClick={onDelete}><RiDeleteBin6Fill /> <span> Delete </span> </div>
+            <div className={s.manageButton}><NavLink to={'update/' + props.slug}><AiOutlineEdit /> <span> Edit </span></NavLink></div>
+            <div className={s.manageButton} onClick={onDelete}><NavLink to={'/'}><RiDeleteBin6Fill /> <span> Delete </span></NavLink></div>
 
         </div>
     );

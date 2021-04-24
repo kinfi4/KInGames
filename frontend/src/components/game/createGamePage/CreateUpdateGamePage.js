@@ -3,15 +3,11 @@ import s from './CreateGamePage.module.css'
 import detailsPage from '../detailGamePage/GameDetailsPage.module.css'
 import {connect} from "react-redux";
 import {BASE_URL} from "../../../config";
-import {fetchListCategories, manageChosenCategories} from "../../../redux/reducers/categoriesListReducer";
-import {addGame} from "../../../redux/reducers/gameListReducer";
+import {fetchListCategories} from "../../../redux/reducers/categoriesListReducer";
+import {addGame, fetchGame, updateGame} from "../../../redux/reducers/gameListReducer";
 import {showMessage} from "../../../utils/messages";
 
-const CreateGamePage = (props) => {
-    useEffect(() => {
-        props.fetchListCategories()
-    }, [])
-
+const CreateUpdateGamePage = (props) => {
     const initialState = {
         title: '',
         price: 0,
@@ -21,7 +17,41 @@ const CreateGamePage = (props) => {
         previewImage: `${BASE_URL}media/games_previews/default.png`
     }
 
+    useEffect(() => {
+        props.fetchListCategories()
+        console.log('herrrrre')
+        if(props.isUpdate){
+            console.log('and here')
+            let urlBlocks = window.location.href.split('/')
+            let gameSlug = urlBlocks[urlBlocks.length - 1]
+            props.fetchGame(gameSlug)
+            console.log(gameSlug)
+        }
+    }, [])
+
+
+
+    return (
+        (!props.isUpdate || props.game) && <CreateUpdateGamePageChild initialState={initialState} game={props.game} {...props} />
+    );
+}
+
+const CreateUpdateGamePageChild = (props) => {
+    console.log(props.game)
+    let initialState = props.initialState
+    if(props.isUpdate){
+        initialState = {
+            title: props.game.title,
+            price: props.game.price,
+            description: props.game.description,
+            imageOnLoad: null,
+            categories: props.game.categories.map(el => el.slug),
+            previewImage: `${BASE_URL}${props.game.preview_image.slice(1)}`
+        }
+    }
+
     const [details, setDetails] = useState(initialState)
+
     let onLoadImage = (file) => {
         let reader = new FileReader()
         reader.onload = (ev) => {
@@ -34,9 +64,15 @@ const CreateGamePage = (props) => {
         }catch (e){}
     }
     let onSave = () => {
-        props.addGame(details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
+        if(props.isUpdate){
+            props.updateGame(props.game.slug, details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
+            window.location.href = '/'
+        }else{
+            props.addGame(details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
+            setDetails(props.initialState)
+        }
+
         showMessage([{message: 'Saved', type: 'success'}])
-        setDetails(initialState)
     }
 
     return (
@@ -72,6 +108,7 @@ const CreateGamePage = (props) => {
                         <div className={s.descriptionInputInner} contentEditable={true}
                              onInput={e => setDetails({...details, description: e.target.textContent})}
                              data-placeholder={'Description'}>
+                            {details.description}
                         </div>
                     </div>
 
@@ -107,22 +144,26 @@ const CreateGamePage = (props) => {
                 </div>
             </div>
 
-       </div>
+        </div>
     );
-};
+}
 
 
 let mapStateToProps = (state) => {
     return {
         categories: state.categories.categories,
+        game: state.listGames.activeGame
     }
 }
 let mapDispatchToProps = (dispatch) => {
     return {
         fetchListCategories: () => dispatch(fetchListCategories),
         addGame: (title, price, description, numberOfLicence, categories, preview) =>
-            dispatch(addGame(title, price, description, numberOfLicence, categories, preview))
+            dispatch(addGame(title, price, description, numberOfLicence, categories, preview)),
+        fetchGame: (slug) => dispatch(fetchGame(slug)),
+        updateGame: (slug, title, price, description, numberOfLicence, categories, preview) =>
+            dispatch(updateGame(slug, title, price, description, numberOfLicence, categories, preview)),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateGamePage);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateUpdateGamePage);

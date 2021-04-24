@@ -8,7 +8,7 @@ import Footer from "./footer/Footer";
 import {Route} from 'react-router-dom'
 import GameDetailsPage from "../game/detailGamePage/GameDetailsPage";
 import PrivateRouteAdminOrManagerOnly from "../crumbs/PrivateRoute/PrivateRoute";
-import CreateGamePage from "../game/createGamePage/CreateGamePage";
+import CreateUpdateGamePage from "../game/createGamePage/CreateUpdateGamePage";
 
 
 let MainApp = (props) => {
@@ -20,7 +20,8 @@ let MainApp = (props) => {
 
             <Route exact path={'/'} render={() => <MainPageBody />} />
             <Route path={'/games/'} render={() => <GameDetailsPage />} />
-            <PrivateRouteAdminOrManagerOnly path={'/add-game'} component={CreateGamePage} />
+            <PrivateRouteAdminOrManagerOnly path={'/add-game'} component={CreateUpdateGamePage} isUpdate={false} />
+            <PrivateRouteAdminOrManagerOnly path={'/update'} component={CreateUpdateGamePage} isUpdate={true} />
 
             {/*<Footer />*/}
         </>

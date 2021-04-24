@@ -16,6 +16,18 @@ const FETCH_SINGLE_GAME = 'FETCH_SINGLE_GAME'
 const FETCH_ERROR = 'FETCH_ERROR'
 const CLEAR_STATE = 'CLEAR_STATE'
 
+const prepareDataForSending = (title, price, description, numberOfLicence, categories, preview) => {
+    let data = new FormData()
+    data.append('title', title)
+    data.append('price', price)
+    data.append('description', description)
+    data.append('number_of_licences', numberOfLicence)
+    data.append('categories', JSON.stringify(categories))
+    if(preview)
+        data.append('preview_image', preview, preview.name)
+
+    return data
+}
 
 export let fetchListGames = (page) => (dispatch, getState) => {
     let categoriesFilter = ''
@@ -48,17 +60,32 @@ export let addGame = (title, price, description, numberOfLicence, categories, pr
         return
     }
 
-    let data = new FormData()
-    data.append('title', title)
-    data.append('price', price)
-    data.append('description', description)
-    data.append('number_of_licences', numberOfLicence)
-    data.append('categories', JSON.stringify(categories))
-
-    if(preview)
-        data.append('preview_image', preview, preview.name)
+    let data = prepareDataForSending(title, price, description, numberOfLicence, categories, preview)
 
     axios.post(BASE_URL + 'api/v1/games', data, {
+        headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'multipart/form-data',
+        }
+    }).catch(err => {
+        let errors = Object.entries(err.response.data).map(el => `${el[0]}: ${el[1]}`)
+        showMessage(errors.map((err) => {
+            return {message: err, type: 'danger'}
+        }))
+    })
+
+}
+
+export let updateGame = (slug, title, price, description, numberOfLicence, categories, preview) => (dispatch) => {
+    let token = localStorage.getItem('token')
+    if(!token){
+        showMessage([{message: 'You have to be authenticated', type: 'danger'}])
+        return
+    }
+
+    let data = prepareDataForSending(title, price, description, numberOfLicence, categories, preview)
+
+    axios.put(BASE_URL + 'api/v1/games/' + slug, data, {
         headers: {
             'Authorization': `Token ${token}`,
             'Content-Type': 'multipart/form-data',
