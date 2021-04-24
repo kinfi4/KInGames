@@ -3,6 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug
@@ -34,10 +35,16 @@ class GamesListView(APIView):
         return Response(status=status.HTTP_200_OK, data=games_serialized.data)
 
     def post(self, request: Request):
+        print(request.data)
         game_serialized = CreateGameSerializer(data=request.data)
 
         if game_serialized.is_valid():
-            game_serialized.save()
+            try:
+                game_serialized.save()
+            except IntegrityError:
+                return Response(status=status.HTTP_400_BAD_REQUEST,
+                                data={'errors': 'Game with this title already exists'})
+
             return Response(status=status.HTTP_201_CREATED, data=game_serialized.data)
 
         print(game_serialized.errors)

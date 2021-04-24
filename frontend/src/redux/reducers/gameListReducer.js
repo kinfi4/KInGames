@@ -64,7 +64,7 @@ export let addGame = (title, price, description, numberOfLicence, categories, pr
             'Content-Type': 'multipart/form-data',
         }
     }).catch(err => {
-        let errors = Object.entries(err.response.data.errors).map(el => `${el[0]}: ${el[1]}`)
+        let errors = Object.entries(err.response.data).map(el => `${el[0]}: ${el[1]}`)
         showMessage(errors.map((err) => {
             return {message: err, type: 'danger'}
         }))

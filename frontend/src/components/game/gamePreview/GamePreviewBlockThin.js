@@ -15,7 +15,7 @@ const GamePreviewBlockThin = (props) => {
             </div>
 
             <div className={s.thinTitleBlock}>
-                <h4>{props.game.categories.map(el => el.name)}</h4>
+                <h4>{props.game.categories.map((el, i) => i === props.game.categories.length - 1 ? `${el.name}` : `${el.name} / `)}</h4>
                 <h2>{props.game.title}</h2>
                 <h3>${props.game.price}</h3>
             </div>

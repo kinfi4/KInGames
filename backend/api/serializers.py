@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 
 from api.handlers import create_game, add_categories_for_game_creation
@@ -72,12 +74,12 @@ class CreateGameSerializer(serializers.Serializer):
     preview_image = serializers.ImageField(required=False, allow_null=True)
     price = serializers.DecimalField(max_digits=7, decimal_places=2, required=True)
     number_of_licences = serializers.IntegerField(required=False, default=1000)
-
-    categories = serializers.ListSerializer(child=serializers.CharField(), required=False)
+    categories = serializers.CharField(required=False)
 
     def create(self, validated_data: dict):
-        categories_slugs = validated_data.pop('categories', [])
-        print(categories_slugs)
+        categories_slugs_stringify = validated_data.pop('categories', [])
+        categories_slugs = self.__get_list_of_categories_from_stringify_list(categories_slugs_stringify)
+
         validated_data['slug'] = generate_slug_from_title(validated_data.get('title'))
 
         game = create_game(**validated_data)
@@ -88,6 +90,10 @@ class CreateGameSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         pass
+
+    @staticmethod
+    def __get_list_of_categories_from_stringify_list(categories_list):
+        return re.findall(r'\"(\w+?)\"', categories_list)
 
 
 class UpdateGameSerializer(serializers.Serializer):
