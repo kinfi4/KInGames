@@ -72,6 +72,7 @@ class GameView(APIView):
         if not (game := self._get_game(slug)):
             return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
+        print(request.data)
         game_serialized = UpdateGameSerializer(game, data=request.data)
         if game_serialized.is_valid():
             game_serialized.save()

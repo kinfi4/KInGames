@@ -7,6 +7,10 @@ from api.models import Cart, CartGame, Game, KinGamesUser, User, Category, Comme
 from api.utils.generate_slug import generate_slug_from_title
 
 
+def get_list_of_categories_from_stringify_list(categories_list):
+    return re.findall(r'\"(\w+?)\"', categories_list)
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -78,7 +82,7 @@ class CreateGameSerializer(serializers.Serializer):
 
     def create(self, validated_data: dict):
         categories_slugs_stringify = validated_data.pop('categories', [])
-        categories_slugs = self.__get_list_of_categories_from_stringify_list(categories_slugs_stringify)
+        categories_slugs = get_list_of_categories_from_stringify_list(categories_slugs_stringify)
 
         validated_data['slug'] = generate_slug_from_title(validated_data.get('title'))
 
@@ -91,10 +95,6 @@ class CreateGameSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
 
-    @staticmethod
-    def __get_list_of_categories_from_stringify_list(categories_list):
-        return re.findall(r'\"(\w+?)\"', categories_list)
-
 
 class UpdateGameSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255, required=False)
@@ -104,13 +104,16 @@ class UpdateGameSerializer(serializers.Serializer):
     number_of_licences = serializers.IntegerField(required=False)
     hidden = serializers.BooleanField(required=False)
 
-    categories = CategorySerializer(many=True, required=False)
+    categories = serializers.CharField(required=False)
 
     def create(self, validated_data):
         pass
 
     def update(self, instance: Game, validated_data: dict):
-        add_categories_for_game_creation(validated_data.pop('categories', []), instance)
+        categories_slugs_stringify = validated_data.pop('categories', [])
+        categories_slugs = get_list_of_categories_from_stringify_list(categories_slugs_stringify)
+
+        add_categories_for_game_creation(categories_slugs, instance)
         instance.__dict__.update(**validated_data)
         instance.save()
 

@@ -6,6 +6,7 @@ import {BASE_URL} from "../../../config";
 import {fetchListCategories} from "../../../redux/reducers/categoriesListReducer";
 import {addGame, fetchGame, updateGame} from "../../../redux/reducers/gameListReducer";
 import {showMessage} from "../../../utils/messages";
+import {NavLink} from "react-router-dom";
 
 const CreateUpdateGamePage = (props) => {
     const initialState = {
@@ -19,13 +20,10 @@ const CreateUpdateGamePage = (props) => {
 
     useEffect(() => {
         props.fetchListCategories()
-        console.log('herrrrre')
         if(props.isUpdate){
-            console.log('and here')
             let urlBlocks = window.location.href.split('/')
             let gameSlug = urlBlocks[urlBlocks.length - 1]
             props.fetchGame(gameSlug)
-            console.log(gameSlug)
         }
     }, [])
 
@@ -37,7 +35,6 @@ const CreateUpdateGamePage = (props) => {
 }
 
 const CreateUpdateGamePageChild = (props) => {
-    console.log(props.game)
     let initialState = props.initialState
     if(props.isUpdate){
         initialState = {
@@ -66,7 +63,6 @@ const CreateUpdateGamePageChild = (props) => {
     let onSave = () => {
         if(props.isUpdate){
             props.updateGame(props.game.slug, details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
-            window.location.href = '/'
         }else{
             props.addGame(details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
             setDetails(props.initialState)
@@ -92,7 +88,7 @@ const CreateUpdateGamePageChild = (props) => {
                         Select preview image
                     </label>
 
-                    <div className={detailsPage.buyButton} onClick={onSave}>SAVE</div>
+                    <NavLink to={'/'}><div className={detailsPage.buyButton} onClick={onSave}>SAVE</div></NavLink>
                 </div>
 
                 <div className={s.inputTextBlock}>
@@ -117,7 +113,6 @@ const CreateUpdateGamePageChild = (props) => {
                         <div className={s.genres}>
                             {props.categories.map((el, i) => {
                                 let manageCategoryAdd = () => {
-                                    console.log(details.categories)
                                     if(details.categories.includes(el.slug)){
                                         let newCategories = details.categories.filter(s => s !== el.slug)
                                         setDetails({...details, categories: newCategories})

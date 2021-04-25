@@ -90,7 +90,8 @@ export let updateGame = (slug, title, price, description, numberOfLicence, categ
             'Authorization': `Token ${token}`,
             'Content-Type': 'multipart/form-data',
         }
-    }).catch(err => {
+    }).then(res => dispatch(fetchListGames(0)))
+      .catch(err => {
         let errors = Object.entries(err.response.data).map(el => `${el[0]}: ${el[1]}`)
         showMessage(errors.map((err) => {
             return {message: err, type: 'danger'}
