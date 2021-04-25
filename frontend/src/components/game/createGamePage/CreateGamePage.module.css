@@ -110,6 +110,7 @@
     margin-top: 10px;
 }
 .categoryButton{
+    border: 2px solid #1c1c1c;
     background-color: #fff;
     color: black;
     border-radius: 15px;
@@ -120,5 +121,4 @@
 .chosen{
     background-color: black;
     color: white;
-
 }

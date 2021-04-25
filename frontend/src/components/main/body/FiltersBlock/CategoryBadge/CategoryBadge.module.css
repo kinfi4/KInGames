@@ -1,0 +1,18 @@
+.categoryBadge{
+    text-transform: capitalize;
+    padding: 2px 20px;
+    background-color: #57adaf;
+    border-radius: 15px;
+    margin: 0 10px;
+    text-align: center;
+
+    font-size: 16px!important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.categoryBadge div{
+    font-size: 16px!important;
+    margin: 0 5px;
+    cursor: pointer;
+}

@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import CategoriesFilterOnHover from "./CategoriesFilterOnHover/CategoriesFilterOnHover";
 import {manageSearchingField} from "../../../../redux/reducers/categoriesListReducer";
 import {NavLink} from "react-router-dom";
+import CategoryBadge from "./CategoryBadge/CategoryBadge";
 
 const FiltersBlock = (props) => {
 
@@ -28,16 +29,20 @@ const FiltersBlock = (props) => {
     return (
         <>
             <div className={s.filterBlock}>
-                <div className={s.filterCategory}
-                     onMouseEnter={() => setActiveHover(true)}
-                     onMouseLeave={() => setActiveHover(false)}>
+                <div className={s.categoriesBlock}>
+                    <div className={s.filterCategory}
+                         onMouseEnter={() => setActiveHover(true)}
+                         onMouseLeave={() => setActiveHover(false)}>
 
-                    <BsPlusCircleFill /> <span> Add Filter </span>
-                    <CategoriesFilterOnHover active={activeHover} />
+                        <div><BsPlusCircleFill /> <span> Add Filter </span></div>
+                        <CategoriesFilterOnHover active={activeHover} />
+                    </div>
+
+                    {props.chosenCategories.map((slug, i) => <CategoryBadge slug={slug} />)}
                 </div>
 
                 <div>
-                    <div>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                         <BiSearchAlt /> <input type="text"
                                                className={s.searchField}
                                                value={props.searchingField}
@@ -54,7 +59,8 @@ const FiltersBlock = (props) => {
 let mapStateToProps = (state) => {
     return {
         searchingField: state.categories.searchingField,
-        user: state.auth.user
+        user: state.auth.user,
+        chosenCategories: state.categories.chosenCategories
     }
 }
 

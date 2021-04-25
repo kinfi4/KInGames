@@ -12,6 +12,11 @@
     position: relative;
     z-index: 4;
 }
+.categoriesBlock{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
 
 .searchField{
     width: 350px;
@@ -20,6 +25,7 @@
     border-radius: 3px;
     padding: 5px;
     font-size: 20px;
+    margin-left: 10px;
 }
 .searchField:focus{
     outline: none;

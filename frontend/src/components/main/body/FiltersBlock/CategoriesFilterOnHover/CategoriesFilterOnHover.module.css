@@ -1,12 +1,18 @@
 .categoriesFilterBlock{
     position: absolute;
     padding: 20px;
-    background-color: #a0a0a0;
+    background-color: #2d2d2d;
     border-radius: 4px;
+    border: 1px solid #6c6c6c;
 
-    grid-template-columns: 50% 50%;
-    justify-items: start;
-    /*grid-column-gap: 20px;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 350px;
+}
+.categoriesFilterBlock div{
+    font-size: 16px;
 }
 .checkboxBlock{
     display: flex;
@@ -24,7 +30,7 @@
 
 
 .active{
-    display: grid;
+    display: flex;
 }
 .hidden{
     display: none;
