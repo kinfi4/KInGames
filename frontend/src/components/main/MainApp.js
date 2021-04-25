@@ -5,7 +5,7 @@ import ModalWindow from "../crumbs/ModalWindow/ModalWindow";
 import ReactNotifications from 'react-notifications-component';
 import MainPageBody from "./body/MainPageBody";
 import Footer from "./footer/Footer";
-import {Route} from 'react-router-dom'
+import {Route, withRouter} from 'react-router-dom'
 import GameDetailsPage from "../game/detailGamePage/GameDetailsPage";
 import PrivateRouteAdminOrManagerOnly from "../crumbs/PrivateRoute/PrivateRoute";
 import CreateUpdateGamePage from "../game/createGamePage/CreateUpdateGamePage";
@@ -28,4 +28,4 @@ let MainApp = (props) => {
     )
 }
 
-export default MainApp
+export default withRouter(MainApp);

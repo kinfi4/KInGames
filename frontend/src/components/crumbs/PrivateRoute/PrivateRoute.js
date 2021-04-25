@@ -10,11 +10,11 @@ const PrivateRouteAdminOrManagerOnly = ({component: Component, auth,  ...rest}) 
             props => {
                 if(auth.isLoading) {
                     return <div>LOADING</div>
-                } else if(localStorage.getItem('token')){
-                    return auth.user && <PrivateRouteChild component={Component} auth={auth} {...rest} />
-                } else {
+                } else if(!localStorage.getItem('token')){
                     // showMessage([{message: 'You have no permissions to get to this page', type: 'danger'}])
                     return <Redirect to={'/'} />
+                } else {
+                    return auth.user && <PrivateRouteChild component={Component} auth={auth} {...rest} />
                 }
             }
         } />

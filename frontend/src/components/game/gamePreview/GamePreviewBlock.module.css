@@ -8,6 +8,11 @@
 
     margin: 20px;
     cursor: pointer;
+
+    transition: linear 0.2s;
+}
+.gamePreviewBlock.hover{
+    box-shadow: 9px 10px 10px #535353;
 }
 .gamePreviewBlock.wide{
     width: 100%;
