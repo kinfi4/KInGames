@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer

@@ -4,7 +4,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.serializers import UserSerializer, KinUserSerializer
-from api.handlers import create_default_kin_user, delete_user
+from api.handlers import create_default_kin_user, delete_user, get_list_users
+from api.permissions import IsAdmin
 
 
 class ConfigUserView(APIView):
@@ -75,3 +76,23 @@ class ConfigUserView(APIView):
 
         delete_user(request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ManageUsersForAdmin(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request: Request):
+        name = request.query_params.get('name', '')
+
+        filters = {}
+        if name:
+            filters['first_name'] = name
+            filters['last_name'] = name
+
+        users = get_list_users(**filters)
+        users_serialized = UserSerializer(users, many=True)
+
+        return Response(data=users_serialized.data)
+
+    def post(self, request: Request):
+        pass

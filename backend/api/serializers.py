@@ -3,7 +3,7 @@ import re
 from rest_framework import serializers
 
 from api.handlers import create_game, add_categories_for_game_creation
-from api.models import Cart, CartGame, Game, KinGamesUser, User, Category, Comment
+from api.models import Game, KinGamesUser, User, Category, Comment
 from api.utils.generate_slug import generate_slug_from_title
 
 

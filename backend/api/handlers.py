@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from api.models import Game, Category, KinGamesUser, User
 
@@ -44,3 +44,10 @@ def create_default_kin_user(user):
 
 def delete_user(user: User):
     user.delete()
+
+
+def get_list_users(skip=0, amount=settings.PAGE_SIZE, **filters):
+    return User.objects.filter(
+        Q(first_name__contains=filters.get('first_name', '')) |
+        Q(last_name__contains=filters.get('last_name', ''))
+    ).select_related('kin_user')[skip:skip+amount]
