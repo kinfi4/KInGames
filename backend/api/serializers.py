@@ -81,7 +81,7 @@ class CreateGameSerializer(serializers.Serializer):
     categories = serializers.CharField(required=False)
 
     def create(self, validated_data: dict):
-        categories_slugs_stringify = validated_data.pop('categories', [])
+        categories_slugs_stringify = validated_data.pop('categories', '')
         categories_slugs = get_list_of_categories_from_stringify_list(categories_slugs_stringify)
 
         validated_data['slug'] = generate_slug_from_title(validated_data.get('title'))
@@ -110,7 +110,7 @@ class UpdateGameSerializer(serializers.Serializer):
         pass
 
     def update(self, instance: Game, validated_data: dict):
-        categories_slugs_stringify = validated_data.pop('categories', [])
+        categories_slugs_stringify = validated_data.pop('categories', '')
         categories_slugs = get_list_of_categories_from_stringify_list(categories_slugs_stringify)
 
         add_categories_for_game_creation(categories_slugs, instance)

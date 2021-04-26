@@ -8,7 +8,7 @@ const CategoryBadge = (props) => {
         let newCategories = props.chosenCategories.filter(s => s !== props.slug)
         props.manageChosenCategories(newCategories)
     }
-    
+
     return (
         <div className={s.categoryBadge}>
             {props.slug} <div onClick={onDeleteChosen}>&#10008;</div>
