@@ -2,10 +2,12 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
 
 from api.serializers import UserSerializer, KinUserSerializer
-from api.handlers import create_default_kin_user, delete_user, get_list_users
+from api.handlers import create_default_kin_user, delete_user, get_list_users, change_user_role
 from api.permissions import IsAdmin
+from api.models import MANAGER, USER
 
 
 class ConfigUserView(APIView):
@@ -95,4 +97,20 @@ class ManageUsersForAdmin(APIView):
         return Response(data=users_serialized.data)
 
     def post(self, request: Request):
-        pass
+        username = request.data.get('username', '')
+        role = request.data.get('role', '')
+
+        if not username or not role:
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={'errors': 'username or new role for the user is not specified'})
+
+        if role not in (MANAGER, USER):
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={'errors': 'As a admin you can set user role as manager or simple user only'})
+
+        try:
+            change_user_role(username, role)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        return Response(data={'message': 'Role changed successfully'})

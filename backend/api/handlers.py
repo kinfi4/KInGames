@@ -51,3 +51,9 @@ def get_list_users(skip=0, amount=settings.PAGE_SIZE, **filters):
         Q(first_name__contains=filters.get('first_name', '')) |
         Q(last_name__contains=filters.get('last_name', ''))
     ).select_related('kin_user')[skip:skip+amount]
+
+
+def change_user_role(username, role):
+    user = User.objects.select_related('kin_user').get(username=username)
+    user.kin_user.role = role
+    user.kin_user.save(update_fields=['role'])
