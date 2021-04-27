@@ -19,9 +19,9 @@ def get_list_games(skip=0, amount=settings.PAGE_SIZE, **filters):
     return Game.objects.filter(**filters).prefetch_related('categories')[skip:skip + amount]
 
 
-def get_list_games_with_categories(categories, skip=0, amount=settings.PAGE_SIZE, *filters):
+def get_list_games_with_categories(categories, skip=0, amount=settings.PAGE_SIZE, **filters):
     return Game.objects \
-               .filter(*filters, categories__slug__in=categories) \
+               .filter(**filters, categories__slug__in=categories) \
                .annotate(num_categories=Count('categories')) \
                .filter(num_categories=len(categories))[skip:skip + amount]
 

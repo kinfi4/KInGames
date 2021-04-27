@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.conf import settings
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
@@ -28,9 +29,9 @@ class GamesListView(APIView):
             filters['title__icontains'] = title
 
         if categories[0]:
-            games = get_list_games_with_categories(categories, skip=page, **filters)
+            games = get_list_games_with_categories(categories, skip=page*settings.PAGE_SIZE, **filters)
         else:
-            games = get_list_games(skip=page, **filters)
+            games = get_list_games(skip=page*settings.PAGE_SIZE, **filters)
 
         games_serialized = GetGameSerializer(games, many=True)
 

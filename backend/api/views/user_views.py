@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 from api.serializers import UserSerializer, KinUserSerializer
 from api.handlers import create_default_kin_user, delete_user, get_list_users, change_user_role
@@ -84,6 +85,11 @@ class ManageUsersForAdmin(APIView):
     permission_classes = [IsAdmin]
 
     def get(self, request: Request):
+        try:
+            page = int(request.query_params.get('page', 0))
+        except ValueError:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Page must be an integer'})
+
         name = request.query_params.get('name', '')
 
         filters = {}
@@ -91,7 +97,7 @@ class ManageUsersForAdmin(APIView):
             filters['first_name'] = name
             filters['last_name'] = name
 
-        users = get_list_users(**filters)
+        users = get_list_users(skip=page*settings.PAGE_SIZE, **filters)
         users_serialized = UserSerializer(users, many=True)
 
         return Response(data=users_serialized.data)
