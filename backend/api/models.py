@@ -32,21 +32,23 @@ class Category(models.Model):
 
 
 class Game(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     preview_image = models.ImageField(upload_to='games_previews', default='games_previews/default.png')
     price = models.DecimalField(max_digits=7, decimal_places=2)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, db_index=True)
     is_wide = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
     number_of_licences = models.PositiveIntegerField(default=1000)
 
-    categories = models.ManyToManyField(Category, related_name='games')
+    categories = models.ManyToManyField(Category, related_name='games', db_index=True)
 
     def save(self, *args, **kwargs):
         image = Image.open(self.preview_image)
         w, h = image.size
         self.is_wide = w > h * 1.5
+
+        self.hidden = self.number_of_licences == 0
 
         super().save(*args, **kwargs)
 
@@ -65,12 +67,11 @@ class Comment(models.Model):
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(KinGamesUser, null=True, on_delete=models.CASCADE, related_name='carts')
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE, related_name='cart')
     user_agent = models.CharField(max_length=200, null=True, blank=True)
     for_anonymous_user = models.BooleanField(default=False)
 
-    games = models.ManyToManyField(Game, related_name='related_carts', blank=True)
-    total_products = models.PositiveIntegerField(default=1)
+    total_products = models.PositiveIntegerField(default=0)
     final_price = models.DecimalField(max_digits=10, default=0, decimal_places=2)
 
     def __str__(self):
@@ -78,7 +79,7 @@ class Cart(models.Model):
 
 
 class CartGame(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_games')
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     qty = models.PositiveIntegerField(default=1, verbose_name='Number of products')
     final_price = models.DecimalField(max_digits=9, decimal_places=2)

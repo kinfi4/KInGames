@@ -21,7 +21,7 @@ export let fetchUsersList = (dispatch, getState) => {
     let page = getState().users.page
     let token = localStorage.getItem('token')
     let name = getState().users.searchField
-    
+
     axios.get(BASE_URL + 'api/v1/manage-users?page=' + page + '&name=' + name, {
         headers: {'Authorization': `Token ${token}`}
     })

@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.db.models import Count, Q
 
-from api.models import Game, Category, KinGamesUser, User
+from api.models import Game, Category, KinGamesUser, User, Cart, CartGame
 
 
+# Games handlers
 def create_game(**game_data):
     return Game.objects.create(**game_data)
 
@@ -34,10 +35,12 @@ def get_game_by_slug(slug: str):
     return Game.objects.prefetch_related('categories').get(slug=slug)
 
 
+# Categories handlers
 def get_all_categories():
     return Category.objects.all()
 
 
+# Users handlers
 def create_default_kin_user(user):
     return KinGamesUser.objects.create(django_user=user)
 
@@ -57,3 +60,63 @@ def change_user_role(username, role):
     user = User.objects.select_related('kin_user').get(username=username)
     user.kin_user.role = role
     user.kin_user.save(update_fields=['role'])
+
+
+# Cart handlers
+def get_user_cart_size(username):
+    cart = User.objects.select_related('cart').get(username=username).cart
+    return 0 if not cart else cart.total_products
+
+
+def get_user_cart(username):
+    return User.objects.select_related('cart').get(username=username).cart
+
+
+def create_empty_cart_for_user(username):
+    user = User.objects.get(username=username)
+    cart = Cart(user=user)
+    cart.save()
+
+
+def create_cart_for_anonymous_user(user_agent):
+    cart = Cart(user_agent=user_agent, for_anonymous_user=True)
+    cart.save()
+
+
+def add_game_to_cart(game_slug, **cart_filter):
+    cart_game = CartGame.objects.filter(game__slug=game_slug, **cart_filter).first()
+
+    if not cart_game:
+        cart = Cart.objects.filter(**cart_filter).first()
+        cart.total_products += 1
+        cart.save(update_fields=['total_products'])
+
+        game = Game.objects.get(slug=game_slug)
+        game.number_of_licences -= 1
+        game.save(update_fields=['number_of_licences'])
+
+        CartGame.objects.create(game=game, cart=cart)
+    else:
+        cart_game.qty += 1
+        cart_game.save(update_fields=['qty'])
+
+
+def remove_game_from_cart(game_slug, **cart_filter):
+    cart_game = CartGame.objects.select_related('cart', 'game').filter(game__slug=game_slug, **cart_filter).first()
+
+    if not cart_game:
+        raise ValueError(f'Game {game_slug} does not belong to the {cart_filter} cart')
+
+    cart, game = cart_game.cart, cart_game.game
+
+    cart.total_products -= 1
+    cart.save(update_fields=['total_products'])
+
+    game.number_of_licences += 1
+    cart.save(update_fields=['number_of_licences'])
+
+    if cart_game.qty == 1:
+        cart_game.delete()
+    else:
+        cart_game.qty -= 1
+        cart_game.save(update_fields=['qty'])
