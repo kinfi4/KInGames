@@ -1,0 +1,20 @@
+.manageUsersPanel{
+    padding: 20px;
+}
+.searchBlock{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.searchBlock input{
+    background-color: #b8b8b8;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+
+    margin-left: 10px;
+    padding: 5px;
+}
+.searchBlock input:focus{
+    outline: none;
+}

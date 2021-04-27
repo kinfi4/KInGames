@@ -4,13 +4,15 @@ import {auth} from "./reducers/authReducer";
 import {modalWindowReducer} from "./reducers/modalWindowReducer";
 import {gameListReducer} from "./reducers/gameListReducer";
 import {categoriesListReducer} from "./reducers/categoriesListReducer";
+import {usersReducer} from "./reducers/usersListReducer";
 
 let store = createStore(
     combineReducers({
         auth: auth,
         modalWindow: modalWindowReducer,
         listGames: gameListReducer,
-        categories: categoriesListReducer
+        categories: categoriesListReducer,
+        users: usersReducer
     }),
     applyMiddleware(thunk)
 )

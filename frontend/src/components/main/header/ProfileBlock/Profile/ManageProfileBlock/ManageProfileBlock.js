@@ -22,7 +22,6 @@ let ManageProfileBlock = (props) => {
     }
 
     let manageUserButtonClick = () => {
-        alert('show')
         props.showModalWindow(<ManageUsersPanel />, 500, 700)
     }
 
