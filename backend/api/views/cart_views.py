@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 
-from api.handlers import get_user_cart, add_game_to_cart, remove_game_from_cart
+from api.handlers import get_user_cart, add_game_to_cart, remove_game_from_cart, get_user_cart_size
 from api.serializers import CartSerializer
 
 
@@ -41,3 +41,17 @@ class UserCartView(APIView):
             remove_game_from_cart(game_slug, **cart_game_filters)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class UserCartSizeView(APIView):
+    def get(self, request: Request):
+        cart_filters = {}
+        if not request.user:
+            cart_filters['user_agent'] = request['userAgent']
+            cart_filters['for_anonymous_user'] = True
+        else:
+            cart_filters['user'] = request.user
+
+        cart_size = get_user_cart_size(**cart_filters)
+
+        return Response(data={'size': cart_size})

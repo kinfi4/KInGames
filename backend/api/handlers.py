@@ -63,8 +63,8 @@ def change_user_role(username, role):
 
 
 # Cart handlers
-def get_user_cart_size(username):
-    cart = User.objects.select_related('cart').get(username=username).cart
+def get_user_cart_size(**user_filters):
+    cart = Cart.objects.filter(**user_filters).only('total_products').first()
     return 0 if not cart else cart.total_products
 
 
