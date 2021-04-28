@@ -68,19 +68,12 @@ def get_user_cart_size(username):
     return 0 if not cart else cart.total_products
 
 
-def get_user_cart(username):
-    return User.objects.select_related('cart').get(username=username).cart
+def user_has_cart(**user_filter):
+    return Cart.objects.filter(**user_filter).exists()
 
 
-def create_empty_cart_for_user(username):
-    user = User.objects.get(username=username)
-    cart = Cart(user=user)
-    cart.save()
-
-
-def create_cart_for_anonymous_user(user_agent):
-    cart = Cart(user_agent=user_agent, for_anonymous_user=True)
-    cart.save()
+def get_user_cart(**user_filter):
+    return Cart.objects.get_or_create(**user_filter)[0]
 
 
 def add_game_to_cart(game_slug, **cart_filter):

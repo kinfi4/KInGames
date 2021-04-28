@@ -20,7 +20,7 @@ class IsManagerOrAdminOrReadonly(BasePermission):
         if request.user.is_anonymous:
             return False
 
-        return request.method in SAFE_METHODS or request.user.kin_user.role in (ADMIN, MANAGER)
+        return request.user.kin_user.role in (ADMIN, MANAGER)
 
 
 class CommentManagePermission(BasePermission):

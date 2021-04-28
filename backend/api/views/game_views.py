@@ -38,7 +38,6 @@ class GamesListView(APIView):
         return Response(status=status.HTTP_200_OK, data=games_serialized.data)
 
     def post(self, request: Request):
-        print(request.data)
         game_serialized = CreateGameSerializer(data=request.data)
 
         if game_serialized.is_valid():
