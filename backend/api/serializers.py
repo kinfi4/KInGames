@@ -11,7 +11,35 @@ def get_list_of_categories_from_stringify_list(categories_list):
     return re.findall(r'\"(\w+?)\"', categories_list)
 
 
+class GamePreviewSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=255)
+    preview_image = serializers.ImageField()
+    price = serializers.DecimalField(max_digits=7, decimal_places=2)
+    slug = serializers.SlugField()
+
+    def create(self, *args):
+        pass
+
+    def update(self, *args):
+        pass
+
+
+class CartGameSerializer(serializers.Serializer):
+    qty = serializers.IntegerField()
+    final_price = serializers.DecimalField(max_digits=9, decimal_places=2)
+
+    game = GamePreviewSerializer()
+
+    def create(self, *args):
+        pass
+
+    def update(self, *args):
+        pass
+
+
 class CartSerializer(serializers.ModelSerializer):
+    cart_games = CartGameSerializer(many=True)
+
     class Meta:
         model = Cart
         fields = '__all__'

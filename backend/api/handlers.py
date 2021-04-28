@@ -73,7 +73,7 @@ def user_has_cart(**user_filter):
 
 
 def get_user_cart(**user_filter):
-    return Cart.objects.get_or_create(**user_filter)[0]
+    return Cart.objects.prefetch_related('cart_games__game').get_or_create(**user_filter)[0]
 
 
 def add_game_to_cart(game_slug, **cart_filter):
