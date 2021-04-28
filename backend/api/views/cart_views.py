@@ -38,7 +38,11 @@ class UserCartView(APIView):
         if add:
             add_game_to_cart(game_slug, **cart_game_filters)
         else:
-            remove_game_from_cart(game_slug, **cart_game_filters)
+            try:
+                remove_game_from_cart(game_slug, **cart_game_filters)
+            except ValueError:
+                return Response(status=status.HTTP_400_BAD_REQUEST,
+                                data={'errors': 'Cant remove game from the cart, there is no such game there'})
 
         return Response(status=status.HTTP_200_OK)
 

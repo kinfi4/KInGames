@@ -2,7 +2,7 @@ import re
 
 from rest_framework import serializers
 
-from api.handlers import create_game, add_categories_for_game_creation
+from api.handlers import create_game, add_categories_for_game_creation, add_comment
 from api.models import Game, KinGamesUser, User, Category, Comment, Cart
 from api.utils.generate_slug import generate_slug_from_title
 
@@ -78,12 +78,36 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'username': {'required': False}}
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class GetCommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
     class Meta:
         model = Comment
         fields = '__all__'
+
+
+class CreateUpdateCommentSerializer(serializers.Serializer):
+    username = serializers.CharField(required=False)
+    game_slug = serializers.CharField(required=False)
+    body = serializers.CharField(required=False)
+    top_level_comment_id = serializers.IntegerField(required=False)
+    replies_on_comment = serializers.IntegerField(required=False)
+
+    def create(self, validated_data):
+        username = validated_data.get('username')
+        game_slug = validated_data.get('game_slug')
+        body = validated_data.get('body')
+        top_level_comment = validated_data.get('top_level_comment_id')
+        replies_on_comment = validated_data.get('replies_on_comment')
+
+        comment = add_comment(username, game_slug, body, top_level_comment, replies_on_comment)
+        return comment
+
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        return instance
 
 
 class GetGameSerializer(serializers.Serializer):
@@ -96,7 +120,7 @@ class GetGameSerializer(serializers.Serializer):
     number_of_licences = serializers.IntegerField()
     hidden = serializers.BooleanField()
 
-    comments = CommentSerializer(many=True, required=False, allow_null=True)
+    comments = GetCommentSerializer(many=True, required=False, allow_null=True)
     categories = CategorySerializer(many=True, required=False, allow_null=True)
 
     def update(self, instance, validated_data):

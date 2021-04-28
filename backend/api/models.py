@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 
-
 USER = 'USER'
 MANAGER = 'MANAGER'
 ADMIN = 'ADMIN'
@@ -61,6 +60,9 @@ class Comment(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='comments')
     body = models.CharField(max_length=600, default='None')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    top_level_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='inner_comments', null=True)
+    replied_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='replies', null=True)
 
     def __str__(self):
         return self.body[:20]

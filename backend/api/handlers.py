@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db.models import Count, Q
 
-from api.models import Game, Category, KinGamesUser, User, Cart, CartGame
+from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment
 
 
 # Games handlers
@@ -53,7 +53,7 @@ def get_list_users(skip=0, amount=settings.PAGE_SIZE, **filters):
     return User.objects.filter(
         Q(first_name__contains=filters.get('first_name', '')) |
         Q(last_name__contains=filters.get('last_name', ''))
-    ).select_related('kin_user')[skip:skip+amount]
+    ).select_related('kin_user')[skip:skip + amount]
 
 
 def change_user_role(username, role):
@@ -113,3 +113,28 @@ def remove_game_from_cart(game_slug, **cart_filter):
     else:
         cart_game.qty -= 1
         cart_game.save(update_fields=['qty'])
+
+
+# Comment handlers
+def get_game_top_level_comments(game_slug):
+    return Comment.objects.filter(game__slug=game_slug, top_level_comment=None)
+
+
+def get_top_level_comment_replies(comment_id):
+    return Comment.objects.get(top_level_comment_id=comment_id)
+
+
+def get_comment_by_id(comment_id):
+    return Comment.objects.get(pk=comment_id)
+
+
+def add_comment(username, game_slug, body, replied_on_pk=None, top_level_comment_pk=None):
+    game = Game.objects.get(slug=game_slug)
+    user = User.objects.get(username=username)
+    return Comment.objects.create(user=user, game=game, body=body, top_level_comment_id=top_level_comment_pk,
+                                  replied_id=replied_on_pk)
+
+
+def delete_comment(pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.delete()
