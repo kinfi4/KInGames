@@ -5,6 +5,7 @@ import {modalWindowReducer} from "./reducers/modalWindowReducer";
 import {gameListReducer} from "./reducers/gameListReducer";
 import {categoriesListReducer} from "./reducers/categoriesListReducer";
 import {usersReducer} from "./reducers/usersListReducer";
+import {cartReducer} from "./reducers/cartReducer";
 
 let store = createStore(
     combineReducers({
@@ -12,7 +13,8 @@ let store = createStore(
         modalWindow: modalWindowReducer,
         listGames: gameListReducer,
         categories: categoriesListReducer,
-        users: usersReducer
+        users: usersReducer,
+        cart: cartReducer
     }),
     applyMiddleware(thunk)
 )

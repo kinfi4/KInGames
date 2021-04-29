@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import s from './Profile.module.css'
 import s2 from './../ProfileBlock.module.css'
 import {connect} from "react-redux";
@@ -6,9 +6,14 @@ import {logout} from "../../../../../redux/reducers/authReducer";
 import {BASE_URL} from "../../../../../config";
 import {FiLogOut, RiShoppingCart2Fill} from "react-icons/all";
 import ManageProfileBlock from "./ManageProfileBlock/ManageProfileBlock";
+import {fetchCartSize} from "../../../../../redux/reducers/cartReducer";
 
 
 let Profile = (props) => {
+    useEffect(() => {
+        props.fetchCartSize()
+    }, [])
+
     const [manageButtonsShow, setManageButtonsShow] = useState(false)
 
     return (
@@ -23,8 +28,7 @@ let Profile = (props) => {
                 <ManageProfileBlock visible={manageButtonsShow} />
             </div>
 
-            <div><RiShoppingCart2Fill />0</div>
-
+            <div className={s2.greyButton}><RiShoppingCart2Fill />{props.cartSize}</div>
             <div onClick={props.logout} className={s2.greyButton}><FiLogOut /></div>
         </div>
     )
@@ -35,13 +39,15 @@ let mapStateToProps = (state) => {
     console.log(state.auth.user)
     return {
         isAuthenticated: state.auth.isAuthenticated,
-        user: state.auth.user
+        user: state.auth.user,
+        cartSize: state.cart.cartSize
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return {
         logout: () => dispatch(logout),
+        fetchCartSize: () => dispatch(fetchCartSize)
     }
 }
 

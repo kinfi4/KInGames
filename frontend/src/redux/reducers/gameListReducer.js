@@ -13,7 +13,7 @@ let initialState = {
 
 const GET_GAMES_LIST = 'GET_GAMES_LIST'
 const FETCH_SINGLE_GAME = 'FETCH_SINGLE_GAME'
-const FETCH_ERROR = 'FETCH_ERROR'
+export const FETCH_ERROR = 'FETCH_ERROR'
 const CLEAR_STATE = 'CLEAR_STATE'
 
 const prepareDataForSending = (title, price, description, numberOfLicence, categories, preview) => {
