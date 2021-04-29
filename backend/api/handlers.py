@@ -76,18 +76,19 @@ def get_user_cart(**user_filter):
     return Cart.objects.prefetch_related('cart_games__game').get_or_create(**user_filter)[0]
 
 
-def add_game_to_cart(game_slug, **cart_filter):
-    cart_game = CartGame.objects.filter(game__slug=game_slug, **cart_filter).first()
+def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
+    cart_game = CartGame.objects.filter(game__slug=game_slug, **cart_game_filter).first()
+    cart = Cart.objects.get_or_create(**cart_filter)[0]
+    game = Game.objects.get(slug=game_slug)
+
+    cart.final_price += game.price
+    cart.total_products += 1
+    cart.save(update_fields=['final_price', 'total_products'])
+
+    game.number_of_licences -= 1
+    game.save(update_fields=['number_of_licences'])
 
     if not cart_game:
-        cart = Cart.objects.filter(**cart_filter).first()
-        cart.total_products += 1
-        cart.save(update_fields=['total_products'])
-
-        game = Game.objects.get(slug=game_slug)
-        game.number_of_licences -= 1
-        game.save(update_fields=['number_of_licences'])
-
         CartGame.objects.create(game=game, cart=cart)
     else:
         cart_game.qty += 1
@@ -103,7 +104,8 @@ def remove_game_from_cart(game_slug, **cart_filter):
     cart, game = cart_game.cart, cart_game.game
 
     cart.total_products -= 1
-    cart.save(update_fields=['total_products'])
+    cart.final_price -= game.price
+    cart.save(update_fields=['total_products', 'final_price'])
 
     game.number_of_licences += 1
     cart.save(update_fields=['number_of_licences'])

@@ -44,12 +44,12 @@
     margin-top: 30px;
 }
 .buyButton{
-    padding: 10px 20px;
+    padding: 10px;
     font-weight: bold;
-    font-size: 40px;
+    font-size: 22px;
     background-color: #ffffff;
     border-radius: 10px;
-    width: 25%;
+    width: 11em;
     margin: 20px 0;
     text-align: center;
     color: #4b4b4b;

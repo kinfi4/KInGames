@@ -22,11 +22,13 @@ class UserCartView(APIView):
         return Response(data=cart_serialized.data)
 
     def post(self, request: Request):
-        cart_game_filters = {}
+        cart_game_filter, cart_filter = {}, {}
         if request.user:
-            cart_game_filters['cart__user'] = request.user
+            cart_game_filter['cart__user'] = request.user
+            cart_filter['user'] = request.user
         else:
-            cart_game_filters['cart__user_agent'] = request['userAgent']
+            cart_game_filter['cart__user_agent'] = request['userAgent']
+            cart_filter['user_agent'] = request['userAgent']
 
         game_slug = request.data.get('game_slug', '')
         add = request.data.get('add', True)
@@ -36,10 +38,10 @@ class UserCartView(APIView):
                             data={'errors': 'You did not specify game, you want to add'})
 
         if add:
-            add_game_to_cart(game_slug, **cart_game_filters)
+            add_game_to_cart(game_slug, cart_filter, cart_game_filter)
         else:
             try:
-                remove_game_from_cart(game_slug, **cart_game_filters)
+                remove_game_from_cart(game_slug, **cart_game_filter)
             except ValueError:
                 return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={'errors': 'Cant remove game from the cart, there is no such game there'})
@@ -58,4 +60,5 @@ class UserCartSizeView(APIView):
 
         cart_size = get_user_cart_size(**cart_filters)
 
+        print(cart_size)
         return Response(data={'size': cart_size})

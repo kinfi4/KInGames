@@ -2,6 +2,9 @@ import axios from "axios";
 import {BASE_URL} from "../../config";
 import {FETCH_ERROR} from "./gameListReducer";
 
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
+
 
 const FETCH_CART_SIZE = 'FETCH_CART_SIZE'
 const FETCH_CART = 'FETCH_CART'
@@ -28,28 +31,20 @@ export const fetchUserCartItems = (dispatch) => {
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
-export const addGameToCart = (gameSlug) => (dispatch) => {
+export const manageCartGames = (gameSlug, add, reload=true) => (dispatch) => {
     let token = localStorage.getItem('token')
-    axios.post(BASE_URL + 'api/v1/user-cart', JSON.stringify({game_slug: gameSlug, add: true}), {
+    const data = JSON.stringify({game_slug: gameSlug, add: add})
+    axios.post(BASE_URL + 'api/v1/user-cart', data, {
         headers: {
             'Authorization': `Token ${token}`,
-            'ContentType': 'application/json'
+            'Content-Type': 'application/json',
         }
+    }).then(res => {
+        if(reload)
+            dispatch(fetchUserCartItems)
+
+        dispatch(fetchCartSize)
     }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
-
-    dispatch(fetchUserCartItems)
-}
-
-export const removeGameFromTheCart = (gameSlug) => (dispatch) => {
-    let token = localStorage.getItem('token')
-    axios.post(BASE_URL + 'api/v1/user-cart', JSON.stringify({game_slug: gameSlug, add: false}), {
-        headers: {
-            'Authorization': `Token ${token}`,
-            'ContentType': 'application/json'
-        }
-    }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
-
-    dispatch(fetchUserCartItems)
 }
 
 

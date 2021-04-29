@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import s from './GameDetailsPage.module.css'
 import {fetchGame} from "../../../redux/reducers/gameListReducer";
 import {BASE_URL} from "../../../config";
+import {addGameToCart, manageCartGames} from "../../../redux/reducers/cartReducer";
 
 
 let GameDetailsPage = (props) => {
@@ -33,7 +34,7 @@ const GameDetailsPageChild = (props) => {
                 <h1>{props.game.title}</h1>
                 <h2>${props.game.price}</h2>
                 <div className={s.descriptionBlock}>{props.game.description}</div>
-                <div className={s.buyButton}>BUY</div>
+                <div className={s.buyButton} onClick={() => props.addGameToCart(props.game.slug)}>ADD TO CART</div>
             </div>
 
         </div>
@@ -48,7 +49,8 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        fetchGame: (slug) => dispatch(fetchGame(slug))
+        fetchGame: (slug) => dispatch(fetchGame(slug)),
+        addGameToCart: (slug) => dispatch(manageCartGames(slug, true, false))
     }
 }
 
