@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import s from './GameDetailsPage.module.css'
 import {fetchGame} from "../../../redux/reducers/gameListReducer";
 import {BASE_URL} from "../../../config";
-import {addGameToCart, manageCartGames} from "../../../redux/reducers/cartReducer";
+import {manageCartGames} from "../../../redux/reducers/cartReducer";
 
 
 let GameDetailsPage = (props) => {

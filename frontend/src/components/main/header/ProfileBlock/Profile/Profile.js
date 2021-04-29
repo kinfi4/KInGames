@@ -7,6 +7,7 @@ import {BASE_URL} from "../../../../../config";
 import {FiLogOut, RiShoppingCart2Fill} from "react-icons/all";
 import ManageProfileBlock from "./ManageProfileBlock/ManageProfileBlock";
 import {fetchCartSize} from "../../../../../redux/reducers/cartReducer";
+import {NavLink} from "react-router-dom";
 
 
 let Profile = (props) => {
@@ -28,7 +29,7 @@ let Profile = (props) => {
                 <ManageProfileBlock visible={manageButtonsShow} />
             </div>
 
-            <div className={s2.greyButton}><RiShoppingCart2Fill />{props.cartSize}</div>
+            <NavLink to={'/cart'} className={s2.greyButton}><RiShoppingCart2Fill />{props.cartSize}</NavLink>
             <div onClick={props.logout} className={s2.greyButton}><FiLogOut /></div>
         </div>
     )

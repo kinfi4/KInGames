@@ -9,6 +9,7 @@ import {Route, withRouter} from 'react-router-dom'
 import GameDetailsPage from "../game/detailGamePage/GameDetailsPage";
 import PrivateRouteAdminOrManagerOnly from "../crumbs/PrivateRoute/PrivateRoute";
 import CreateUpdateGamePage from "../game/createGamePage/CreateUpdateGamePage";
+import CartDetailsPage from "../game/cartDetailsPage/CartDetailsPage";
 
 
 let MainApp = (props) => {
@@ -20,6 +21,7 @@ let MainApp = (props) => {
 
             <Route exact path={'/'} render={() => <MainPageBody />} />
             <Route path={'/games/'} render={() => <GameDetailsPage />} />
+            <Route path={'/cart'} render={() => <CartDetailsPage />}/>
             <PrivateRouteAdminOrManagerOnly path={'/add-game'} component={CreateUpdateGamePage} isUpdate={false} />
             <PrivateRouteAdminOrManagerOnly path={'/update'} component={CreateUpdateGamePage} isUpdate={true} />
 

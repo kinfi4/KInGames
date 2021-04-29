@@ -1,0 +1,38 @@
+.upperRow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.upperRow div{
+    margin: 0 20px;
+}
+.row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    border: 1px solid #6c6c6c;
+}
+.previewImage{
+    width: 250px;
+    height: 250px;
+}
+.titlePriceBlock, .total{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    font-size: 25px;
+}
+.deleteButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 30px;
+    cursor: pointer;
+    margin-right: 30px;
+}
