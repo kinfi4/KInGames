@@ -15,8 +15,8 @@
     box-shadow: 9px 10px 10px #535353;
 }
 .gamePreviewBlock.wide{
-    width: 100%;
-    height: 600px;
+    width: 60%;
+    height: 400px;
 }
 .gamePreviewBlock.thin{
     width: 28%;

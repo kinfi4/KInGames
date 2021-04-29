@@ -16,7 +16,7 @@ const CartDetailsPage = (props) => {
                 <h1>Your cart</h1>
 
                 <div className={s.upperRow}>
-                    <h2>Total ${props.finalPrice}</h2>
+                    <h2 style={{marginRight: '20px'}}>Total ${props.finalPrice}</h2>
                     <div className={gameDetailsPage.buyButton}>PROCEED</div>
                 </div>
             </div>

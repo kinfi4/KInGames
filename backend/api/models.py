@@ -38,7 +38,7 @@ class Game(models.Model):
     slug = models.SlugField(unique=True, db_index=True)
     is_wide = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
-    number_of_licences = models.PositiveIntegerField(default=1000)
+    number_of_licences = models.IntegerField(default=1000)
 
     categories = models.ManyToManyField(Category, related_name='games', db_index=True)
 
@@ -88,7 +88,3 @@ class CartGame(models.Model):
 
     def __str__(self):
         return self.game.title
-
-    def save(self, *args, **kwargs):
-        self.final_price = self.qty * self.game.price
-        super().save(*args, **kwargs)

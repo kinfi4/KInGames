@@ -36,3 +36,10 @@
     cursor: pointer;
     margin-right: 30px;
 }
+.manageQuantity{
+    font-size: 32px;
+    background-color: #000000;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}

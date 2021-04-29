@@ -31,9 +31,9 @@ export const fetchUserCartItems = (dispatch) => {
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
-export const manageCartGames = (gameSlug, add, reload=true) => (dispatch) => {
+export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=true) => (dispatch) => {
     let token = localStorage.getItem('token')
-    const data = JSON.stringify({game_slug: gameSlug, add: add})
+    const data = JSON.stringify({game_slug: gameSlug, add: add, remove_whole_row: remove_whole_row})
     axios.post(BASE_URL + 'api/v1/user-cart', data, {
         headers: {
             'Authorization': `Token ${token}`,

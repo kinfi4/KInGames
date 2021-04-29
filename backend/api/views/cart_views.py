@@ -32,6 +32,7 @@ class UserCartView(APIView):
 
         game_slug = request.data.get('game_slug', '')
         add = request.data.get('add', True)
+        remove_whole_row = request.data.get('remove_whole_row', False)
 
         if not game_slug:
             return Response(status=status.HTTP_400_BAD_REQUEST,
@@ -41,8 +42,9 @@ class UserCartView(APIView):
             add_game_to_cart(game_slug, cart_filter, cart_game_filter)
         else:
             try:
-                remove_game_from_cart(game_slug, **cart_game_filter)
-            except ValueError:
+                remove_game_from_cart(game_slug, remove_whole_row, **cart_game_filter)
+            except ValueError as e:
+                print(e)
                 return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={'errors': 'Cant remove game from the cart, there is no such game there'})
 
@@ -60,5 +62,4 @@ class UserCartSizeView(APIView):
 
         cart_size = get_user_cart_size(**cart_filters)
 
-        print(cart_size)
         return Response(data={'size': cart_size})

@@ -89,17 +89,21 @@ def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
     game.save(update_fields=['number_of_licences'])
 
     if not cart_game:
-        CartGame.objects.create(game=game, cart=cart)
+        CartGame.objects.create(game=game, cart=cart, final_price=game.price)
     else:
         cart_game.qty += 1
-        cart_game.save(update_fields=['qty'])
+        cart_game.final_price += game.price
+        cart_game.save(update_fields=['qty', 'final_price'])
 
 
-def remove_game_from_cart(game_slug, **cart_filter):
+def remove_game_from_cart(game_slug, remove_whole_row, **cart_filter):
     cart_game = CartGame.objects.select_related('cart', 'game').filter(game__slug=game_slug, **cart_filter).first()
-
     if not cart_game:
         raise ValueError(f'Game {game_slug} does not belong to the {cart_filter} cart')
+
+    if remove_whole_row:
+        delete__cart_game(cart_game)
+        return
 
     cart, game = cart_game.cart, cart_game.game
 
@@ -108,13 +112,27 @@ def remove_game_from_cart(game_slug, **cart_filter):
     cart.save(update_fields=['total_products', 'final_price'])
 
     game.number_of_licences += 1
-    cart.save(update_fields=['number_of_licences'])
+    game.save(update_fields=['number_of_licences'])
 
     if cart_game.qty == 1:
         cart_game.delete()
     else:
         cart_game.qty -= 1
-        cart_game.save(update_fields=['qty'])
+        cart_game.final_price -= game.price
+        cart_game.save(update_fields=['qty', 'final_price'])
+
+
+def delete__cart_game(cart_game):
+    cart, game = cart_game.cart, cart_game.game
+
+    cart.total_products -= cart_game.qty
+    cart.final_price -= cart_game.qty * game.price
+    game.number_of_licences += cart_game.qty
+
+    cart.save(update_fields=['total_products', 'final_price'])
+    game.save(update_fields=['number_of_licences'])
+
+    cart_game.delete()
 
 
 # Comment handlers
