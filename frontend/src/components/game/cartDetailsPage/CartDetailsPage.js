@@ -11,7 +11,7 @@ const CartDetailsPage = (props) => {
     }, [])
 
     return (
-        <div className={gameDetailsPage.gameDetailsBlock}>
+        <div className={gameDetailsPage.inner}>
             <div className={s.upperRow}>
                 <h1>Your cart</h1>
 

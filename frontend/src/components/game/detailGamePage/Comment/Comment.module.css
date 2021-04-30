@@ -1,0 +1,18 @@
+.comment{
+    display: grid;
+    grid-template-columns: 6% 88% 6%;
+    border-radius: 5px;
+    border: 1px solid #323232;
+    padding: 20px;
+}
+.manageButtons{
+    text-align: right;
+    cursor: pointer;
+    font-size: 22px;
+}
+.foldButton{
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 10px;
+    width: fit-content;
+}

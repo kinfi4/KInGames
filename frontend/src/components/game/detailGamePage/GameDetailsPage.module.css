@@ -1,13 +1,16 @@
-.gameDetailsBlock{
+.inner{
     position: relative;
     top: 100px;
-
-    background-color: #242424;
-    padding: 50px;
     height: auto;
+
     width: 80%;
     margin: auto;
     z-index: 10;
+    background-color: #242424;
+    padding: 50px;
+}
+
+.gameDetailsBlock{
 }
 .gameDetailsBlock.thin{
     display: grid;
@@ -59,4 +62,10 @@
 .buyButton:hover{
     background-color: #000000;
     color: white;
+}
+
+.commentsBlock{
+    margin-top: 20px;
+    background-color: #242424;
+    padding: 20px 70px;
 }

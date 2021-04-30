@@ -11,11 +11,17 @@ from api.handlers import get_game_top_level_comments, get_top_level_comment_repl
 class TopLevelCommentsView(APIView):
     permission_classes = [CommentManagePermission]
 
-    def get(self, request: Request, game_slug):
+    def get(self, request: Request):
+        game_slug = request.query_params.get('game_slug')
+
+        if not game_slug:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'errors': 'You did not specified game'})
+
         comments = get_game_top_level_comments(game_slug)
         comments_serialized = GetCommentSerializer(comments, many=True)
 
-        return Response(data=comments_serialized.data)
+        data = comments_serialized.data
+        return Response(data=data)
 
     def post(self, request: Request):
         request_data = dict(request.data)

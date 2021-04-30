@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 
 from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment
 
@@ -137,11 +137,12 @@ def delete__cart_game(cart_game):
 
 # Comment handlers
 def get_game_top_level_comments(game_slug):
-    return Comment.objects.filter(game__slug=game_slug, top_level_comment=None)
+    return Comment.objects.select_related('user') \
+                          .filter(game__slug=game_slug, top_level_comment=None)
 
 
 def get_top_level_comment_replies(comment_id):
-    return Comment.objects.get(top_level_comment_id=comment_id)
+    return Comment.objects.annotate(replied_text=F('replied_comment__body')).filter(top_level_comment_id=comment_id)
 
 
 def get_comment_by_id(comment_id):

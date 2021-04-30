@@ -56,13 +56,15 @@ class Game(models.Model):
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(KinGamesUser, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='comments')
     body = models.CharField(max_length=600, default='None')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
-    top_level_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='inner_comments', null=True)
-    replied_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='replies', null=True)
+    top_level_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='inner_comments', null=True,
+                                          blank=True)
+    replied_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='replies', null=True,
+                                        blank=True)
 
     def __str__(self):
         return self.body[:20]
