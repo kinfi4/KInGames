@@ -1,0 +1,43 @@
+.commentsBlock{
+    margin-top: 20px;
+    background-color: #242424;
+    padding: 20px 70px;
+
+    position: relative;
+}
+.commentDialog{
+    display: flex;
+    align-items: flex-start;
+    width: 90%;
+}
+.commentDialog div:first-child{
+    margin-right: 15px;
+}
+.sendButton{
+    cursor: pointer;
+    padding: 10px 15px;
+    transition: linear 0.2s;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+.sendButton:hover{
+    background-color: #000000;
+    color: white;
+}
+.textInput{
+    border-bottom: 1px solid #6c6c6c;
+    font-size: 16px;
+    width: 100%;
+    padding: 5px 10px;
+
+
+    transition: linear 0.4s;
+}
+.textInput:focus{
+    outline: none;
+    border-bottom: 1px solid black;
+}
+.textInput:empty:before {
+    content: attr(data-placeholder);
+    color: #6c6c6c;
+}

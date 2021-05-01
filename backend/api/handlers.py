@@ -153,7 +153,7 @@ def add_comment(username, game_slug, body, replied_on_pk=None, top_level_comment
     game = Game.objects.get(slug=game_slug)
     user = User.objects.get(username=username)
     return Comment.objects.create(user=user, game=game, body=body, top_level_comment_id=top_level_comment_pk,
-                                  replied_id=replied_on_pk)
+                                  replied_comment_id=replied_on_pk)
 
 
 def delete_comment(pk):

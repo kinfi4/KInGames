@@ -5,8 +5,8 @@ import gamePage from '../detailGamePage/GameDetailsPage.module.css'
 import {fetchGame} from "../../../redux/reducers/gameListReducer";
 import {BASE_URL} from "../../../config";
 import {manageCartGames} from "../../../redux/reducers/cartReducer";
-import Comment from "./Comment/Comment";
 import {fetchTopLevelComments} from "../../../redux/reducers/commentReducer";
+import Comments from "./Comments/Comments";
 
 
 let GameDetailsPage = (props) => {
@@ -44,13 +44,8 @@ const GameDetailsPageChild = (props) => {
             </div>
 
             <hr style={{backgroundColor: '#666666', marginTop: '40px'}}/>
-            <div className={gamePage.buyButton}>COMMENT</div>
-            
-            <div className={s.commentsBlock}>
-                {
-                    props.comments.map((el, i) => <Comment key={i} comment={el} />)
-                }
-            </div>
+
+            <Comments slug={props.game.slug} />
         </div>
     );
 };
@@ -58,7 +53,8 @@ const GameDetailsPageChild = (props) => {
 let mapStateToProps = (state) => {
     return {
         game: state.listGames.activeGame,
-        comments: state.comment.topLevelComments
+        comments: state.comment.topLevelComments,
+        user: state.auth.user
     }
 }
 

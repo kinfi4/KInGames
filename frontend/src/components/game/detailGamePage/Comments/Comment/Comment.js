@@ -1,7 +1,7 @@
 import React from 'react';
-import profile from '../../../main/header/ProfileBlock/Profile/Profile.module.css'
+import profile from '../../../../main/header/ProfileBlock/Profile/Profile.module.css'
 import s from './Comment.module.css'
-import {BASE_URL} from "../../../../config";
+import {BASE_URL} from "../../../../../config";
 import {BiDownArrow} from 'react-icons/all'
 
 const Comment = (props) => {
@@ -13,14 +13,16 @@ const Comment = (props) => {
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover'}}> </div>
 
-                {props.comment.comment.body}
+                <div>
+                    <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>{props.comment.comment.user.first_name} {props.comment.comment.user.last_name}</div>
+                    {props.comment.comment.body}
+                </div>
 
-                <div className={s.manageButtons}>
+                <div className={`${s.manageButtons}`}>
                     ...
                 </div>
             </div>
             <div className={s.foldButton}><BiDownArrow /></div>
-            <hr style={{backgroundColor: '#000000'}}/>
         </>
     );
 };

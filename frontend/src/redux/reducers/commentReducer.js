@@ -1,6 +1,7 @@
 import axios from "axios";
 import {BASE_URL} from "../../config";
 import {FETCH_ERROR} from "./gameListReducer";
+import {showMessage} from "../../utils/messages";
 
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
@@ -25,6 +26,29 @@ export const fetchTopLevelCommentReplies = (id) => (dispatch) => {
         .then(res => dispatch({type: FETCH_COMMENT_REPLIES, commentId: id, replies: res.data}))
 }
 
+export const addComment = (gameSlug, body, top_level_comment, replied_comment) => (dispatch) => {
+    const token = localStorage.getItem('token')
+    if(!token){
+        showMessage([{message: 'You must authenticate to comment', type: 'danger'}])
+        return
+    }
+
+    let data = JSON.stringify({
+        game_slug: gameSlug,
+        body,
+        top_level_comment,
+        replies_on_comment: replied_comment
+    })
+
+    axios.post(BASE_URL + 'api/v1/comments', data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        }
+    }).then(res => dispatch(fetchTopLevelComments(gameSlug)))
+        .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+
+}
 
 
 export const commentReducer = (state=initialState, action) => {

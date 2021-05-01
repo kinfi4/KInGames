@@ -27,11 +27,12 @@ class TopLevelCommentsView(APIView):
         request_data = dict(request.data)
         request_data['username'] = request.user.username
 
-        comment_serialized = CreateUpdateCommentSerializer(data=request.data)
+        comment_serialized = CreateUpdateCommentSerializer(data=request_data)
         if comment_serialized.is_valid():
             comment_serialized.save()
             return Response(data=comment_serialized.data)
 
+        print(comment_serialized.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST, data=comment_serialized.errors)
 
 

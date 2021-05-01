@@ -90,16 +90,19 @@ class GetCommentSerializer(serializers.ModelSerializer):
 class CreateUpdateCommentSerializer(serializers.Serializer):
     username = serializers.CharField(required=False)
     game_slug = serializers.CharField(required=False)
-    body = serializers.CharField(required=False)
-    top_level_comment_id = serializers.IntegerField(required=False)
-    replies_on_comment = serializers.IntegerField(required=False)
+    body = serializers.CharField(required=False, max_length=600)
+    top_level_comment_id = serializers.IntegerField(required=False, allow_null=True)
+    replies_on_comment = serializers.IntegerField(required=False, allow_null=True)
 
     def create(self, validated_data):
         username = validated_data.get('username')
         game_slug = validated_data.get('game_slug')
         body = validated_data.get('body')
         top_level_comment = validated_data.get('top_level_comment_id')
+        top_level_comment = top_level_comment if top_level_comment else None
+
         replies_on_comment = validated_data.get('replies_on_comment')
+        replies_on_comment = replies_on_comment if replies_on_comment else None
 
         comment = add_comment(username, game_slug, body, top_level_comment, replies_on_comment)
         return comment
