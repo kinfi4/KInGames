@@ -51,6 +51,7 @@ export let fetchGame = (slug) => (dispatch) => {
     axios.get(BASE_URL + 'api/v1/games/' + slug)
         .then(res => dispatch({type: FETCH_SINGLE_GAME, game: res.data}))
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+        .catch(() => alert('something go wrong'))
 }
 
 export let addGame = (title, price, description, numberOfLicence, categories, preview) => (dispatch) => {

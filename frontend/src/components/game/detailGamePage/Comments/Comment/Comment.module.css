@@ -5,7 +5,7 @@
 
     margin-top: 30px;
 }
-.manageButtons{
+.manageButtonsBlock{
     text-align: right;
     cursor: pointer;
     font-size: 22px;
@@ -36,4 +36,20 @@
 }
 .hidden{
     opacity: 0;
+}
+
+.manageButtons{
+    padding: 10px;
+    background-color: #383838;
+    border-radius: 10px;
+    font-size: 15px;
+    width: fit-content;
+}
+.manageButtons div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.manageButtons div *{
+    margin-right: 7px;
 }

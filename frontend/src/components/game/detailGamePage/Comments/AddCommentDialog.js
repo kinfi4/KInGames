@@ -16,22 +16,29 @@ const AddCommentDialog = (props) => {
         inputTextRef.current.textContent = ''
     }
 
+    const getSendButton = () => {
+        if(commentText.length !== 0)
+            return <div className={s.sendButton} onClick={onAddComment}>COMMENT</div>
+    }
+
     return (
-        <div className={s.commentDialog}>
-            <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
-                backgroundPosition: "center",
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover'}} />
+        <>
+            <div className={s.commentDialog}>
+                <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
+                    backgroundPosition: "center",
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover'}} />
 
-            <div className={s.textInput} contentEditable={true} data-placeholder={'Enter your comment'}
-                 onInput={(e) => setCommentText(e.target.textContent)}
-                 ref={inputTextRef}/>
-
-            <div className={s.sendButton} onClick={onAddComment}>
-                SEND
+                <div className={s.textInput} contentEditable={true} data-placeholder={'Enter your comment'}
+                     onInput={(e) => setCommentText(e.target.textContent)}
+                     ref={inputTextRef}/>
             </div>
-        </div>
-    );
+
+            {getSendButton()}
+            <br/>
+        </>
+
+);
 };
 let mapStateToProps = (state) => {
     return {

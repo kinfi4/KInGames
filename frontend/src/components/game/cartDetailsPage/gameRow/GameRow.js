@@ -42,8 +42,8 @@ const GameRow = (props) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        addGameToCart: (slug) => dispatch(manageCartGames(slug, true, true)),
-        removeGameFromCart: (slug) => dispatch(manageCartGames(slug, false, true)),
+        addGameToCart: (slug) => dispatch(manageCartGames(slug, true, false)),
+        removeGameFromCart: (slug) => dispatch(manageCartGames(slug, false, false)),
         removeWholeRow: (slug) => dispatch(manageCartGames(slug, false, true, true))
     }
 }

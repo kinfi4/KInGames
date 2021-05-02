@@ -12,14 +12,17 @@
 }
 .commentDialog div:first-child{
     margin-right: 15px;
-    width: 60px;
+    width: 55px;
 }
 .sendButton{
     cursor: pointer;
     padding: 10px 15px;
     transition: linear 0.2s;
     border-radius: 10px;
-    margin-left: 10px;
+
+    position: relative;
+    width: fit-content;
+    float: right;
 }
 .sendButton:hover{
     background-color: #000000;
@@ -41,4 +44,19 @@
 .textInput:empty:before {
     content: attr(data-placeholder);
     color: #6c6c6c;
+}
+
+.undoButton{
+    padding: 5px 15px;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    width: fit-content;
+    transition: linear 0.2s;
+
+    margin-top: 20px;
+}
+.undoButton:hover{
+    background-color: #fff;
+    color: #1c1c1c;
 }

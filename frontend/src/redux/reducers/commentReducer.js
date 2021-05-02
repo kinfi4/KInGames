@@ -9,11 +9,12 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 const FETCH_TOP_LEVEL_COMMENTS = 'FETCH_TOP_LEVEL_COMMENTS'
 const FETCH_COMMENT_REPLIES = 'FETCH_COMMENT_REPLIES'
-const CLEAR_COMMENT_REPLIES = 'CLEAR_COMMENT_REPLIES'
+const MANAGE_DELETED_COMMENTS = 'MANAGE_DELETED_COMMENTS'
 
 
 const initialState = {
-    topLevelComments: [{comment: null, replies: []}]
+    topLevelComments: [{comment: null, replies: []}],
+    deletedComments: []
 }
 
 export const fetchTopLevelComments = (gameSlug) => (dispatch) => {
@@ -51,6 +52,34 @@ export const addComment = (gameSlug, body, top_level_comment, replied_comment) =
 
 }
 
+export const deleteComment = (id) => (dispatch) => {
+    const token = localStorage.getItem('token')
+    if(!token){
+        showMessage([{message: 'You must authenticate to comment', type: 'danger'}])
+        return
+    }
+
+    alert('send request')
+
+    axios.delete(BASE_URL + 'api/v1/comments/' + id, {
+        headers: {'Authorization': `Token ${token}`}
+    }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+}
+
+export const manageDeletedComments = (deletedComments) => (dispatch) => {
+    dispatch({type: MANAGE_DELETED_COMMENTS, deletedComments: deletedComments})
+}
+
+export const deleteChosenComments = (dispatch, getState) => {
+    let deletedComments = getState().comment.deletedComments
+
+    for (let i = 0; i < deletedComments.length; i++) {
+        dispatch(deleteComment(deletedComments[i]))
+    }
+
+    dispatch(manageDeletedComments([]))
+}
+
 
 export const commentReducer = (state=initialState, action) => {
     switch (action.type){
@@ -62,6 +91,8 @@ export const commentReducer = (state=initialState, action) => {
                 return el.comment.id === action.commentId ? {...el, replies: action.replies} : el
             })
             return {...state, topLevelComments: commentsWithReplies}
+        case MANAGE_DELETED_COMMENTS:
+            return {...state, deletedComments: action.deletedComments}
         default:
             return state
     }
