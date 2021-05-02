@@ -8,10 +8,12 @@ import {addComment} from "../../../../redux/reducers/commentReducer";
 
 const AddCommentDialog = (props) => {
     const [commentText, setCommentText] = useState('')
+    const inputTextRef = React.createRef()
 
     const onAddComment = () => {
         props.addComment(props.slug, commentText, null, null)
         setCommentText('')
+        inputTextRef.current.textContent = ''
     }
 
     return (
@@ -19,10 +21,11 @@ const AddCommentDialog = (props) => {
             <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
                 backgroundPosition: "center",
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover'}}> </div>
+                backgroundSize: 'cover'}} />
 
             <div className={s.textInput} contentEditable={true} data-placeholder={'Enter your comment'}
-                 onInput={(e) => setCommentText(e.target.textContent)}>{commentText}</div>
+                 onInput={(e) => setCommentText(e.target.textContent)}
+                 ref={inputTextRef}/>
 
             <div className={s.sendButton} onClick={onAddComment}>
                 SEND

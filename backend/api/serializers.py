@@ -81,6 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
 class GetCommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=False)
     replied_text = serializers.CharField(required=False)
+    replied_number = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = Comment

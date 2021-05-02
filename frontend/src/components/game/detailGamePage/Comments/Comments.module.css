@@ -12,6 +12,7 @@
 }
 .commentDialog div:first-child{
     margin-right: 15px;
+    width: 60px;
 }
 .sendButton{
     cursor: pointer;

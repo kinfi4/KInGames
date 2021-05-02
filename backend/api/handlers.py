@@ -137,8 +137,9 @@ def delete__cart_game(cart_game):
 
 # Comment handlers
 def get_game_top_level_comments(game_slug):
-    return Comment.objects.select_related('user') \
-                          .filter(game__slug=game_slug, top_level_comment=None)
+    return Comment.objects.annotate(replied_number=Count('inner_comments')) \
+                  .select_related('user') \
+                  .filter(game__slug=game_slug, top_level_comment__isnull=True)
 
 
 def get_top_level_comment_replies(comment_id):

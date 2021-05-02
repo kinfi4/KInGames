@@ -9,6 +9,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 const FETCH_TOP_LEVEL_COMMENTS = 'FETCH_TOP_LEVEL_COMMENTS'
 const FETCH_COMMENT_REPLIES = 'FETCH_COMMENT_REPLIES'
+const CLEAR_COMMENT_REPLIES = 'CLEAR_COMMENT_REPLIES'
 
 
 const initialState = {
