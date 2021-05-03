@@ -59,8 +59,6 @@ export const deleteComment = (id) => (dispatch) => {
         return
     }
 
-    alert('send request')
-
     axios.delete(BASE_URL + 'api/v1/comments/' + id, {
         headers: {'Authorization': `Token ${token}`}
     }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))

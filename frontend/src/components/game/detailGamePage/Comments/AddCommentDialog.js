@@ -21,24 +21,28 @@ const AddCommentDialog = (props) => {
             return <div className={s.sendButton} onClick={onAddComment}>COMMENT</div>
     }
 
-    return (
-        <>
-            <div className={s.commentDialog}>
-                <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
-                    backgroundPosition: "center",
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover'}} />
+    if(props.user)
+        return (
+            <>
+                <div className={s.commentDialog}>
+                    <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.user.kin_user.avatar.slice(1)})`,
+                        backgroundPosition: "center",
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'cover'}} />
 
-                <div className={s.textInput} contentEditable={true} data-placeholder={'Enter your comment'}
-                     onInput={(e) => setCommentText(e.target.textContent)}
-                     ref={inputTextRef}/>
-            </div>
+                    <div className={s.textInput} contentEditable={true} data-placeholder={'Enter your comment'}
+                         onInput={(e) => setCommentText(e.target.textContent)}
+                         ref={inputTextRef}/>
+                </div>
 
-            {getSendButton()}
-            <br/>
-        </>
-
-);
+                {getSendButton()}
+                <br/>
+            </>
+        );
+    else
+        return (
+            <div style={{color: '#ffa3a3'}}>You need to authenticate in order to leave comments</div>
+        )
 };
 let mapStateToProps = (state) => {
     return {

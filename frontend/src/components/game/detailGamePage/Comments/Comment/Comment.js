@@ -47,7 +47,7 @@ const Comment = (props) => {
             props.fetchReplies(props.comment.comment.id)
     }
 
-        let showCommentManager = () => {
+    let showCommentManager = () => {
         let showAvailableActions = () => {
             if(props.user.username === props.comment.comment.user.username)
                 return (
@@ -62,7 +62,6 @@ const Comment = (props) => {
 
         }
 
-
         if(showCommentManagerDialog)
             return (
                 <div className={s.manageButtons}>
@@ -71,6 +70,18 @@ const Comment = (props) => {
             )
     }
 
+    let showManageShowButton = () => {
+        if(props.user)
+            return (
+                <div className={`${s.manageButtonsBlock} ${manageButtonShow}`} onClick={() => {
+                    let show = !showCommentManagerDialog
+                    setShowCommentManager(show)
+                }}>
+                    ...
+                    {showCommentManager()}
+                </div>
+            )
+    }
     return (
         <>
             <div className={s.comment} onMouseEnter={() => {
@@ -98,14 +109,7 @@ const Comment = (props) => {
                         {getReplies()}
                     </div>
                 </div>
-
-                <div className={`${s.manageButtonsBlock} ${manageButtonShow}`} onClick={() => {
-                    let show = !showCommentManagerDialog
-                    setShowCommentManager(show)
-                }}>
-                    ...
-                    {showCommentManager()}
-                </div>
+                {showManageShowButton()}
             </div>
         </>
     );
