@@ -5,6 +5,9 @@
 
     margin-top: 30px;
 }
+.comment.inner{
+    margin-top: 22px;
+}
 .manageButtonsBlock{
     text-align: right;
     cursor: pointer;
@@ -39,6 +42,7 @@
 }
 
 .manageButtons{
+    position: absolute;
     padding: 10px;
     background-color: #383838;
     border-radius: 10px;

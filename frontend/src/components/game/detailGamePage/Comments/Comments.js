@@ -40,7 +40,7 @@ const CommentsChild = (props) => {
                             </div>
                         )
                     else
-                        return <Comment key={i} comment={el} />
+                        return <Comment key={i} comment={el.comment} replies={el.replies} />
                 })
             }
         </div>

@@ -44,6 +44,7 @@ const AddCommentDialog = (props) => {
             <div style={{color: '#ffa3a3'}}>You need to authenticate in order to leave comments</div>
         )
 };
+
 let mapStateToProps = (state) => {
     return {
         user: state.auth.user
@@ -55,5 +56,6 @@ let mapDispatchToProps = (dispatch) => {
         addComment: (gameSlug, body, top_level_comment, replied_comment) => dispatch(addComment(gameSlug, body, top_level_comment, replied_comment))
     }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCommentDialog);

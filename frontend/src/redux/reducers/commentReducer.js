@@ -10,11 +10,13 @@ axios.defaults.xsrfCookieName = "csrftoken";
 const FETCH_TOP_LEVEL_COMMENTS = 'FETCH_TOP_LEVEL_COMMENTS'
 const FETCH_COMMENT_REPLIES = 'FETCH_COMMENT_REPLIES'
 const MANAGE_DELETED_COMMENTS = 'MANAGE_DELETED_COMMENTS'
+const MANAGE_SHOW_MANAGE_BUTTONS = 'MANAGE_SHOW_MANAGE_BUTTONS'
 
 
 const initialState = {
     topLevelComments: [{comment: null, replies: []}],
-    deletedComments: []
+    deletedComments: [],
+    showManageButtons: false
 }
 
 export const fetchTopLevelComments = (gameSlug) => (dispatch) => {
@@ -78,6 +80,10 @@ export const deleteChosenComments = (dispatch, getState) => {
     dispatch(manageDeletedComments([]))
 }
 
+export const manageShowManageButtons = (showManageButtons) => (dispatch) => {
+    dispatch({type: MANAGE_SHOW_MANAGE_BUTTONS, showManageButtons})
+}
+
 
 export const commentReducer = (state=initialState, action) => {
     switch (action.type){
@@ -91,6 +97,8 @@ export const commentReducer = (state=initialState, action) => {
             return {...state, topLevelComments: commentsWithReplies}
         case MANAGE_DELETED_COMMENTS:
             return {...state, deletedComments: action.deletedComments}
+        case MANAGE_SHOW_MANAGE_BUTTONS:
+            return {...state, showManageButtons: action.showManageButtons}
         default:
             return state
     }
