@@ -8,6 +8,7 @@ import {
     fetchTopLevelCommentReplies,
     manageDeletedComments, manageShowManageButtons
 } from "../../../../../redux/reducers/commentReducer";
+import moment from 'moment'
 
 
 const Comment = (props) => {
@@ -86,7 +87,9 @@ const Comment = (props) => {
                     backgroundSize: 'cover'}}> </div>
 
                 <div>
-                    <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>{props.comment.user.first_name} {props.comment.user.last_name}</div>
+                    <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>{props.comment.user.first_name} {props.comment.user.last_name}
+                       <div style={{marginLeft: '12px', display: 'inline', fontWeight: '400'}}>{moment(props.comment.created_at).fromNow()}</div>
+                    </div>
                     {props.comment.body}
                 </div>
 

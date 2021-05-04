@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -6,6 +8,9 @@ from rest_framework import status
 from api.permissions import CommentManagePermission
 from api.serializers import GetCommentSerializer, CreateUpdateCommentSerializer
 from api.handlers import get_game_top_level_comments, get_top_level_comment_replies, delete_comment, get_comment_by_id
+
+
+logger = logging.Logger(__name__)
 
 
 class TopLevelCommentsView(APIView):
@@ -32,7 +37,7 @@ class TopLevelCommentsView(APIView):
             comment_serialized.save()
             return Response(data=comment_serialized.data)
 
-        print(comment_serialized.errors)
+        logger.warning(f'User {request.user.username} invalid input errors: {comment_serialized.errors}')
         return Response(status=status.HTTP_400_BAD_REQUEST, data=comment_serialized.errors)
 
 
@@ -52,6 +57,7 @@ class ManageCommentView(APIView):
         if comment_serialized.is_valid():
             return Response(data=comment_serialized.data)
 
+        logger.warning(f'User {request.user.username} invalid input errors: {comment_serialized.errors}')
         return Response(status=status.HTTP_400_BAD_REQUEST, data=comment_serialized.errors)
 
     def delete(self, request: Request, pk):

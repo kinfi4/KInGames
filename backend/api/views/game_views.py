@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -10,6 +12,8 @@ from django.conf import settings
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 from api.permissions import IsManagerOrAdminOrReadonly
+
+logger = logging.Logger(__name__)
 
 
 class GamesListView(APIView):
@@ -49,7 +53,7 @@ class GamesListView(APIView):
 
             return Response(status=status.HTTP_201_CREATED, data=game_serialized.data)
 
-        print(game_serialized.errors)
+        logger.warning(f'User {request.user.username} invalid input errors: {game_serialized.errors}')
         return Response(status=status.HTTP_400_BAD_REQUEST, data=game_serialized.errors)
 
 
@@ -74,13 +78,12 @@ class GameView(APIView):
         if not (game := self._get_game(slug)):
             return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
-        print(request.data)
         game_serialized = UpdateGameSerializer(game, data=request.data)
         if game_serialized.is_valid():
             game_serialized.save()
             return Response(data=game_serialized.data)
 
-        print(game_serialized.errors)
+        logger.warning(f'User {request.user.username} invalid input errors: {game_serialized.errors}')
         return Response(status=status.HTTP_400_BAD_REQUEST, data=game_serialized.errors)
 
     def delete(self, request: Request, slug):

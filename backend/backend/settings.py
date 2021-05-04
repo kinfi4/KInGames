@@ -121,7 +121,7 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'file_info': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'filename': BASE_DIR / 'logs/log_info.log',
             'class': 'logging.FileHandler',
             'formatter': 'simple'
@@ -132,6 +132,10 @@ LOGGING = {
         'level': 'INFO',
         'propagate': True
     },
+    'django.request': {
+        'level': 'DEBUG',
+        'handlers': ['file_error', 'file_warning', 'file_info']
+    }
 }
 
 
