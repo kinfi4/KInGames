@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Count, Q, F
+from django.db import transaction
 
 from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment
 
@@ -76,6 +77,7 @@ def get_user_cart(**user_filter):
     return Cart.objects.prefetch_related('cart_games__game').get_or_create(**user_filter)[0]
 
 
+@transaction.atomic
 def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
     cart_game = CartGame.objects.filter(game__slug=game_slug, **cart_game_filter).first()
     cart = Cart.objects.get_or_create(**cart_filter)[0]
@@ -96,6 +98,7 @@ def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
         cart_game.save(update_fields=['qty', 'final_price'])
 
 
+@transaction.atomic
 def remove_game_from_cart(game_slug, remove_whole_row, **cart_filter):
     cart_game = CartGame.objects.select_related('cart', 'game').filter(game__slug=game_slug, **cart_filter).first()
     if not cart_game:

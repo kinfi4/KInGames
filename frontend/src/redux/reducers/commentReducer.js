@@ -16,6 +16,7 @@ const MANAGE_SHOW_MANAGE_BUTTONS = 'MANAGE_SHOW_MANAGE_BUTTONS'
 const initialState = {
     topLevelComments: [{comment: null, replies: []}],
     deletedComments: [],
+    showManageButtonsForId: null,
     showManageButtons: false
 }
 
@@ -80,8 +81,8 @@ export const deleteChosenComments = (dispatch, getState) => {
     dispatch(manageDeletedComments([]))
 }
 
-export const manageShowManageButtons = (showManageButtons) => (dispatch) => {
-    dispatch({type: MANAGE_SHOW_MANAGE_BUTTONS, showManageButtons})
+export const manageShowManageButtons = (showManageButtonsObject) => (dispatch) => {
+    dispatch({type: MANAGE_SHOW_MANAGE_BUTTONS, showManageButtonsObject})
 }
 
 
@@ -98,7 +99,7 @@ export const commentReducer = (state=initialState, action) => {
         case MANAGE_DELETED_COMMENTS:
             return {...state, deletedComments: action.deletedComments}
         case MANAGE_SHOW_MANAGE_BUTTONS:
-            return {...state, showManageButtons: action.showManageButtons}
+            return {...state, showManageButtonsForId: action.showManageButtonsObject.id, showManageButtons: action.showManageButtonsObject.show}
         default:
             return state
     }

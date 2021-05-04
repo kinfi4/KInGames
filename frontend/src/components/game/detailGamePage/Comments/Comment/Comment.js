@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import profile from '../../../../main/header/ProfileBlock/Profile/Profile.module.css'
 import s from './Comment.module.css'
 import {ADMIN, BASE_URL, MANAGER} from "../../../../../config";
@@ -11,6 +11,11 @@ import {
 
 
 const Comment = (props) => {
+    useEffect(() => {
+        props.showManageButtonsForId === props.comment.id ? setManageButtonShow(s.visible) : setManageButtonShow(s.hidden)
+
+    }, [props.showManageButtonsForId])
+
     const [manageButtonShow, setManageButtonShow] = useState(s.hidden)
 
     const getDeleteButton = () => {
@@ -37,7 +42,7 @@ const Comment = (props) => {
 
         }
 
-        if(props.showManageButtons)
+        if(props.showManageButtons && props.showManageButtonsForId === props.comment.id)
             return (
                 <div className={s.manageButtons}>
                     {showAvailableActions()}
@@ -48,8 +53,8 @@ const Comment = (props) => {
         if(props.user)
             return (
                 <div className={`${s.manageButtonsBlock} ${manageButtonShow}`} onClick={() => {
-                    let show = !props.showManageButtons
-                    props.manageShowManageButtons(show)
+                    let show = props.showManageButtonsForId === props.comment.id ? !props.showManageButtons : true
+                    props.manageShowManageButtons({id: props.comment.id, show: show})
                 }}>
                     ...
                     {showCommentManager()}
@@ -70,7 +75,7 @@ const Comment = (props) => {
             <div className={`${s.comment} ${props.isInner ? s.inner : ''}`} onMouseEnter={() => {
                     setManageButtonShow(s.visible)
             }} onMouseLeave={() => {
-                if(props.showManageButtons)
+                if(props.showManageButtons && props.showManageButtonsForId === props.comment.id)
                     setManageButtonShow(s.visible)
                 else
                     setManageButtonShow(s.hidden)
@@ -110,7 +115,8 @@ const TopLevelComment = (props) => {
         if(showReplies)
             return <>{props.replies.map((el, i) => <Comment comment={el} key={i} isInner={true} user={props.user}
                                                                        manageShowManageButtons={props.manageShowManageButtons}
-                                                                       showManageButtons={props.showManageButtons} /> )}</>
+                                                                       showManageButtons={props.showManageButtons}
+                                                                       showManageButtonsForId={props.showManageButtonsForId} /> )}</>
     }
 
     const onShowRepliesButtonClick = () => {
@@ -139,6 +145,7 @@ let mapStateToProps = (state) => {
     return {
         user: state.auth.user,
         deleted: state.comment.deletedComments,
+        showManageButtonsForId: state.comment.showManageButtonsForId,
         showManageButtons: state.comment.showManageButtons
     }
 }
@@ -147,7 +154,7 @@ let mapDispatchToProps = (dispatch) => {
     return {
         fetchReplies: (commentId) => dispatch(fetchTopLevelCommentReplies(commentId)),
         manageDeleted: (deletedComments) => dispatch(manageDeletedComments(deletedComments)),
-        manageShowManageButtons: (showButtons) => dispatch(manageShowManageButtons(showButtons))
+        manageShowManageButtons: (showManageButtonsForId) => dispatch(manageShowManageButtons(showManageButtonsForId))
     }
 }
 
