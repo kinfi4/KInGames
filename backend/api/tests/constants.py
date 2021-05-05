@@ -51,6 +51,27 @@ class TestData:
         }
     ]
 
+    TEST_USERS_DATA = [
+        {
+            'username': 'tom',
+            'password': '1234',
+            'first_name': 'Tom',
+            'last_name': 'Marinavich',
+        },
+        {
+            'username': 'sam',
+            'password': '1234',
+            'first_name': 'Sam',
+            'last_name': 'Marinski',
+        },
+        {
+            'username': 'mark',
+            'password': '1234',
+            'first_name': 'Mark',
+            'last_name': 'Makarov',
+        }
+    ]
+
 
 class APIUrls:
     GET_GAMES_URL = reverse('list_games')

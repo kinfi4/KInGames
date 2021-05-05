@@ -1,8 +1,10 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
+from ddt import ddt, data, unpack
 
-from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, create_game
-from api.models import Game, Category
+from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, create_game, delete_user, \
+    create_default_kin_user, get_list_users
+from api.models import Game, Category, User, KinGamesUser
 from api.tests.constants import TestData
 
 
@@ -39,3 +41,39 @@ class TestGameHandlers(TestCase):
         delete_game_by_slug(test_slug)
         with self.assertRaises(ObjectDoesNotExist):
             get_game_by_slug(test_slug)
+
+
+@ddt
+class TestUserHandlers(TestCase):
+    def setUp(self) -> None:
+        users = User.objects.bulk_create([User(**user_data) for user_data in TestData.TEST_USERS_DATA])
+
+        for user in users:
+            KinGamesUser.objects.create(django_user=user)
+
+    def test_deleting_user(self):
+        user = User.objects.get(username=TestData.TEST_USERS_DATA[0]['username'])
+        delete_user(user)
+
+        with self.assertRaises(ObjectDoesNotExist):
+            user = User.objects.get(username=TestData.TEST_USERS_DATA[0]['username'])
+
+    def test_creating_default_kin_user__must_not_raise_error(self):
+        username = 'Some username'
+        user = User.objects.create(username=username, password='1234')
+        create_default_kin_user(user)
+
+        try:
+            KinGamesUser.objects.get(django_user__username=username)
+        except ObjectDoesNotExist:
+            self.fail()
+
+    @data(['tom', [TestData.TEST_USERS_DATA[0]]], ['mari', [TestData.TEST_USERS_DATA[0], TestData.TEST_USERS_DATA[1]]])
+    @unpack
+    def test_filtering_users(self, filtering_string, list_of_correct_results):
+        filters = {'first_name': filtering_string, 'last_name': filtering_string}
+
+        results = get_list_users(skip=0, **filters)
+
+        self.assertListEqual([result.username for result in results],
+                             [correct_res['username'] for correct_res in list_of_correct_results])

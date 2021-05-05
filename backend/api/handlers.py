@@ -52,8 +52,8 @@ def delete_user(user: User):
 
 def get_list_users(skip=0, amount=settings.PAGE_SIZE, **filters):
     return User.objects.filter(
-        Q(first_name__contains=filters.get('first_name', '')) |
-        Q(last_name__contains=filters.get('last_name', ''))
+        Q(first_name__icontains=filters.get('first_name', '')) |
+        Q(last_name__icontains=filters.get('last_name', ''))
     ).select_related('kin_user')[skip:skip + amount]
 
 
