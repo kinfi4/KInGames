@@ -125,6 +125,7 @@ def remove_game_from_cart(game_slug, remove_whole_row, **cart_filter):
         cart_game.save(update_fields=['qty', 'final_price'])
 
 
+@transaction.atomic
 def delete__cart_game(cart_game):
     cart, game = cart_game.cart, cart_game.game
 

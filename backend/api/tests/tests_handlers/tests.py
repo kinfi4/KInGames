@@ -3,8 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from ddt import ddt, data, unpack
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, create_game, delete_user, \
-    create_default_kin_user, get_list_users
-from api.models import Game, Category, User, KinGamesUser
+    create_default_kin_user, get_list_users, get_user_cart_size, user_has_cart, delete__cart_game, delete_comment, \
+    add_game_to_cart, remove_game_from_cart, add_comment, get_user_cart, get_comment_by_id,\
+    get_game_top_level_comments, get_top_level_comment_replies, get_list_games_with_categories, get_all_categories
+from api.models import Game, Category, User, KinGamesUser, Cart, CartGame, Comment
 from api.tests.constants import TestData
 
 
@@ -77,3 +79,67 @@ class TestUserHandlers(TestCase):
 
         self.assertListEqual([result.username for result in results],
                              [correct_res['username'] for correct_res in list_of_correct_results])
+
+
+class TestCartHandlers(TestCase):
+    def setUp(self) -> None:
+        Game.objects.bulk_create([Game(**game_data) for game_data in TestData.TEST_GAMES_DATA])
+        self.user = User.objects.create_user(username=TestData.TEST_USERNAME, password=TestData.TEST_USER_PASSWORD)
+
+    def test_getting_user_cart_size_handler__and_user_has_cart_handler__no_cart_at_the_begging_then_we_add_cart(self):
+        cart_filter = {'user': self.user}
+        size = get_user_cart_size(**cart_filter)
+
+        self.assertEqual(size, 0)
+        self.assertFalse(user_has_cart(**cart_filter))
+
+        cart = Cart.objects.create(user=self.user)
+        game = Game.objects.first()
+        CartGame.objects.create(game=game, cart=cart, final_price=game.price)
+
+        cart.total_products += 1
+        cart.save(update_fields=['total_products'])
+
+        size = get_user_cart_size(**cart_filter)
+        self.assertEqual(size, 1)
+        self.assertTrue(user_has_cart(**cart_filter))
+
+    def test_creating_user_cart(self):
+        cart_filter = {'user': self.user}
+
+        self.assertFalse(Cart.objects.filter(user=self.user).exists())
+        get_user_cart(**cart_filter)
+        self.assertTrue(Cart.objects.filter(user=self.user).exists())
+
+    def test_managing_cart__adding_game_to_cart__removing_game_from_cart(self):
+        cart_game_filter, cart_filter = {'cart__user': self.user}, {'user': self.user}
+
+        Cart.objects.create(**cart_filter)
+
+        game1 = Game.objects.all()[0]
+        game2 = Game.objects.all()[1]
+
+        add_game_to_cart(game1.slug, cart_filter, cart_game_filter)
+
+        cart = Cart.objects.get(user=self.user)
+        self.assertEqual(cart.total_products, 1)
+        self.assertEqual(cart.final_price, game1.price)
+
+        add_game_to_cart(game2.slug, cart_filter, cart_game_filter)
+        add_game_to_cart(game2.slug, cart_filter, cart_game_filter)
+
+        cart = Cart.objects.get(user=self.user)
+        self.assertEqual(cart.total_products, 3)
+        self.assertEqual(cart.final_price, game1.price + game2.price*2)
+
+        remove_game_from_cart(game2.slug, True, **cart_game_filter)
+
+        cart = Cart.objects.get(user=self.user)
+        self.assertEqual(cart.total_products, 1)
+        self.assertEqual(cart.final_price, game1.price)
+
+        remove_game_from_cart(game1.slug, False, **cart_game_filter)
+
+        cart = Cart.objects.get(user=self.user)
+        self.assertEqual(cart.total_products, 0)
+        self.assertEqual(cart.final_price, 0)
