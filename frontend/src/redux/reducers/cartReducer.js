@@ -18,27 +18,41 @@ const initialState = {
 
 export const fetchCartSize = (dispatch) => {
     let token = localStorage.getItem('token')
+
+    let headers = {};
+    if(token)
+        headers = {'Authorization': `Token ${token}`}
+
     axios.get(BASE_URL + 'api/v1/cart-size', {
-        headers: {'Authorization': `Token ${token}`}
+        headers: headers
     }).then(res => dispatch({type: FETCH_CART_SIZE, cartSize: res.data.size}))
 }
 
 export const fetchUserCartItems = (dispatch) => {
     let token = localStorage.getItem('token')
+
+    let headers = {};
+    if(token)
+        headers = {'Authorization': `Token ${token}`}
+
     axios.get(BASE_URL + 'api/v1/user-cart', {
-        headers: {'Authorization': `Token ${token}`}
+        headers: headers
     }).then(res => dispatch({type: FETCH_CART, data: res.data}))
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
 export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=true) => (dispatch) => {
     let token = localStorage.getItem('token')
+
+    let headers;
+    if(token)
+        headers = {'Authorization': `Token ${token}`, 'Content-Type': 'application/json'}
+    else
+        headers = {'Content-Type': 'application/json'}
+
     const data = JSON.stringify({game_slug: gameSlug, add: add, remove_whole_row: remove_whole_row})
     axios.post(BASE_URL + 'api/v1/user-cart', data, {
-        headers: {
-            'Authorization': `Token ${token}`,
-            'Content-Type': 'application/json',
-        }
+        headers: headers
     }).then(res => {
         if(reload)
             dispatch(fetchUserCartItems)

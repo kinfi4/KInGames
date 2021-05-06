@@ -5,7 +5,7 @@ from ddt import ddt, data, unpack
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, create_game, delete_user, \
     create_default_kin_user, get_list_users, get_user_cart_size, user_has_cart, delete_comment, \
     add_game_to_cart, remove_game_from_cart, add_comment, get_user_cart, get_comment_by_id, \
-    get_game_top_level_comments, get_top_level_comment_replies, get_list_games_with_categories, get_all_categories
+    get_game_top_level_comments, get_top_level_comment_replies
 from api.models import Game, Category, User, KinGamesUser, Cart, CartGame, Comment
 from api.tests.constants import TestData
 

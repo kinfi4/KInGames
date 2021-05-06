@@ -30,7 +30,9 @@ let Profile = (props) => {
             </div>
 
             <NavLink to={'/cart'} className={s2.greyButton}><RiShoppingCart2Fill />{props.cartSize}</NavLink>
-            <div onClick={props.logout} className={s2.greyButton}><FiLogOut /></div>
+            <div onClick={() => {
+                props.logout()
+            }} className={s2.greyButton}><FiLogOut /></div>
         </div>
     )
 }

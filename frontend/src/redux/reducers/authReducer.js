@@ -147,6 +147,7 @@ export function auth (state=initialState, action){
             }
         case LOGIN_SUCCESS:
             localStorage.setItem('token', action.token)
+            window.location.replace('/')
             return {
                 ...state,
                 token: action.token,
@@ -176,6 +177,7 @@ export function auth (state=initialState, action){
             }
         case LOGOUT:
             localStorage.removeItem('token')
+            window.location.replace('/')
             return {
                 ...state,
                 token: null,

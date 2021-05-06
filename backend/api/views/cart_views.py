@@ -10,8 +10,8 @@ from api.serializers import CartSerializer
 class UserCartView(APIView):
     def get(self, request: Request):
         cart_filters = {}
-        if not request.user:
-            cart_filters['user_agent'] = request['userAgent']
+        if request.user.is_anonymous:
+            cart_filters['user_agent'] = request.META.get('HTTP_USER_AGENT')
             cart_filters['for_anonymous_user'] = True
         else:
             cart_filters['user'] = request.user
@@ -23,12 +23,13 @@ class UserCartView(APIView):
 
     def post(self, request: Request):
         cart_game_filter, cart_filter = {}, {}
-        if request.user:
+
+        if not request.user.is_anonymous:
             cart_game_filter['cart__user'] = request.user
             cart_filter['user'] = request.user
         else:
-            cart_game_filter['cart__user_agent'] = request['userAgent']
-            cart_filter['user_agent'] = request['userAgent']
+            cart_game_filter['cart__user_agent'] = request.META.get('HTTP_USER_AGENT')
+            cart_filter['user_agent'] = request.META.get('HTTP_USER_AGENT')
 
         game_slug = request.data.get('game_slug', '')
         add = request.data.get('add', True)
@@ -54,8 +55,8 @@ class UserCartView(APIView):
 class UserCartSizeView(APIView):
     def get(self, request: Request):
         cart_filters = {}
-        if not request.user:
-            cart_filters['user_agent'] = request['userAgent']
+        if request.user.is_anonymous:
+            cart_filters['user_agent'] = request.META.get('HTTP_USER_AGENT')
             cart_filters['for_anonymous_user'] = True
         else:
             cart_filters['user'] = request.user

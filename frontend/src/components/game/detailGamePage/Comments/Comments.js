@@ -14,7 +14,6 @@ const Comments = (props) => {
     useEffect(() => {
         props.fetchTopLevelComments(props.slug)
     }, [])
-
     return (
         props.comments && <CommentsChild {...props} />
     );
@@ -33,7 +32,7 @@ const CommentsChild = (props) => {
 
             {
                 props.comments.map((el, i) => {
-                    if(props.deleted.includes(el.comment.id))
+                    if(el.comment && props.deleted.includes(el.comment.id))
                         return (
                             <div onClick={() => props.manageDeleted(props.deleted.filter(c => c !== el.comment.id))} className={s.undoButton}>
                                 UNDO

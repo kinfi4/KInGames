@@ -11,7 +11,6 @@ let RegisterForm = (props) => {
     let onRegisterSubmit = () => {
         props.registerHandler(details.first_name, details.last_name, details.username, details.email, details.password1, details.password2)
     }
-
     let onLoginButtonClick = () => {
         props.hideWindow()
         props.showModalWindow(<LoginForm />, 500, 200)
