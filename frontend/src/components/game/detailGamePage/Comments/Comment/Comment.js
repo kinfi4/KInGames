@@ -9,6 +9,8 @@ import {
     manageDeletedComments, manageShowManageButtons
 } from "../../../../../redux/reducers/commentReducer";
 import moment from 'moment'
+import AddCommentDialog from "../AddCommentDialog";
+import TopLevelComment from "./TopLevelComment";
 
 
 const Comment = (props) => {
@@ -18,6 +20,7 @@ const Comment = (props) => {
     }, [props.showManageButtonsForId])
 
     const [manageButtonShow, setManageButtonShow] = useState(s.hidden)
+    const [showReplyInput, setShowReplyInput] = useState(false)
 
     const getDeleteButton = () => {
         return (
@@ -65,14 +68,21 @@ const Comment = (props) => {
     const getInnerPart = () => {
         if(!props.isInner)
             return (
-                <div style={{marginLeft: '5%'}}>
+                <div>
                     <TopLevelComment {...props} />
                 </div>
             )
     }
+    const getReplyInput = () => {
+        let topLevelComment = props.comment.top_level_comment === null ? props.comment.id : props.comment.top_level_comment
+        let repliedComment = props.comment.top_level_comment === null ? null : props.comment.id
+        if(showReplyInput)
+            return <AddCommentDialog slug={props.slug} top_level_comment={topLevelComment} replied_comment={repliedComment} />
+    }
+
 
     return (
-        <>
+        <div>
             <div className={`${s.comment} ${props.isInner ? s.inner : ''}`} onMouseEnter={() => {
                     setManageButtonShow(s.visible)
             }} onMouseLeave={() => {
@@ -97,51 +107,20 @@ const Comment = (props) => {
                     {showManageShowButton()}
                 </div>
             </div>
-            {getInnerPart()}
-        </>
+
+            <div style={{marginLeft: '6.2%', marginTop: '10px', color: '#848484', cursor: 'pointer', fontSize: '14px'}}
+                 onClick={() => {setShowReplyInput(!showReplyInput)}}>REPLY</div>
+
+            <div style={{marginLeft: '70px', marginTop: '20px'}}>
+                {getReplyInput()}
+            </div>
+
+            <div style={{marginLeft: '70px'}}>
+                {getInnerPart()}
+            </div>
+        </div>
     );
 };
-
-const TopLevelComment = (props) => {
-    const [showReplies, setShowReplies] = useState(false)
-
-    const getShowRepliesButton = () => {
-        if (props.comment.replied_number === 0)
-            return
-
-        if(showReplies)
-            return <><BiUpArrow /> Hide </>
-        else
-            return <><BiDownArrow />  {props.comment.replied_number} Replies </>
-    }
-    const getReplies = () => {
-        if(showReplies)
-            return <>{props.replies.map((el, i) => <Comment comment={el} key={i} isInner={true} user={props.user}
-                                                                       manageShowManageButtons={props.manageShowManageButtons}
-                                                                       showManageButtons={props.showManageButtons}
-                                                                       showManageButtonsForId={props.showManageButtonsForId} /> )}</>
-    }
-
-    const onShowRepliesButtonClick = () => {
-        let show = !showReplies
-        setShowReplies(show)
-
-        if(show)
-            props.fetchReplies(props.comment.id)
-    }
-
-    return (
-        <>
-            <div className={s.foldButton} onClick={onShowRepliesButtonClick}>
-                {getShowRepliesButton()}
-            </div>
-
-            <div>
-                {getReplies()}
-            </div>
-        </>
-    )
-}
 
 
 let mapStateToProps = (state) => {

@@ -39,7 +39,7 @@ const CommentsChild = (props) => {
                             </div>
                         )
                     else
-                        return <Comment key={i} comment={el.comment} replies={el.replies} />
+                        return <Comment key={i} comment={el.comment} replies={el.replies} slug={props.slug}/>
                 })
             }
         </div>

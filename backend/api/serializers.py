@@ -100,12 +100,10 @@ class CreateUpdateCommentSerializer(serializers.Serializer):
         game_slug = validated_data.get('game_slug')
         body = validated_data.get('body')
         top_level_comment = validated_data.get('top_level_comment_id')
-        top_level_comment = top_level_comment if top_level_comment else None
-
         replies_on_comment = validated_data.get('replies_on_comment')
-        replies_on_comment = replies_on_comment if replies_on_comment else None
 
-        comment = add_comment(username, game_slug, body, top_level_comment, replies_on_comment)
+        comment = add_comment(username, game_slug, body, replied_on_pk=replies_on_comment,
+                              top_level_comment_pk=top_level_comment)
         return comment
 
     def update(self, instance, validated_data):

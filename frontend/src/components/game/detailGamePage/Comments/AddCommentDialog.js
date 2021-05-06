@@ -7,11 +7,11 @@ import {addComment} from "../../../../redux/reducers/commentReducer";
 
 
 const AddCommentDialog = (props) => {
-    const [commentText, setCommentText] = useState('')
+    const [commentText, setCommentText] = useState(props.initText ? props.initText : '')
     const inputTextRef = React.createRef()
 
     const onAddComment = () => {
-        props.addComment(props.slug, commentText, null, null)
+        props.addComment(props.slug, commentText, props.top_level_comment, props.replied_comment)
         setCommentText('')
         inputTextRef.current.textContent = ''
     }

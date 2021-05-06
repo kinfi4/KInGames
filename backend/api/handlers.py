@@ -143,11 +143,13 @@ def delete__cart_game(cart_game):
 def get_game_top_level_comments(game_slug):
     return Comment.objects.annotate(replied_number=Count('inner_comments')) \
                   .select_related('user') \
-                  .filter(game__slug=game_slug, top_level_comment__isnull=True)
+                  .filter(game__slug=game_slug, top_level_comment__isnull=True).order_by('created_at')
 
 
 def get_top_level_comment_replies(comment_id):
-    return Comment.objects.annotate(replied_text=F('replied_comment__body')).filter(top_level_comment_id=comment_id)
+    return Comment.objects.annotate(replied_text=F('replied_comment__body')) \
+           .filter(top_level_comment_id=comment_id) \
+           .order_by('created_at')
 
 
 def get_comment_by_id(comment_id):

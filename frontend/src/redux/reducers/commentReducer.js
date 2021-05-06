@@ -41,9 +41,11 @@ export const addComment = (gameSlug, body, top_level_comment, replied_comment) =
     let data = JSON.stringify({
         game_slug: gameSlug,
         body,
-        top_level_comment,
+        top_level_comment_id: top_level_comment,
         replies_on_comment: replied_comment
     })
+
+    console.log(data)
 
     axios.post(BASE_URL + 'api/v1/comments', data, {
         headers: {

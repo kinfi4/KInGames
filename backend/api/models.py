@@ -59,7 +59,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='comments')
     body = models.CharField(max_length=600, default='None')
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
 
     top_level_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='inner_comments', null=True,
                                           blank=True)
