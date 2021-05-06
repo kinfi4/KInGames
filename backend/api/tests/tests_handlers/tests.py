@@ -3,8 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from ddt import ddt, data, unpack
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, create_game, delete_user, \
-    create_default_kin_user, get_list_users, get_user_cart_size, user_has_cart, delete__cart_game, delete_comment, \
-    add_game_to_cart, remove_game_from_cart, add_comment, get_user_cart, get_comment_by_id,\
+    create_default_kin_user, get_list_users, get_user_cart_size, user_has_cart, delete_comment, \
+    add_game_to_cart, remove_game_from_cart, add_comment, get_user_cart, get_comment_by_id, \
     get_game_top_level_comments, get_top_level_comment_replies, get_list_games_with_categories, get_all_categories
 from api.models import Game, Category, User, KinGamesUser, Cart, CartGame, Comment
 from api.tests.constants import TestData
@@ -130,7 +130,7 @@ class TestCartHandlers(TestCase):
 
         cart = Cart.objects.get(user=self.user)
         self.assertEqual(cart.total_products, 3)
-        self.assertEqual(cart.final_price, game1.price + game2.price*2)
+        self.assertEqual(cart.final_price, game1.price + game2.price * 2)
 
         remove_game_from_cart(game2.slug, True, **cart_game_filter)
 
@@ -143,3 +143,60 @@ class TestCartHandlers(TestCase):
         cart = Cart.objects.get(user=self.user)
         self.assertEqual(cart.total_products, 0)
         self.assertEqual(cart.final_price, 0)
+
+
+class TestCommentsHandlers(TestCase):
+    TEST_GAME_SLUG = 'TEST_SLUG'
+    COMMENTS_BODIES = ['Some body1', 'Some body2', 'Some body3']
+
+    def setUp(self) -> None:
+        self.users = User.objects.bulk_create([User(**user_data) for user_data in TestData.TEST_USERS_DATA])
+        for user in self.users:
+            KinGamesUser.objects.create(django_user=user)
+
+        self.game = Game.objects.create(slug=self.TEST_GAME_SLUG, price=333)
+
+        self.top_level_comments = Comment.objects.bulk_create(
+            [Comment(game=self.game, user=self.users[user_index], body=body) for body, user_index in
+             zip(self.COMMENTS_BODIES, range(3))]
+        )
+
+        Comment.objects.create(game=self.game, user=self.users[0], body='Reply',
+                               top_level_comment=self.top_level_comments[-1])
+
+    def test_adding_comments(self):
+        comments_number = Comment.objects.count()
+        self.assertEqual(comments_number, 4)
+
+        comment_body = 'Here we go'
+        add_comment(self.users[0].username, self.game.slug, body=comment_body)
+
+        comments = Comment.objects.values_list('body')
+        self.assertIn(comment_body, [comment_body[0] for comment_body in comments])
+
+    def test_removing_comments(self):
+        comments_number = Comment.objects.count()
+        self.assertEqual(comments_number, 4)
+
+        comment = Comment.objects.first()
+        comment_body = comment.body
+        delete_comment(comment.id)
+
+        comments = Comment.objects.values_list('body')
+        self.assertNotIn(comment_body, [comment_body[0] for comment_body in comments])
+
+    def test_getting_comment_by_id(self):
+        first_comment = Comment.objects.first()
+
+        self.assertEqual(get_comment_by_id(first_comment.id), first_comment)
+
+    def test_getting_top_level_comments(self):
+        db_comments = Comment.objects.filter(top_level_comment=None)
+        handler_comments = get_game_top_level_comments(self.game.slug)
+
+        self.assertListEqual(list(db_comments), list(handler_comments))
+
+    def test_getting_comments_replies(self):
+        first_comment = Comment.objects.filter(body=self.COMMENTS_BODIES[-1]).first()
+        self.assertListEqual(list(first_comment.inner_comments.all()),
+                             list(get_top_level_comment_replies(first_comment.id)))
