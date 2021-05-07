@@ -55,6 +55,7 @@ class ManageCommentView(APIView):
         comment_serialized = CreateUpdateCommentSerializer(comment, data=request.data)
 
         if comment_serialized.is_valid():
+            comment_serialized.save()
             return Response(data=comment_serialized.data)
 
         logger.warning(f'User {request.user.username} invalid input errors: {comment_serialized.errors}')

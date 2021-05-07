@@ -1,24 +1,45 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from "./Comments.module.css";
 import profile from "../../../main/header/ProfileBlock/Profile/Profile.module.css";
 import {BASE_URL} from "../../../../config";
 import {connect} from "react-redux";
-import {addComment} from "../../../../redux/reducers/commentReducer";
+import {addComment, manageUpdateObject, updateComment} from "../../../../redux/reducers/commentReducer";
 
 
 const AddCommentDialog = (props) => {
     const [commentText, setCommentText] = useState(props.initText ? props.initText : '')
     const inputTextRef = React.createRef()
 
-    const onAddComment = () => {
-        props.addComment(props.slug, commentText, props.top_level_comment, props.replied_comment)
+    useEffect(() => {
+        inputTextRef.current.textContent = commentText
+    }, [])
+
+    const onSubmitComment = () => {
+        if(props.onUpdate){
+            console.log('submit')
+            props.updateComment(props.id, commentText)
+            props.manageUpdateObject({onUpdate: false, updatedId: null})
+        }
+        else{
+            props.addComment(props.slug, commentText, props.top_level_comment, props.replied_comment)
+        }
+
         setCommentText('')
         inputTextRef.current.textContent = ''
     }
-
     const getSendButton = () => {
-        if(commentText.length !== 0)
-            return <div className={s.sendButton} onClick={onAddComment}>COMMENT</div>
+        if(commentText.length !== 0){
+            if(props.onUpdate){
+                return (
+                    <div className={s.manageCommentBlock}>
+                        <div onClick={() => props.manageUpdateObject({onUpdate: false, updatedId: null})}>CANCEL</div>
+                        <div onClick={onSubmitComment}>SAVE</div>
+                    </div>
+                )
+            }
+            else
+                return <div className={`${s.manageCommentBlock}`} onClick={onSubmitComment}><div>COMMENT</div></div>
+        }
     }
 
     if(props.user)
@@ -31,8 +52,8 @@ const AddCommentDialog = (props) => {
                         backgroundSize: 'cover'}} />
 
                     <div className={s.textInput} contentEditable={true} data-placeholder={'Enter your comment'}
-                         onInput={(e) => setCommentText(e.target.textContent)}
-                         ref={inputTextRef}/>
+                         onInput={(e) => setCommentText(e.target.innerText)}
+                         ref={inputTextRef}> </div>
                 </div>
 
                 {getSendButton()}
@@ -47,13 +68,16 @@ const AddCommentDialog = (props) => {
 
 let mapStateToProps = (state) => {
     return {
-        user: state.auth.user
+        user: state.auth.user,
+        updateObject: state.comment.updateObject
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        addComment: (gameSlug, body, top_level_comment, replied_comment) => dispatch(addComment(gameSlug, body, top_level_comment, replied_comment))
+        addComment: (gameSlug, body, top_level_comment, replied_comment) => dispatch(addComment(gameSlug, body, top_level_comment, replied_comment)),
+        updateComment: (id, body) => dispatch(updateComment(id, body)),
+        manageUpdateObject: (newUpdateObj) => dispatch(manageUpdateObject(newUpdateObj))
     }
 }
 

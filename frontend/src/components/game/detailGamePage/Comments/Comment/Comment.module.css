@@ -15,11 +15,8 @@
 }
 .foldButton{
     cursor: pointer;
-    margin-left: -15px;
-    margin-top: 10px;
+    margin-left: -5px;
     width: fit-content;
-    padding: 10px;
-
     border-radius: 10px;
 
     transition: linear 0.2s;
@@ -31,8 +28,7 @@
     margin: 5px;
 }
 .foldButton:hover{
-    background-color: #000000;
-    color: white;
+    color: #4b4b4b;
 }
 .visible{
     opacity: 1;

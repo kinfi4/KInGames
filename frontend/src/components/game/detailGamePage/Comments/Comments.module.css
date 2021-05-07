@@ -14,19 +14,21 @@
     margin-right: 15px;
     width: 55px;
 }
-.sendButton{
+.manageCommentBlock{
+    position: relative;
+    width: fit-content;
+    float: right;
+
+    display: flex;
+}
+.manageCommentBlock *{
     cursor: pointer;
     padding: 10px 15px;
     transition: linear 0.2s;
     border-radius: 10px;
-
-    position: relative;
-    width: fit-content;
-    float: right;
 }
-.sendButton:hover{
-    background-color: #000000;
-    color: white;
+.manageCommentBlock *:hover{
+    color: black;
 }
 .textInput{
     border-bottom: 1px solid #6c6c6c;

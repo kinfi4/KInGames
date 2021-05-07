@@ -11,13 +11,16 @@ const FETCH_TOP_LEVEL_COMMENTS = 'FETCH_TOP_LEVEL_COMMENTS'
 const FETCH_COMMENT_REPLIES = 'FETCH_COMMENT_REPLIES'
 const MANAGE_DELETED_COMMENTS = 'MANAGE_DELETED_COMMENTS'
 const MANAGE_SHOW_MANAGE_BUTTONS = 'MANAGE_SHOW_MANAGE_BUTTONS'
+const UPDATE_COMMENT = 'UPDATE_COMMENT'
+const MANAGE_UPDATE_OBJECT = 'MANAGE_UPDATE_OBJECT'
 
 
 const initialState = {
     topLevelComments: [{comment: null, replies: []}],
     deletedComments: [],
     showManageButtonsForId: null,
-    showManageButtons: false
+    showManageButtons: false,
+    updateObject: {onUpdate: false, updatedId: null}
 }
 
 export const fetchTopLevelComments = (gameSlug) => (dispatch) => {
@@ -87,6 +90,23 @@ export const manageShowManageButtons = (showManageButtonsObject) => (dispatch) =
     dispatch({type: MANAGE_SHOW_MANAGE_BUTTONS, showManageButtonsObject})
 }
 
+export const updateComment = (id, newBody) => (dispatch) => {
+    const token = localStorage.getItem('token')
+
+    axios.put(BASE_URL + 'api/v1/comments/' + id, JSON.stringify({body: newBody}), {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        }
+    }).then(res => dispatch({type: UPDATE_COMMENT, body: res.data.body, commentId: id}))
+        .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+}
+
+export const manageUpdateObject = (newUpdateObject) => (dispatch) => {
+    console.log(`Managing in action ${newUpdateObject.onUpdate}`)
+    dispatch({type: MANAGE_UPDATE_OBJECT, updateObject: newUpdateObject})
+}
+
 
 export const commentReducer = (state=initialState, action) => {
     switch (action.type){
@@ -102,6 +122,30 @@ export const commentReducer = (state=initialState, action) => {
             return {...state, deletedComments: action.deletedComments}
         case MANAGE_SHOW_MANAGE_BUTTONS:
             return {...state, showManageButtonsForId: action.showManageButtonsObject.id, showManageButtons: action.showManageButtonsObject.show}
+        case MANAGE_UPDATE_OBJECT:
+            return {...state, updateObject: action.updateObject}
+        case UPDATE_COMMENT:
+            let top = state.topLevelComments
+            let found = false
+            for (let i = 0; i < top.length; i++) {
+                if(top[i].comment.id === action.commentId){
+                    top[i].comment.body = action.body
+                    break
+                }
+
+                for (let j = 0; j < top[i].replies; j++) {
+                    if(top[i].replies[j].id === action.commentId) {
+                        top[i].replies[j].body = action.body
+                        found = true
+                        break
+                    }
+                }
+
+                if(found)
+                    break
+            }
+
+            return {...state, topLevelComments: top}
         default:
             return state
     }
