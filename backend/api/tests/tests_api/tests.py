@@ -126,3 +126,72 @@ class TestCommentsAPI(TestCase):
 
         with self.assertRaises(ObjectDoesNotExist):
             Comment.objects.get(body=new_comment_body)
+
+
+class TestCartAPI(TestCase):
+    def setUp(self) -> None:
+        self.test_user = User.objects.create_user(username=TestData.TEST_USERNAME, password=TestData.TEST_USER_PASSWORD)
+        KinGamesUser.objects.create(django_user=self.test_user, role='ADMIN')
+        token = Token.objects.create(user=self.test_user)
+
+        self.client = Client(HTTP_AUTHORIZATION=f'Token {token.key}')
+
+        for game_data in TestData.TEST_GAMES_DATA:
+            Game.objects.create(**game_data)
+
+        self.test_game = Game.objects.first()
+
+    def create_cart_with_game(self):
+        cart = Cart.objects.create(user=self.test_user)
+        CartGame.objects.create(game=self.test_game, cart=cart, final_price=self.test_game.price)
+
+        cart.final_price += self.test_game.price
+        cart.total_products += 1
+        cart.save(update_fields=['final_price', 'total_products'])
+
+    def test_user_cart_size_endpoint(self):
+        cart_size = self.client.get(APIUrls.USER_CART_SIZE_URL).data
+        self.assertEqual(cart_size['size'], 0)
+
+        self.create_cart_with_game()
+
+        cart_size = self.client.get(APIUrls.USER_CART_SIZE_URL).data
+        self.assertEqual(cart_size['size'], 1)
+
+    def test_adding_games_to_cart(self):
+        game1_slug = TestData.TEST_GAMES_DATA[0]['slug']
+        game2_slug = TestData.TEST_GAMES_DATA[1]['slug']
+        response = self.client.post(APIUrls.USER_CART_URL, data={'game_slug': game1_slug},
+                                    content_type='application/json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        cart = Cart.objects.get(user=self.test_user)
+        self.assertEqual(cart.total_products, 1)
+
+        self.client.post(APIUrls.USER_CART_URL, data={'game_slug': game1_slug},
+                         content_type='application/json')
+        self.client.post(APIUrls.USER_CART_URL, data={'game_slug': game2_slug},
+                         content_type='application/json')
+
+        cart = Cart.objects.get(user=self.test_user)
+        self.assertEqual(cart.total_products, 3)
+
+        self.client.post(APIUrls.USER_CART_URL, data={'game_slug': game2_slug, 'add': False},
+                         content_type='application/json')
+        self.client.post(APIUrls.USER_CART_URL, data={'game_slug': game1_slug, 'add': False, 'remove_whole_row': True},
+                         content_type='application/json')
+
+        cart = Cart.objects.get(user=self.test_user)
+        self.assertEqual(cart.total_products, 0)
+
+    def test_getting_cart(self):
+        self.create_cart_with_game()
+
+        response = self.client.get(APIUrls.USER_CART_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_data = response.data
+        self.assertEqual(response_data['total_products'], 1)
+        self.assertEqual(float(response_data['final_price']), float(self.test_game.price))
+        self.assertEqual(response_data['cart_games'][0]['game']['slug'], self.test_game.slug)

@@ -96,6 +96,8 @@ class APIUrls:
     GET_GAMES_URL = reverse('list_games')
     USER_CONFIG_URL = reverse('user')
     POST_COMMENT_URL = reverse('comments')
+    USER_CART_SIZE_URL = reverse('user_cart_size')
+    USER_CART_URL = reverse('user_cart')
 
     @staticmethod
     def SINGLE_GAME(slug):
