@@ -7,7 +7,6 @@ from rest_framework import status
 
 from api.handlers import get_user_cart, add_game_to_cart, remove_game_from_cart, get_user_cart_size
 from api.serializers import CartSerializer
-from api.models import Cart
 
 logger = logging.Logger(__name__)
 

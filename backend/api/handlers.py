@@ -160,7 +160,7 @@ def get_game_top_level_comments(game_slug):
 
 
 def get_top_level_comment_replies(comment_id):
-    return Comment.objects.annotate(replied_text=F('replied_comment__body')) \
+    return Comment.objects \
            .filter(top_level_comment_id=comment_id) \
            .order_by('created_at')
 

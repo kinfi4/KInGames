@@ -64,3 +64,11 @@ class ManageCommentView(APIView):
     def delete(self, request: Request, pk):
         delete_comment(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GetSingleCommentView(APIView):
+    def get(self, request: Request, pk):
+        comment = get_comment_by_id(pk)
+        comment_serialized = GetCommentSerializer(comment)
+
+        return Response(data=comment_serialized.data)

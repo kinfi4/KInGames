@@ -48,8 +48,6 @@ export const addComment = (gameSlug, body, top_level_comment, replied_comment) =
         replies_on_comment: replied_comment
     })
 
-    console.log(data)
-
     axios.post(BASE_URL + 'api/v1/comments', data, {
         headers: {
             'Content-Type': 'application/json',

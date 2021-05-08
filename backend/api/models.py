@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 
+from api.utils.truncate_string import truncate_string
+
 USER = 'USER'
 MANAGER = 'MANAGER'
 ADMIN = 'ADMIN'
@@ -66,8 +68,12 @@ class Comment(models.Model):
     replied_comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='replies', null=True,
                                         blank=True)
 
+    @property
+    def replied_text(self):
+        return truncate_string(self.body)
+
     def __str__(self):
-        return self.body[:20]
+        return truncate_string(self.body)
 
 
 class Cart(models.Model):

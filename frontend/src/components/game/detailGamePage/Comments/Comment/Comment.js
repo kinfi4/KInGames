@@ -83,6 +83,18 @@ const Comment = (props) => {
         if(showReplyInput)
             return <AddCommentDialog slug={props.slug} top_level_comment={topLevelComment} replied_comment={repliedComment} />
     }
+    const getRepliedRef = () => {
+        if(props.comment.replied_comment){
+            const curUrl = window.location.href.substring(0, window.location.href.indexOf('#'))
+            return (
+                <a href={`${curUrl}#Comment${props.comment.replied_comment}`}>
+                    <div className={s.repliedBox}>
+                        {props.comment.replied_text}
+                    </div>
+                </a>
+            )
+        }
+    }
 
     const getBodyPart = () => {
         if(!props.updateObject.onUpdate || props.comment.id !== props.updateObject.updatedId)
@@ -95,7 +107,7 @@ const Comment = (props) => {
                         setManageButtonShow(s.visible)
                     else
                         setManageButtonShow(s.hidden)
-                }} id={props.comment.id}>
+                }} id={`Comment${props.comment.id}`}>
                     <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.comment.user.kin_user.avatar.slice(1)})`,
                             backgroundPosition: "center",
                             backgroundRepeat: 'no-repeat',
@@ -105,6 +117,8 @@ const Comment = (props) => {
                         <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>{props.comment.user.first_name} {props.comment.user.last_name}
                             <div style={{marginLeft: '12px', display: 'inline', fontWeight: '400'}}>{moment(props.comment.created_at).fromNow()}</div>
                         </div>
+
+                        {getRepliedRef()}
 
                         {props.comment.body}
                     </div>
