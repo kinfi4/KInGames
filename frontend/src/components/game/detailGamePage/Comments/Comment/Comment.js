@@ -15,7 +15,8 @@ import TopLevelComment from "./TopLevelComment";
 
 const Comment = (props) => {
     useEffect(() => {
-        props.showManageButtonsForId === props.comment.id ? setManageButtonShow(s.visible) : setManageButtonShow(s.hidden)
+        if(props.comment)
+            props.showManageButtonsForId === props.comment.id ? setManageButtonShow(s.visible) : setManageButtonShow(s.hidden)
 
     }, [props.showManageButtonsForId])
 
@@ -121,19 +122,24 @@ const Comment = (props) => {
             return <AddCommentDialog initText={props.comment.body} id={props.comment.id} onUpdate={true} />
     }
 
-    return (
-        <>
-            {getBodyPart()}
+    if(props.comment)
+        return (
+            <>
+                {getBodyPart()}
 
-            <div style={{marginLeft: '70px', marginTop: '20px'}}>
-                {getReplyInput()}
-            </div>
+                <div style={{marginLeft: '70px', marginTop: '20px'}}>
+                    {getReplyInput()}
+                </div>
 
-            <div style={{marginLeft: '70px'}}>
-                {getInnerPart()}
-            </div>
-        </>
-    );
+                <div style={{marginLeft: '70px'}}>
+                    {getInnerPart()}
+                </div>
+            </>
+        );
+    else
+        return (
+            <div>LOADING</div>
+        )
 };
 
 

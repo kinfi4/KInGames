@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db.models import Count, Q, F
 from django.db import transaction
+from django.core.exceptions import MultipleObjectsReturned
 
 from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment
 
@@ -73,19 +74,31 @@ def user_has_cart(**user_filter):
     return Cart.objects.filter(**user_filter).exists()
 
 
+@transaction.atomic
 def get_user_cart(**user_filter):
     return Cart.objects.prefetch_related('cart_games__game').get_or_create(**user_filter)[0]
 
 
 @transaction.atomic
 def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
+    try:
+        cart = Cart.objects.get_or_create(**cart_filter)[0]
+    except MultipleObjectsReturned:
+        print('MULTIPLE CART')
+        for c in Cart.objects.filter(**cart_filter):
+            c.delete()
+
+        cart = Cart.objects.get_or_create(**cart_filter)[0]
+
     cart_game = CartGame.objects.filter(game__slug=game_slug, **cart_game_filter).first()
-    cart = Cart.objects.get_or_create(**cart_filter)[0]
     game = Game.objects.get(slug=game_slug)
 
     cart.final_price += game.price
     cart.total_products += 1
+    print(cart)
     cart.save(update_fields=['final_price', 'total_products'])
+
+    print(Cart.objects.filter(**cart_filter))
 
     game.number_of_licences -= 1
     game.save(update_fields=['number_of_licences'])

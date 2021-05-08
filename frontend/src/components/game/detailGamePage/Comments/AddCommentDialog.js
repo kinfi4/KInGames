@@ -11,7 +11,8 @@ const AddCommentDialog = (props) => {
     const inputTextRef = React.createRef()
 
     useEffect(() => {
-        inputTextRef.current.textContent = commentText
+        if(inputTextRef.current)
+            inputTextRef.current.textContent = commentText
     }, [])
 
     const onSubmitComment = () => {

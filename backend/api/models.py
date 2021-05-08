@@ -81,6 +81,10 @@ class Cart(models.Model):
     def __str__(self):
         return f'{self.final_price}'
 
+    def save(self, *args, **kwargs):
+        self.for_anonymous_user = True if self.user_agent else False
+        super().save(*args, **kwargs)
+
 
 class CartGame(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_games')

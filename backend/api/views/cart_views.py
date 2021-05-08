@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -5,6 +7,9 @@ from rest_framework import status
 
 from api.handlers import get_user_cart, add_game_to_cart, remove_game_from_cart, get_user_cart_size
 from api.serializers import CartSerializer
+from api.models import Cart
+
+logger = logging.Logger(__name__)
 
 
 class UserCartView(APIView):
@@ -45,7 +50,7 @@ class UserCartView(APIView):
             try:
                 remove_game_from_cart(game_slug, remove_whole_row, **cart_game_filter)
             except ValueError as e:
-                print(e)
+                logger.warning(str(e))
                 return Response(status=status.HTTP_400_BAD_REQUEST,
                                 data={'errors': 'Cant remove game from the cart, there is no such game there'})
 
