@@ -21,6 +21,10 @@ const Comments = (props) => {
 
 const CommentsChild = (props) => {
     useEffect(() => {
+        window.onbeforeunload = () => {
+            props.deleteChosenComments()
+        }
+
         return () => {
             props.deleteChosenComments()
         }

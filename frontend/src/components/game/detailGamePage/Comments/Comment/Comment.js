@@ -85,13 +85,22 @@ const Comment = (props) => {
     }
     const getRepliedRef = () => {
         if(props.comment.replied_comment){
-            const curUrl = window.location.href.substring(0, window.location.href.indexOf('#'))
+            function findPos(obj) {
+                return obj.offsetTop - document.body.scrollTop + 600
+            }
+
             return (
-                <a href={`${curUrl}#Comment${props.comment.replied_comment}`}>
+                <div onClick={() => {
+                    window.scroll({
+                        top: findPos(document.getElementById(`Comment${props.comment.replied_comment}`)),
+                        behavior: 'smooth'
+                    })
+                }}>
                     <div className={s.repliedBox}>
+                        <strong style={{color: '#5eaed9'}}>{props.comment.replied_full_name}</strong> <br/>
                         {props.comment.replied_text}
                     </div>
-                </a>
+                </div>
             )
         }
     }
@@ -114,7 +123,8 @@ const Comment = (props) => {
                             backgroundSize: 'cover'}}> </div>
 
                     <div>
-                        <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>{props.comment.user.first_name} {props.comment.user.last_name}
+                        <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>
+                            <span style={{color: '#ffc6c6'}}>{props.comment.user.first_name} {props.comment.user.last_name}</span>
                             <div style={{marginLeft: '12px', display: 'inline', fontWeight: '400'}}>{moment(props.comment.created_at).fromNow()}</div>
                         </div>
 

@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.db.models import Count, Q, F
+from django.db.models import Count, Q, F, Value
+from django.db.models.functions import Concat
 from django.db import transaction
 from django.core.exceptions import MultipleObjectsReturned
 
@@ -155,14 +156,17 @@ def delete__cart_game(cart_game):
 # Comment handlers
 def get_game_top_level_comments(game_slug):
     return Comment.objects.annotate(replied_number=Count('inner_comments')) \
-                  .select_related('user') \
-                  .filter(game__slug=game_slug, top_level_comment__isnull=True).order_by('created_at')
+        .select_related('user') \
+        .filter(game__slug=game_slug, top_level_comment__isnull=True).order_by('created_at')
 
 
 def get_top_level_comment_replies(comment_id):
     return Comment.objects \
-           .filter(top_level_comment_id=comment_id) \
-           .order_by('created_at')
+        .annotate(
+            replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
+                                     F('replied_comment__user__last_name'))
+        ).filter(top_level_comment_id=comment_id) \
+         .order_by('created_at')
 
 
 def get_comment_by_id(comment_id):

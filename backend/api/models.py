@@ -70,7 +70,7 @@ class Comment(models.Model):
 
     @property
     def replied_text(self):
-        return truncate_string(self.body)
+        return truncate_string(self.replied_comment.body)
 
     def __str__(self):
         return truncate_string(self.body)
