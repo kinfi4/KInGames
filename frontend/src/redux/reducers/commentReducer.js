@@ -13,6 +13,7 @@ const MANAGE_DELETED_COMMENTS = 'MANAGE_DELETED_COMMENTS'
 const MANAGE_SHOW_MANAGE_BUTTONS = 'MANAGE_SHOW_MANAGE_BUTTONS'
 const UPDATE_COMMENT = 'UPDATE_COMMENT'
 const MANAGE_UPDATE_OBJECT = 'MANAGE_UPDATE_OBJECT'
+const MANAGE_SHOW_REPLY_INPUT = 'MANAGE_SHOW_REPLY_INPUT'
 
 
 const initialState = {
@@ -20,7 +21,8 @@ const initialState = {
     deletedComments: [],
     showManageButtonsForId: null,
     showManageButtons: false,
-    updateObject: {onUpdate: false, updatedId: null}
+    updateObject: {onUpdate: false, updatedId: null},
+    showReplyInput: {show: false, commentId: null}
 }
 
 export const fetchTopLevelComments = (gameSlug) => (dispatch) => {
@@ -105,6 +107,10 @@ export const manageUpdateObject = (newUpdateObject) => (dispatch) => {
     dispatch({type: MANAGE_UPDATE_OBJECT, updateObject: newUpdateObject})
 }
 
+export const manageShowReplyInput = (newReplyInput) => (dispatch) => {
+    dispatch({type: MANAGE_SHOW_REPLY_INPUT, showReplyInput: newReplyInput})
+}
+
 
 export const commentReducer = (state=initialState, action) => {
     switch (action.type){
@@ -122,6 +128,8 @@ export const commentReducer = (state=initialState, action) => {
             return {...state, showManageButtonsForId: action.showManageButtonsObject.id, showManageButtons: action.showManageButtonsObject.show}
         case MANAGE_UPDATE_OBJECT:
             return {...state, updateObject: action.updateObject}
+        case MANAGE_SHOW_REPLY_INPUT:
+            return {...state, showReplyInput: action.showReplyInput}
         case UPDATE_COMMENT:
             let top = state.topLevelComments
             let found = false

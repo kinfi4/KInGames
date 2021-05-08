@@ -62,3 +62,9 @@
     background-color: #fff;
     color: #1c1c1c;
 }
+
+.unactive{
+    color: #4b4b4b;
+    pointer-events: none;
+    opacity: 0.4;
+}

@@ -72,15 +72,43 @@ class TestData:
         }
     ]
 
+    TEST_TOP_LEVEL_COMMENTS = [
+        {
+            'body': 'Some test body'
+        },
+        {
+            'body': 'Another body'
+        },
+        {
+            'body': 'And another'
+        },
+        {
+            'body': 'And another again'
+        },
+    ]
+
+    TEST_REPLIED_COMMENTS = [
+        {'body': 'Some replied body'}, {'body': 'Some more body'}
+    ]
+
 
 class APIUrls:
     GET_GAMES_URL = reverse('list_games')
     USER_CONFIG_URL = reverse('user')
+    POST_COMMENT_URL = reverse('comments')
 
     @staticmethod
     def SINGLE_GAME(slug):
-        return reverse('single_game', args=[slug])
+        return reverse('single_game', args=(slug,))
 
+    @staticmethod
+    def TOP_LEVEL_COMMENTS_URL(slug):
+        return f'{reverse("comments")}?game_slug={slug}'
 
-class TestAnswers:
-    pass
+    @staticmethod
+    def GET_SINGLE_COMMENT_URL(pk):
+        return reverse('single_comment', args=(pk,))
+
+    @staticmethod
+    def MANAGE_COMMENT_URL(pk):
+        return reverse('manage_comment', args=(pk,))

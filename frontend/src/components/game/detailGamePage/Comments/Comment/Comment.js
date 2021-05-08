@@ -6,7 +6,7 @@ import {AiFillEdit, AiTwotoneDelete} from 'react-icons/all'
 import {connect} from "react-redux";
 import {
     fetchTopLevelCommentReplies,
-    manageDeletedComments, manageShowManageButtons, manageUpdateObject
+    manageDeletedComments, manageShowManageButtons, manageShowReplyInput, manageUpdateObject
 } from "../../../../../redux/reducers/commentReducer";
 import moment from 'moment'
 import AddCommentDialog from "../AddCommentDialog";
@@ -21,7 +21,6 @@ const Comment = (props) => {
     }, [props.showManageButtonsForId])
 
     const [manageButtonShow, setManageButtonShow] = useState(s.hidden)
-    const [showReplyInput, setShowReplyInput] = useState(false)
 
     const getDeleteButton = () => {
         return (
@@ -80,7 +79,7 @@ const Comment = (props) => {
     const getReplyInput = () => {
         let topLevelComment = props.comment.top_level_comment === null ? props.comment.id : props.comment.top_level_comment
         let repliedComment = props.comment.top_level_comment === null ? null : props.comment.id
-        if(showReplyInput)
+        if(props.showReplyInput.show && props.comment.id === props.showReplyInput.commentId)
             return <AddCommentDialog slug={props.slug} top_level_comment={topLevelComment} replied_comment={repliedComment} />
     }
     const getRepliedRef = () => {
@@ -104,6 +103,11 @@ const Comment = (props) => {
             )
         }
     }
+    const getReplyButton = () => {
+        if(!props.isInner)
+            return <div style={{marginLeft: '6.2%', marginTop: '10px', color: '#848484', cursor: 'pointer', fontSize: '14px'}}
+                        onClick={() => {props.manageShowReply({show: !props.showReplyInput.show, commentId: props.comment.id})}}>REPLY</div>
+    }
 
     const getBodyPart = () => {
         if(!props.updateObject.onUpdate || props.comment.id !== props.updateObject.updatedId)
@@ -116,7 +120,8 @@ const Comment = (props) => {
                         setManageButtonShow(s.visible)
                     else
                         setManageButtonShow(s.hidden)
-                }} id={`Comment${props.comment.id}`}>
+                }} id={`Comment${props.comment.id}`}
+                     onDoubleClick={() => props.manageShowReply({show: true, commentId: props.comment.id})}>
                     <div className={profile.avatar} style={{backgroundImage: `url(${BASE_URL + props.comment.user.kin_user.avatar.slice(1)})`,
                             backgroundPosition: "center",
                             backgroundRepeat: 'no-repeat',
@@ -138,8 +143,8 @@ const Comment = (props) => {
                     </div>
                 </div>
 
-                    <div style={{marginLeft: '6.2%', marginTop: '10px', color: '#848484', cursor: 'pointer', fontSize: '14px'}}
-                         onClick={() => {setShowReplyInput(!showReplyInput)}}>REPLY</div>
+                    {getReplyButton()}
+
                 </>
             )
         else
@@ -173,7 +178,8 @@ let mapStateToProps = (state) => {
         deleted: state.comment.deletedComments,
         showManageButtonsForId: state.comment.showManageButtonsForId,
         showManageButtons: state.comment.showManageButtons,
-        updateObject: state.comment.updateObject
+        updateObject: state.comment.updateObject,
+        showReplyInput: state.comment.showReplyInput
     }
 }
 
@@ -182,7 +188,8 @@ let mapDispatchToProps = (dispatch) => {
         fetchReplies: (commentId) => dispatch(fetchTopLevelCommentReplies(commentId)),
         manageDeleted: (deletedComments) => dispatch(manageDeletedComments(deletedComments)),
         manageShowManageButtons: (showManageButtonsForId) => dispatch(manageShowManageButtons(showManageButtonsForId)),
-        manageUpdateObject: (newUpdateObj) => dispatch(manageUpdateObject(newUpdateObj))
+        manageUpdateObject: (newUpdateObj) => dispatch(manageUpdateObject(newUpdateObj)),
+        manageShowReply: (newReplyInput) => dispatch(manageShowReplyInput(newReplyInput))
     }
 }
 

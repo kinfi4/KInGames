@@ -3,7 +3,12 @@ import s from "./Comments.module.css";
 import profile from "../../../main/header/ProfileBlock/Profile/Profile.module.css";
 import {BASE_URL} from "../../../../config";
 import {connect} from "react-redux";
-import {addComment, manageUpdateObject, updateComment} from "../../../../redux/reducers/commentReducer";
+import {
+    addComment,
+    manageShowReplyInput,
+    manageUpdateObject,
+    updateComment
+} from "../../../../redux/reducers/commentReducer";
 
 
 const AddCommentDialog = (props) => {
@@ -29,18 +34,24 @@ const AddCommentDialog = (props) => {
         inputTextRef.current.textContent = ''
     }
     const getSendButton = () => {
-        if(commentText.length !== 0){
-            if(props.onUpdate){
-                return (
+        const stripedContent = commentText.replace(/^s+|s+$/g, '')
+        const saveButtonClass = stripedContent.length === 0 ? `${s.unactive}` : ``
+        if(props.onUpdate){
+            return (
+                <div className={s.manageCommentBlock}>
+                    <div onClick={() => props.manageUpdateObject({onUpdate: false, updatedId: null})}>CANCEL</div>
+                    <div onClick={onSubmitComment} className={saveButtonClass}>SAVE</div>
+                </div>
+            )
+        }
+        else
+            return (
                     <div className={s.manageCommentBlock}>
-                        <div onClick={() => props.manageUpdateObject({onUpdate: false, updatedId: null})}>CANCEL</div>
-                        <div onClick={onSubmitComment}>SAVE</div>
+                        <div onClick={() => props.manageShowReply({show: false, commentId: null})}>CANCEL</div>
+                        <div onClick={onSubmitComment} className={saveButtonClass}>COMMENT</div>
                     </div>
                 )
-            }
-            else
-                return <div className={`${s.manageCommentBlock}`} onClick={onSubmitComment}><div>COMMENT</div></div>
-        }
+
     }
 
     if(props.user)
@@ -70,7 +81,8 @@ const AddCommentDialog = (props) => {
 let mapStateToProps = (state) => {
     return {
         user: state.auth.user,
-        updateObject: state.comment.updateObject
+        updateObject: state.comment.updateObject,
+        showReplyInput: state.comment.showReplyInput
     }
 }
 
@@ -78,7 +90,8 @@ let mapDispatchToProps = (dispatch) => {
     return {
         addComment: (gameSlug, body, top_level_comment, replied_comment) => dispatch(addComment(gameSlug, body, top_level_comment, replied_comment)),
         updateComment: (id, body) => dispatch(updateComment(id, body)),
-        manageUpdateObject: (newUpdateObj) => dispatch(manageUpdateObject(newUpdateObj))
+        manageUpdateObject: (newUpdateObj) => dispatch(manageUpdateObject(newUpdateObj)),
+        manageShowReply: (newReplyInput) => dispatch(manageShowReplyInput(newReplyInput))
     }
 }
 

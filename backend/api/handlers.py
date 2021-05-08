@@ -85,7 +85,6 @@ def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
     try:
         cart = Cart.objects.get_or_create(**cart_filter)[0]
     except MultipleObjectsReturned:
-        print('MULTIPLE CART')
         for c in Cart.objects.filter(**cart_filter):
             c.delete()
 
@@ -96,10 +95,7 @@ def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
 
     cart.final_price += game.price
     cart.total_products += 1
-    print(cart)
     cart.save(update_fields=['final_price', 'total_products'])
-
-    print(Cart.objects.filter(**cart_filter))
 
     game.number_of_licences -= 1
     game.save(update_fields=['number_of_licences'])
