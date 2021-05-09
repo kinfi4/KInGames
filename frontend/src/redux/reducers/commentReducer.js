@@ -14,6 +14,7 @@ const MANAGE_SHOW_MANAGE_BUTTONS = 'MANAGE_SHOW_MANAGE_BUTTONS'
 const UPDATE_COMMENT = 'UPDATE_COMMENT'
 const MANAGE_UPDATE_OBJECT = 'MANAGE_UPDATE_OBJECT'
 const MANAGE_SHOW_REPLY_INPUT = 'MANAGE_SHOW_REPLY_INPUT'
+const ON_ADD_COMMENT = 'ON_ADD_COMMENT'
 
 
 const initialState = {
@@ -55,9 +56,8 @@ export const addComment = (gameSlug, body, top_level_comment, replied_comment) =
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`
         }
-    }).then(res => dispatch(fetchTopLevelComments(gameSlug)))
-        .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
-
+    }).then(res => dispatch({type: ON_ADD_COMMENT, comment: res.data}))
+      .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
 export const deleteComment = (id) => (dispatch) => {
@@ -130,18 +130,34 @@ export const commentReducer = (state=initialState, action) => {
             return {...state, updateObject: action.updateObject}
         case MANAGE_SHOW_REPLY_INPUT:
             return {...state, showReplyInput: action.showReplyInput}
+        case ON_ADD_COMMENT:
+            let newComments = [...state.topLevelComments]
+
+            if(action.comment.top_level_comment === null){
+                newComments = [{comment: action.comment, replies: []}, ...newComments]
+            }else{
+                for (let i = 0; i < newComments.length; i++) {
+                    if(action.comment.top_level_comment === newComments[i].comment.id){
+                        newComments[i].replies = [...newComments[i].replies, action.comment]
+                        newComments[i].comment.replied_number += 1
+                        break
+                    }
+                }
+            }
+
+            return {...state, topLevelComments: newComments}
         case UPDATE_COMMENT:
-            let top = state.topLevelComments
+            let top = [...state.topLevelComments]
             let found = false
             for (let i = 0; i < top.length; i++) {
                 if(top[i].comment.id === action.commentId){
-                    top[i].comment.body = action.body
+                    top[i].comment = {...top[i].comment, body: action.body}
                     break
                 }
 
-                for (let j = 0; j < top[i].replies; j++) {
+                for (let j = 0; j < top[i].replies.length; j++) {
                     if(top[i].replies[j].id === action.commentId) {
-                        top[i].replies[j].body = action.body
+                        top[i].replies = [...top[i].replies.map((el, index) => index === j ? {...el, body: action.body} : el)]
                         found = true
                         break
                     }

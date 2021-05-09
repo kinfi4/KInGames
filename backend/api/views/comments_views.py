@@ -35,8 +35,12 @@ class TopLevelCommentsView(APIView):
 
         comment_serialized = CreateUpdateCommentSerializer(data=request_data)
         if comment_serialized.is_valid():
-            comment_serialized.save()
-            return Response(status=status.HTTP_201_CREATED, data=comment_serialized.data)
+            comment = comment_serialized.save()
+
+            full_comment = get_comment_by_id(comment.id)
+            full_comment_serialized = GetCommentSerializer(full_comment)
+
+            return Response(status=status.HTTP_201_CREATED, data=full_comment_serialized.data)
 
         logger.warning(f'User {request.user.username} invalid input errors: {comment_serialized.errors}')
         return Response(status=status.HTTP_400_BAD_REQUEST, data=comment_serialized.errors)

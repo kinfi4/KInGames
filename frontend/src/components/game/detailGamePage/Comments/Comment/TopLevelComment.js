@@ -5,25 +5,28 @@ import commentsPage from './../Comments.module.css'
 import Comment from "./Comment";
 import {connect} from "react-redux";
 import {
+    fetchTopLevelCommentReplies,
     manageDeletedComments
 } from "../../../../../redux/reducers/commentReducer";
 
 const TopLevelComment = (props) => {
     const [showReplies, setShowReplies] = useState(false)
+    const thisFullComment = props.comments.filter(el => el.comment.id === props.topLevelCommentId)[0]
+
 
     const getShowRepliesButton = () => {
-        if (props.comment.replied_number === 0)
+        if (thisFullComment.comment.replied_number === 0)
             return
 
         if(showReplies)
             return <><BiUpArrow /> Hide </>
         else
-            return <><BiDownArrow />  {props.comment.replied_number} Replies </>
+            return <><BiDownArrow />  {thisFullComment.comment.replied_number} Replies </>
     }
     const getReplies = () => {
-        if(showReplies)
+        if(showReplies){
             return <>
-                {props.replies.map((el, i) => {
+                {thisFullComment.replies.map((el, i) => {
                     if(el && props.deleted.includes(el.id))
                         return (
                             <div onClick={() => props.manageDeleted(props.deleted.filter(c => c !== el.id))} className={commentsPage.undoButton}>
@@ -32,9 +35,8 @@ const TopLevelComment = (props) => {
                         )
                     else
                         return <Comment comment={el} key={i} isInner={true} slug={props.slug} />
-                    })
-                }
-        </>
+                })} </>
+        }
     }
 
     const onShowRepliesButtonClick = () => {
@@ -42,7 +44,7 @@ const TopLevelComment = (props) => {
         setShowReplies(show)
 
         if(show)
-            props.fetchReplies(props.comment.id)
+            props.fetchReplies(thisFullComment.comment.id)
     }
 
     return (
@@ -57,16 +59,20 @@ const TopLevelComment = (props) => {
         </>
     )
 }
+
 let mapStateToProps = (state) => {
     return {
-        deleted: state.comment.deletedComments
+        deleted: state.comment.deletedComments,
+        comments: state.comment.topLevelComments
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return {
         manageDeleted: (deletedComments) => dispatch(manageDeletedComments(deletedComments)),
+        fetchReplies: (commentId) => dispatch(fetchTopLevelCommentReplies(commentId)),
     }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopLevelComment)

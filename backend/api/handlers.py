@@ -153,7 +153,7 @@ def delete__cart_game(cart_game):
 def get_game_top_level_comments(game_slug):
     return Comment.objects.annotate(replied_number=Count('inner_comments')) \
         .select_related('user') \
-        .filter(game__slug=game_slug, top_level_comment__isnull=True).order_by('created_at')
+        .filter(game__slug=game_slug, top_level_comment__isnull=True).order_by('-created_at')
 
 
 def get_top_level_comment_replies(comment_id):
@@ -167,7 +167,12 @@ def get_top_level_comment_replies(comment_id):
 
 
 def get_comment_by_id(comment_id):
-    return Comment.objects.get(pk=comment_id)
+    return Comment.objects.annotate(
+            replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
+                                     F('replied_comment__user__last_name')),
+            replied_name_color=F('replied_comment__user__kin_user__name_color'),
+            replied_number=Count('inner_comments')
+        ).get(pk=comment_id)
 
 
 def add_comment(username, game_slug, body, replied_on_pk=None, top_level_comment_pk=None):

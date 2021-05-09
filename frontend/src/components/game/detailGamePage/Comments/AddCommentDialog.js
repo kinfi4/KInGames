@@ -31,6 +31,7 @@ const AddCommentDialog = (props) => {
         }
 
         setCommentText('')
+        props.manageShowReply({show: false, commentId: null})
         inputTextRef.current.textContent = ''
     }
     const getSendButton = () => {

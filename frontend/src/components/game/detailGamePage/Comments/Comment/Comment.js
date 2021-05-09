@@ -72,7 +72,7 @@ const Comment = (props) => {
         if(!props.isInner)
             return (
                 <div>
-                    <TopLevelComment {...props} />
+                    <TopLevelComment slug={props.slug} topLevelCommentId={props.comment.id} />
                 </div>
             )
     }
