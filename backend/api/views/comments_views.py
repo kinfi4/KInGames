@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.permissions import CommentManagePermission
 from api.serializers import GetCommentSerializer, CreateUpdateCommentSerializer
@@ -14,7 +15,7 @@ logger = logging.Logger(__name__)
 
 
 class TopLevelCommentsView(APIView):
-    permission_classes = [CommentManagePermission]
+    permission_classes = [IsAuthenticatedOrReadOnly, CommentManagePermission]
 
     def get(self, request: Request):
         game_slug = request.query_params.get('game_slug')
@@ -52,6 +53,8 @@ class ManageCommentView(APIView):
 
     def put(self, request: Request, pk):
         comment = get_comment_by_id(pk)
+        self.check_object_permissions(request, comment)
+
         comment_serialized = CreateUpdateCommentSerializer(comment, data=request.data)
 
         if comment_serialized.is_valid():
@@ -62,13 +65,20 @@ class ManageCommentView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST, data=comment_serialized.errors)
 
     def delete(self, request: Request, pk):
+        comment = get_comment_by_id(pk)
+        self.check_object_permissions(request, comment)
+
         delete_comment(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class GetSingleCommentView(APIView):
+    permission_classes = [CommentManagePermission]
+
     def get(self, request: Request, pk):
         comment = get_comment_by_id(pk)
+        self.check_object_permissions(request, comment)
+
         comment_serialized = GetCommentSerializer(comment)
 
         return Response(data=comment_serialized.data)

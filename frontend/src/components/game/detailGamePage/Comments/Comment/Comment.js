@@ -96,7 +96,7 @@ const Comment = (props) => {
                     })
                 }}>
                     <div className={s.repliedBox}>
-                        <strong style={{color: '#5eaed9'}}>{props.comment.replied_full_name}</strong> <br/>
+                        <strong style={{color: props.comment.replied_name_color}}>{props.comment.replied_full_name}</strong> <br/>
                         {props.comment.replied_text}
                     </div>
                 </div>
@@ -108,7 +108,6 @@ const Comment = (props) => {
             return <div style={{marginLeft: '6.2%', marginTop: '10px', color: '#848484', cursor: 'pointer', fontSize: '14px'}}
                         onClick={() => {props.manageShowReply({show: !props.showReplyInput.show, commentId: props.comment.id})}}>REPLY</div>
     }
-
     const getBodyPart = () => {
         if(!props.updateObject.onUpdate || props.comment.id !== props.updateObject.updatedId)
             return (
@@ -129,7 +128,7 @@ const Comment = (props) => {
 
                     <div>
                         <div style={{fontSize: 'smaller', fontWeight: '600', marginBottom: '10px'}}>
-                            <span style={{color: '#ffc6c6'}}>{props.comment.user.first_name} {props.comment.user.last_name}</span>
+                            <span style={{color: props.comment.user.kin_user.name_color}}>{props.comment.user.first_name} {props.comment.user.last_name}</span>
                             <div style={{marginLeft: '12px', display: 'inline', fontWeight: '400'}}>{moment(props.comment.created_at).fromNow()}</div>
                         </div>
 

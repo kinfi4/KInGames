@@ -160,7 +160,8 @@ def get_top_level_comment_replies(comment_id):
     return Comment.objects \
         .annotate(
             replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
-                                     F('replied_comment__user__last_name'))
+                                     F('replied_comment__user__last_name')),
+            replied_name_color=F('replied_comment__user__kin_user__name_color')
         ).filter(top_level_comment_id=comment_id) \
          .order_by('created_at')
 

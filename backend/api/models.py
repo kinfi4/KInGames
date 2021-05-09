@@ -1,3 +1,5 @@
+from random import choice
+
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
@@ -13,15 +15,29 @@ ROLES = (
     (MANAGER, 'Manager'),
     (ADMIN, 'admin of the service')
 )
+COLORS = (
+    ('#ffc6c6', 'Light red'),
+    ('#81cdd5', 'Light blue'),
+    ('#9bc17b', 'Light green'),
+    ('#ffb876', 'Orange'),
+    ('#ae81d5', 'Purple'),
+    ('#e5b2da', 'Pink'),
+    ('#ffce67', 'Yellow')
+)
 
 
 class KinGamesUser(models.Model):
     django_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='kin_user')
     avatar = models.ImageField(upload_to='user_avatars', default='user_avatars/default_avatar.png')
     role = models.CharField(max_length=10, choices=ROLES, default=USER)
+    name_color = models.CharField(max_length=100, choices=COLORS, default='#ffc6c6')
 
     def __str__(self):
         return self.django_user.username
+
+    def save(self, *args, **kwargs):
+        self.name_color = choice(COLORS)[0]
+        super(KinGamesUser, self).save(*args, **kwargs)
 
 
 class Category(models.Model):
