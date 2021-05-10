@@ -19,13 +19,15 @@ let MainApp = (props) => {
             <ModalWindow />
             <Header />
 
-            <Route exact path={'/'} render={() => <MainPageBody />} />
-            <Route path={'/games/'} render={() => <GameDetailsPage />} />
-            <Route path={'/cart'} render={() => <CartDetailsPage />}/>
-            <PrivateRouteAdminOrManagerOnly path={'/add-game'} component={CreateUpdateGamePage} isUpdate={false} />
-            <PrivateRouteAdminOrManagerOnly path={'/update'} component={CreateUpdateGamePage} isUpdate={true} />
+            <div className={s.mainBody}>
+                <Route exact path={'/'} render={() => <MainPageBody />} />
+                <Route path={'/games/'} render={() => <GameDetailsPage />} />
+                <Route path={'/cart'} render={() => <CartDetailsPage />}/>
+                <PrivateRouteAdminOrManagerOnly path={'/add-game'} component={CreateUpdateGamePage} isUpdate={false} />
+                <PrivateRouteAdminOrManagerOnly path={'/update'} component={CreateUpdateGamePage} isUpdate={true} />
+            </div>
 
-            {/*<Footer />*/}
+            <Footer />
         </>
     )
 }

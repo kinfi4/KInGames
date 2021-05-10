@@ -4,8 +4,7 @@
     background-color: #242424;
     border-radius: 1px;
     height: auto;
-    position: relative;
-    top: 100px;
+    padding-bottom: 50px;
 }
 .mainPageBody *{
     color: white;

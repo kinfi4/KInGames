@@ -8,6 +8,7 @@
     justify-content: center;
     flex-direction: row;
     align-items: center;
+
     position: fixed;
 
     z-index: 12;

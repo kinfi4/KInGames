@@ -3,9 +3,6 @@
     margin: auto;
     background-color: #1c1c1c;
     padding: 50px;
-
-    position: relative;
-    top: 100px;
 }
 .addDataBlock{
     display: grid;
