@@ -94,8 +94,12 @@ class ManageUsersForAdmin(APIView):
 
         filters = {}
         if name:
-            filters['first_name'] = name
-            filters['last_name'] = name
+            if ' ' in name:
+                filters['first_name'] = name.split()[0]
+                filters['last_name'] = name.split()[1]
+            else:
+                filters['first_name'] = name
+                filters['last_name'] = name
 
         users = get_list_users(skip=page*settings.PAGE_SIZE, **filters)
         users_serialized = UserSerializer(users, many=True)

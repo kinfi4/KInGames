@@ -104,7 +104,6 @@ const CreateUpdateGamePageChild = (props) => {
                         <div className={s.descriptionInputInner} contentEditable={true}
                              onInput={e => setDetails({...details, description: e.target.textContent})}
                              data-placeholder={'Description'}>
-                            {details.description}
                         </div>
                     </div>
 

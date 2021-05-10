@@ -13,7 +13,7 @@ let RegisterForm = (props) => {
     }
     let onLoginButtonClick = () => {
         props.hideWindow()
-        props.showModalWindow(<LoginForm />, 500, 200)
+        props.showModalWindow(<LoginForm />, 500, 540)
     }
 
     return (

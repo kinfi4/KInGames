@@ -6,7 +6,7 @@
 
     display: flex;
 
-    margin: 20px;
+    margin: 15px;
     cursor: pointer;
 
     transition: linear 0.2s;
@@ -15,12 +15,12 @@
     box-shadow: 9px 10px 10px #535353;
 }
 .gamePreviewBlock.wide{
-    width: 60%;
-    height: 400px;
+    width: 65%;
+    height: 450px;
 }
 .gamePreviewBlock.thin{
     width: 28%;
-    height: 500px;
+    height: 450px;
 
     display: flex;
     flex-direction: column;
@@ -41,7 +41,7 @@
     padding: 10px 20px;
 
     background-color: rgba(35, 35, 35, 0.8);
-    height: 30%;
+    height: 35%;
 
     display: flex;
     flex-direction: column;
