@@ -1,6 +1,6 @@
 import axios from "axios";
 import {BASE_URL} from "../../config";
-import {showMessage} from "../../utils/messages";
+import {FETCH_ERROR} from "./gameListReducer";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -13,8 +13,8 @@ const initialState = {
 }
 
 const FETCH_USERS_LIST = 'FETCH_USERS_LIST'
-const ERROR_ON_REQUEST = 'ERROR_ON_REQUEST'
 const MANAGE_SEARCH_FIELD = 'MANAGE_SEARCH_FIELD'
+const CLEAR_THE_STATE = 'CLEAR_THE_STATE'
 
 
 export let fetchUsersList = (dispatch, getState) => {
@@ -24,9 +24,8 @@ export let fetchUsersList = (dispatch, getState) => {
 
     axios.get(BASE_URL + 'api/v1/manage-users?page=' + page + '&name=' + name, {
         headers: {'Authorization': `Token ${token}`}
-    })
-        .then(res => dispatch({type: FETCH_USERS_LIST, users: res.data}))
-        .catch(err => dispatch({type: ERROR_ON_REQUEST, errors: err.response.data}))
+    }).then(res => dispatch({type: FETCH_USERS_LIST, users: res.data}))
+      .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
 export let changeUserRole = (username, role) => (dispatch) => {
@@ -34,12 +33,17 @@ export let changeUserRole = (username, role) => (dispatch) => {
 
     axios.post(BASE_URL + 'api/v1/manage-users', JSON.stringify({username, role}), {
         headers: {'Authorization': `Token ${token}`, 'Content-Type': 'application/json'}
-    }).catch(err => dispatch({type: ERROR_ON_REQUEST, errors: err.response.data}))
+    }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+
 }
 
 export let manageSearchField = (text) => (dispatch) => {
     dispatch({type: MANAGE_SEARCH_FIELD, text: text})
     dispatch(fetchUsersList)
+}
+
+export let clearTheState = (dispatch) => {
+    dispatch({type: CLEAR_THE_STATE})
 }
 
 
@@ -51,14 +55,10 @@ export let usersReducer = (state=initialState, action) => {
 
             let cur_users = state.users
             return {...state, users: [...new Set(cur_users.concat(action.users))], page: state.page + 1}
-        case ERROR_ON_REQUEST:
-            let errors = Object.entries(action.errors).map(el => `${el[0]}: ${el[1]}`)
-            showMessage(errors.map((err) => {
-                return {message: err, type: 'danger'}
-            }))
-            return state
         case MANAGE_SEARCH_FIELD:
             return {...state, searchField: action.text, page: 0, users: []}
+        case CLEAR_THE_STATE:
+            return initialState
         default:
             return state
     }

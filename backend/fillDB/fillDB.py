@@ -1,4 +1,3 @@
-from pathlib import Path
 import os
 import glob
 from random import choice
@@ -79,6 +78,3 @@ def create_users():
             KinGamesUser.objects.get_or_create(django_user_id=user.id, avatar=avatar_file, role=choice(ROLES))
         except IntegrityError:
             pass
-
-
-create_users()
