@@ -8,6 +8,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 const FETCH_CART_SIZE = 'FETCH_CART_SIZE'
 const FETCH_CART = 'FETCH_CART'
+const CHANGE_CART_ITEMS = 'CHANGE_CART_ITEMS'
 
 const initialState = {
     cartSize: 0,
@@ -38,7 +39,7 @@ export const fetchUserCartItems = (dispatch) => {
     axios.get(BASE_URL + 'api/v1/user-cart', {
         headers: headers
     }).then(res => dispatch({type: FETCH_CART, data: res.data}))
-        .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+      .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
 export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=true) => (dispatch) => {
@@ -55,10 +56,10 @@ export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=tr
         headers: headers
     }).then(res => {
         if(reload)
-            dispatch(fetchUserCartItems)
+            dispatch({type: CHANGE_CART_ITEMS, add, remove_whole_row, gameSlug})
 
         dispatch(fetchCartSize)
-    }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+    }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response ? err.response.data : alert(err)}))
 }
 
 
@@ -73,6 +74,40 @@ export const cartReducer = (state=initialState, action) => {
                 cartItems: action.data.cart_games,
                 finalPrice: action.data.final_price
             }
+        case CHANGE_CART_ITEMS:
+            let changedGame = state.cartItems.find(el => el.game.slug === action.gameSlug)
+
+            let newFinalPrice
+            if(action.remove_whole_row)
+                newFinalPrice = (Number(state.finalPrice) - Number(changedGame.game.price) * changedGame.qty).toFixed(2)
+            else
+                newFinalPrice = action.add ?
+                    (Number(state.finalPrice) + Number(changedGame.game.price)).toFixed(2) :
+                    (Number(state.finalPrice) - Number(changedGame.game.price)).toFixed(2)
+
+            let newCartItems;
+            if(action.remove_whole_row)
+                newCartItems = [...state.cartItems.filter(el => el.game.slug !== action.gameSlug)]
+            else
+                newCartItems = [...state.cartItems.map(el => {
+                    if(el.game.slug === action.gameSlug){
+                        if(!action.add && el.qty === 1)
+                            return
+
+                        return {
+                            ...el,
+                            qty: action.add ? el.qty + 1 : el.qty - 1,
+                            final_price: action.add ?
+                                (Number(el.final_price) + Number(el.game.price)).toFixed(2) :
+                                (Number(el.final_price) - Number(el.game.price)).toFixed(2)
+                        }
+                    }
+                    else{
+                        return el
+                    }
+                }).filter(el => el)]
+
+            return {...state, cartItems: newCartItems, finalPrice: newFinalPrice}
         default:
             return state
     }

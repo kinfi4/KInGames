@@ -61,7 +61,7 @@ let mapStateToProps = (state) => {
 let mapDispatchToProps = (dispatch) => {
     return {
         fetchGame: (slug) => dispatch(fetchGame(slug)),
-        addGameToCart: (slug) => dispatch(manageCartGames(slug, true, false)),
+        addGameToCart: (slug) => dispatch(manageCartGames(slug, true, false, false)),
         fetchTopLevelComments: (slug) => dispatch(fetchTopLevelComments(slug))
     }
 }
