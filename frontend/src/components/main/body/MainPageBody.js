@@ -11,6 +11,25 @@ const MainPageBody = (props) => {
         props.fetchGames(props.page)
     }, [])
 
+    const getGames = () => {
+        let curRowFilled = 0
+        let extra = []
+
+        return props.games.map((el, index) => {
+            let size = el.is_wide ? 2 : 1
+
+            if(curRowFilled === 3)
+                curRowFilled = 0
+
+            if(size + curRowFilled <= 3){
+                curRowFilled += size
+                return <GamePreviewBase game={el} key={index}/>
+            }
+
+            extra.push(<GamePreviewBase game={el} key={index}/>)
+        }).concat(extra)
+    }
+
     return (
         <div className={s.mainPageBody}>
 
@@ -19,9 +38,7 @@ const MainPageBody = (props) => {
             <hr style={{backgroundColor: '#3b3b3b'}}/>
 
             <div className={s.gamesList}>
-                {
-                    props.games.map((el, index) => <GamePreviewBase game={el} key={index}/>)
-                }
+                {getGames()}
             </div>
         </div>
     );

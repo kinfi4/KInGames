@@ -7,7 +7,7 @@ const GamePreviewBlockThin = (props) => {
         <>
             <div className={s.innerPreviewBlock} style={{
                 backgroundImage: `url(${BASE_URL}${props.game.preview_image.slice(1)})`,
-                backgroundPosition: 'center',
+                backgroundPosition: 'top',
                 backgroundSize: 'cover',
                 backgroundColor: `#404040`,
                 backgroundRepeat: 'no-repeat'

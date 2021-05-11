@@ -15,12 +15,12 @@
     box-shadow: 9px 10px 10px #535353;
 }
 .gamePreviewBlock.wide{
-    width: 65%;
-    height: 450px;
+    width: 63%;
+    height: 400px;
 }
 .gamePreviewBlock.thin{
-    width: 28%;
-    height: 450px;
+    width: 30%;
+    height: 400px;
 
     display: flex;
     flex-direction: column;
@@ -56,13 +56,18 @@
 }
 
 .thinTitleBlock{
+    position: absolute;
+    bottom: 0;
     width: 100%;
+
+    padding: 10px 20px;
+
+    background-color: rgba(35, 35, 35, 0.8);
+    height: 40%;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 10px 20px;
-
-    background-color: #1c1c1c;
 }
 .thinTitleBlock h2{
     font-weight: bold;

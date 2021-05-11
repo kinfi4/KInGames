@@ -359,11 +359,11 @@ def create_users():
 
 
 def create_categories():
-    try:
-        for category_name in CATEGORIES:
+    for category_name in CATEGORIES:
+        try:
             Category.objects.create(name=category_name, slug=category_name.lower())
-    except IntegrityError:
-        pass
+        except IntegrityError:
+            pass
 
 
 def create_games():
