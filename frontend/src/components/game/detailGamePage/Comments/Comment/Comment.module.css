@@ -39,7 +39,6 @@
 
 .manageButtons{
     position: absolute;
-    padding: 10px;
     background-color: #383838;
     border-radius: 10px;
     font-size: 15px;
@@ -49,6 +48,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    padding: 10px;
 }
 .manageButtons div *{
     margin-right: 7px;

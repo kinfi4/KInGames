@@ -1,0 +1,27 @@
+.paginationBlock{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.paginationBlock div{
+    padding: 10px 20px;
+    background-color: #454545;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    margin: 0 15px;
+    border-radius: 10px;
+}
+.dots{
+    margin-left: 30px;
+    margin-right: 30px;
+    font-size: 22px;
+    font-weight: bold;
+}
+.paginationBlock div.active{
+    background-color: #151515;
+    font-weight: bold;
+    color: white;
+    pointer-events: none;
+}

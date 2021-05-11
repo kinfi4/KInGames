@@ -8,7 +8,8 @@ axios.defaults.xsrfCookieName = "csrftoken";
 let initialState = {
     page: 0,
     games: [],
-    activeGame: null
+    activeGame: null,
+    pagination: {page: 0, lastPage: 0}
 }
 
 const GET_GAMES_LIST = 'GET_GAMES_LIST'
@@ -43,7 +44,7 @@ export let fetchListGames = (page) => (dispatch, getState) => {
     dispatch({type: CLEAR_STATE})
 
     axios.get(BASE_URL + 'api/v1/games?page=' + page + categoriesFilter + searchingString)
-        .then(res => dispatch({type: GET_GAMES_LIST, games: res.data, page: page}))
+        .then(res => dispatch({type: GET_GAMES_LIST, games: res.data.games, paginationObJ: res.data.pagination, page: page}))
         .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
@@ -127,7 +128,7 @@ export let gameListReducer = (state=initialState, action) => {
             if(action.games.length === 0)
                 return state
 
-            return {...state, page: action.page, games: action.games}
+            return {...state, page: action.page, games: action.games, pagination: {page: action.paginationObJ.current_page, lastPage: action.paginationObJ.last_page}}
         case FETCH_SINGLE_GAME:
             return {...state, activeGame: action.game}
         case FETCH_ERROR:
@@ -135,7 +136,6 @@ export let gameListReducer = (state=initialState, action) => {
             showMessage(errors.map((err) => {
                 return {message: err, type: 'danger'}
             }))
-
             return state
         case CLEAR_STATE:
             return initialState

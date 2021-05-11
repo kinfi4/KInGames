@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {fetchListGames} from "../../../redux/reducers/gameListReducer";
 import GamePreviewBase from "../../game/gamePreview/GamePreviewBase";
 import FiltersBlock from "./FiltersBlock/FiltersBlock";
+import PaginationBlock from "./PaginationBlock/PaginationBlock";
 
 
 const MainPageBody = (props) => {
@@ -40,6 +41,9 @@ const MainPageBody = (props) => {
             <div className={s.gamesList}>
                 {getGames()}
             </div>
+
+            <hr/>
+            <PaginationBlock />
         </div>
     );
 };

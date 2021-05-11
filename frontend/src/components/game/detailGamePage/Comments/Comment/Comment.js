@@ -40,7 +40,7 @@ const Comment = (props) => {
                 return (
                     <>
                         {getEditButton()}
-                        <hr/>
+                        <hr style={{margin: '0'}}/>
                         {getDeleteButton()}
                     </>
                 )

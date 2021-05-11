@@ -38,6 +38,10 @@ def get_game_by_slug(slug: str):
     return Game.objects.prefetch_related('categories').get(slug=slug)
 
 
+def get_number_of_games():
+    return Game.objects.count()
+
+
 # Categories handlers
 def get_all_categories():
     return Category.objects.all()

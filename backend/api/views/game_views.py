@@ -1,4 +1,5 @@
 import logging
+from math import ceil
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -9,7 +10,8 @@ from django.db import IntegrityError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.conf import settings
 
-from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories
+from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories, \
+    get_number_of_games
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 from api.permissions import IsManagerOrAdminOrReadonly
 
@@ -33,13 +35,21 @@ class GamesListView(APIView):
             filters['title__icontains'] = title
 
         if categories[0]:
-            games = get_list_games_with_categories(categories, skip=page*settings.PAGE_SIZE, **filters)
+            games = get_list_games_with_categories(categories, skip=page * settings.PAGE_SIZE, **filters)
         else:
-            games = get_list_games(skip=page*settings.PAGE_SIZE, **filters)
+            games = get_list_games(skip=page * settings.PAGE_SIZE, **filters)
 
         games_serialized = GetGameSerializer(games, many=True)
 
-        return Response(status=status.HTTP_200_OK, data=games_serialized.data)
+        response_data = {
+            'games': games_serialized.data,
+            'pagination': {
+                'current_page': page + 1,
+                'last_page': ceil(get_number_of_games() / settings.PAGE_SIZE)
+            }
+        }
+
+        return Response(status=status.HTTP_200_OK, data=response_data)
 
     def post(self, request: Request):
         game_serialized = CreateGameSerializer(data=request.data)
@@ -93,8 +103,6 @@ class GameView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND, data={'error': f'There is no game with slug = {slug}'})
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 
 # {
 # "title": "Test title",

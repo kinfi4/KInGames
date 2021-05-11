@@ -158,7 +158,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-PAGE_SIZE = 12
+PAGE_SIZE = 12 
 
 # coverage run manage.py test
 # coverage report --omit="*env*","*migrations*","*test*","*__init__*"
