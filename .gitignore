@@ -11,6 +11,8 @@ logs/
 
 .idea/
 
+# Env files
+.env*/
 # Backup files # 
 *.bak 
 

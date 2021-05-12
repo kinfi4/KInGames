@@ -4,9 +4,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-2x8mjgvjd9uq4%dgan3x3$+=az5vca8w-%ayc@jofmehr5q_-i'
+SECRET_KEY = os.getenv('SECRET_KEY', 'sadfuiq3u8p93uj')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -73,11 +73,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kin_games',
-        'USER': 'postgres',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASS'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432'
+        'HOST': 'db',
+        'PORT': os.getenv('DATABASE_PORT')
     }
 }
 
@@ -158,7 +158,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-PAGE_SIZE = 12 
+PAGE_SIZE = 8
 
 # coverage run manage.py test
 # coverage report --omit="*env*","*migrations*","*test*","*__init__*"

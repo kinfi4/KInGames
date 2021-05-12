@@ -78,7 +78,9 @@ export let addGame = (title, price, description, numberOfLicence, categories, pr
 
 }
 
-export let updateGame = (slug, title, price, description, numberOfLicence, categories, preview) => (dispatch) => {
+export let updateGame = (slug, title, price, description, numberOfLicence, categories, preview) => (dispatch, getState) => {
+    let page = getState().listGames.pagination.page
+
     let token = localStorage.getItem('token')
     if(!token){
         showMessage([{message: 'You have to be authenticated', type: 'danger'}])
@@ -92,13 +94,8 @@ export let updateGame = (slug, title, price, description, numberOfLicence, categ
             'Authorization': `Token ${token}`,
             'Content-Type': 'multipart/form-data',
         }
-    }).then(res => dispatch(fetchListGames(0)))
-      .catch(err => {
-        let errors = Object.entries(err.response.data).map(el => `${el[0]}: ${el[1]}`)
-        showMessage(errors.map((err) => {
-            return {message: err, type: 'danger'}
-        }))
-    })
+    }).then(res => dispatch(fetchListGames(Number(page) - 1)))
+      .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 
 }
 

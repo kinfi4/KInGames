@@ -36,6 +36,13 @@ const CreateUpdateGamePage = (props) => {
 
 const CreateUpdateGamePageChild = (props) => {
     let initialState = props.initialState
+    const inputTextRef = React.createRef()
+
+    useEffect(() => {
+        if(inputTextRef.current && props.isUpdate)
+            inputTextRef.current.textContent = props.game.description
+    }, [])
+
     if(props.isUpdate){
         initialState = {
             title: props.game.title,
@@ -103,7 +110,8 @@ const CreateUpdateGamePageChild = (props) => {
                     <div className={s.descriptionInput}>
                         <div className={s.descriptionInputInner} contentEditable={true}
                              onInput={e => setDetails({...details, description: e.target.textContent})}
-                             data-placeholder={'Description'}>
+                             data-placeholder={'Description'}
+                             ref={inputTextRef}>
                         </div>
                     </div>
 

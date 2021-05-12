@@ -38,8 +38,14 @@ def get_game_by_slug(slug: str):
     return Game.objects.prefetch_related('categories').get(slug=slug)
 
 
-def get_number_of_games():
-    return Game.objects.count()
+def get_number_of_games_filtered_with_categories(categories, **filters):
+    return Game.objects.filter(**filters, categories__slug__in=categories) \
+                       .annotate(num_categories=Count('categories')) \
+                       .filter(num_categories=len(categories)).count()
+
+
+def get_number_of_games(**filters):
+    return Game.objects.filter(**filters).count()
 
 
 # Categories handlers

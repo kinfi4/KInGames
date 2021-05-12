@@ -1,5 +1,5 @@
 import logging
-from math import ceil
+import math
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.conf import settings
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories, \
-    get_number_of_games
+    get_number_of_games, get_number_of_games_filtered_with_categories
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 from api.permissions import IsManagerOrAdminOrReadonly
 
@@ -35,9 +35,11 @@ class GamesListView(APIView):
             filters['title__icontains'] = title
 
         if categories[0]:
-            games = get_list_games_with_categories(categories, skip=page * settings.PAGE_SIZE, **filters)
+            games = get_list_games_with_categories(categories, skip=page*settings.PAGE_SIZE, **filters)
+            games_number = get_number_of_games_filtered_with_categories(categories, **filters)
         else:
             games = get_list_games(skip=page * settings.PAGE_SIZE, **filters)
+            games_number = get_number_of_games(**filters)
 
         games_serialized = GetGameSerializer(games, many=True)
 
@@ -45,7 +47,7 @@ class GamesListView(APIView):
             'games': games_serialized.data,
             'pagination': {
                 'current_page': page + 1,
-                'last_page': ceil(get_number_of_games() / settings.PAGE_SIZE)
+                'last_page': math.ceil(games_number / settings.PAGE_SIZE)
             }
         }
 
