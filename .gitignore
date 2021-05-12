@@ -12,7 +12,9 @@ logs/
 .idea/
 
 # Env files
-.env*/
+.env*
+.env.dev/
+.env.prod/
 # Backup files # 
 *.bak 
 
