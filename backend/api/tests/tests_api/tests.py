@@ -195,3 +195,34 @@ class TestCartAPI(TestCase):
         self.assertEqual(response_data['total_products'], 1)
         self.assertEqual(float(response_data['final_price']), float(self.test_game.price))
         self.assertEqual(response_data['cart_games'][0]['game']['slug'], self.test_game.slug)
+
+
+class TestUserAPI(TestCase):
+    def setUp(self) -> None:
+        self.test_user = User.objects.create_user(username=TestData.TEST_USERNAME, password=TestData.TEST_USER_PASSWORD)
+        KinGamesUser.objects.create(django_user=self.test_user, role='ADMIN')
+        token = Token.objects.create(user=self.test_user)
+
+        self.client = Client(HTTP_AUTHORIZATION=f'Token {token.key}')
+
+        users = User.objects.bulk_create([User(**user_data) for user_data in TestData.TEST_USERS_DATA])
+
+        for user in users:
+            KinGamesUser.objects.create(django_user=user)
+
+    def test_getting_users_list(self):
+        response = self.client.get(APIUrls.USERS_LIST())
+        db_users = User.objects.all()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertCountEqual([user['username'] for user in response.data], [user.username for user in db_users])
+
+    def test_getting_users_filtered_by_name(self):
+        search_field = 'tom'
+        response = self.client.get(APIUrls.USERS_LIST(search_field))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertTrue(
+            all([search_field in user['first_name'].lower() or search_field in user['last_name'].lower() for user in
+                 response.data]))

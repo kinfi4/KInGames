@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.request import Request
@@ -9,6 +11,8 @@ from api.serializers import UserSerializer, KinUserSerializer
 from api.handlers import create_default_kin_user, delete_user, get_list_users, change_user_role
 from api.permissions import IsAdmin
 from api.models import MANAGER, USER
+
+logger = logging.Logger(__name__)
 
 
 class ConfigUserView(APIView):
@@ -30,7 +34,7 @@ class ConfigUserView(APIView):
             result.save()
             return Response(status=status.HTTP_201_CREATED)
 
-        print(result.errors)
+        logger.warning(result.errors)
         return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': result.errors})
 
     @staticmethod

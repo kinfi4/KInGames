@@ -114,3 +114,10 @@ class APIUrls:
     @staticmethod
     def MANAGE_COMMENT_URL(pk):
         return reverse('manage_comment', args=(pk,))
+
+    @staticmethod
+    def USERS_LIST(name=None):
+        if name:
+            return f'{reverse("kin_users")}?name={name}'
+        else:
+            return reverse('kin_users')
