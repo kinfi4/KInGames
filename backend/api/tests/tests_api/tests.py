@@ -28,7 +28,7 @@ class TestGameAPI(TestCase):
         response = self.client.get(APIUrls.GET_GAMES_URL)
         db_games = Game.objects.all()
 
-        for response_game, db_game in zip(response.data, db_games):
+        for response_game, db_game in zip(response.data['games'], db_games):
             self.assertEqual(response_game['title'], db_game.title)
             self.assertEqual(float(response_game['price']), float(db_game.price))
             self.assertEqual(response_game['slug'], db_game.slug)
@@ -87,7 +87,7 @@ class TestCommentsAPI(TestCase):
         db_comments = Comment.objects.filter(game__slug=self.TEST_GAME_SLUG, top_level_comment=None)
         api_comments = self.client.get(APIUrls.TOP_LEVEL_COMMENTS_URL(self.TEST_GAME_SLUG)).data
 
-        self.assertListEqual([comment.body for comment in db_comments], [comment['body'] for comment in api_comments])
+        self.assertCountEqual([comment.body for comment in db_comments], [comment['body'] for comment in api_comments])
 
     def test_getting_comment_replies(self):
         db_replied = Comment.objects.filter(top_level_comment=self.comment_with_replies)

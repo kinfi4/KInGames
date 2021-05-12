@@ -110,7 +110,7 @@ class Cart(models.Model):
 
 class CartGame(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_games')
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='cart_games')
     qty = models.PositiveIntegerField(default=1, verbose_name='Number of products')
     final_price = models.DecimalField(max_digits=9, decimal_places=2)
 

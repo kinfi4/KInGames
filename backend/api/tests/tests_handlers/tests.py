@@ -194,7 +194,7 @@ class TestCommentsHandlers(TestCase):
         db_comments = Comment.objects.filter(top_level_comment=None)
         handler_comments = get_game_top_level_comments(self.game.slug)
 
-        self.assertListEqual(list(db_comments), list(handler_comments))
+        self.assertCountEqual(list(db_comments), list(handler_comments))
 
     def test_getting_comments_replies(self):
         first_comment = Comment.objects.filter(body=self.COMMENTS_BODIES[-1]).first()

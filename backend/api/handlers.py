@@ -31,7 +31,16 @@ def get_list_games_with_categories(categories, skip=0, amount=settings.PAGE_SIZE
 
 
 def delete_game_by_slug(slug: str):
-    Game.objects.filter(slug=slug).first().delete()
+    game = Game.objects.prefetch_related('cart_games__cart__user', 'cart_games').filter(slug=slug).first()
+
+    for cart_game in game.cart_games.all():
+        if user := cart_game.cart.user:
+            remove_game_from_cart(game_slug=game.slug, remove_whole_row=True, **{'cart__user': user})
+        else:
+            user_agent = cart_game.cart.user_agent
+            remove_game_from_cart(game_slug=game.slug, remove_whole_row=True, **{'cart__user_agent': user_agent})
+
+    game.delete()
 
 
 def get_game_by_slug(slug: str):
