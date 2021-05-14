@@ -1,10 +1,11 @@
 from django.conf import settings
-from django.db.models import Count, Q, F, Value
+from django.db.models import Count, Q, F, Value, Avg
 from django.db.models.functions import Concat
 from django.db import transaction
 from django.core.exceptions import MultipleObjectsReturned
 
-from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment
+from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment, ORDER_BY_NUM_COMMENTS, \
+    ORDER_BY_POINTS, ORDER_BY_BOUGHT_TIMES
 
 
 # Games handlers
@@ -19,15 +20,31 @@ def add_categories_for_game_creation(categories_slugs: list, game: Game):
     return game
 
 
-def get_list_games(skip=0, amount=settings.PAGE_SIZE, **filters):
-    return Game.objects.filter(**filters).prefetch_related('categories')[skip:skip + amount]
+def get_annotate_object_from_order_by_field(order_by):
+    if order_by == ORDER_BY_POINTS:
+        return {ORDER_BY_POINTS: Avg(F('marks__mark'))}
+    elif order_by == ORDER_BY_NUM_COMMENTS:
+        return {ORDER_BY_NUM_COMMENTS: Count(F('comments'))}
+
+    return {}
 
 
-def get_list_games_with_categories(categories, skip=0, amount=settings.PAGE_SIZE, **filters):
+def get_list_games(order_by, skip=0, amount=settings.PAGE_SIZE, **filters):
+    annotate = get_annotate_object_from_order_by_field(order_by)
+
+    return Game.objects.filter(**filters) \
+               .prefetch_related('categories') \
+               .annotate(**annotate) \
+               .order_by(order_by)[skip:skip + amount]
+
+
+def get_list_games_with_categories(categories, order_by, skip=0, amount=settings.PAGE_SIZE, **filters):
+    annotate = get_annotate_object_from_order_by_field(order_by)
+
     return Game.objects \
                .filter(**filters, categories__slug__in=categories) \
-               .annotate(num_categories=Count('categories')) \
-               .filter(num_categories=len(categories))[skip:skip + amount]
+               .annotate(num_categories=Count('categories'), **annotate) \
+               .filter(num_categories=len(categories)).order_by(f'-{order_by}')[skip:skip + amount]
 
 
 def delete_game_by_slug(slug: str):
@@ -49,8 +66,8 @@ def get_game_by_slug(slug: str):
 
 def get_number_of_games_filtered_with_categories(categories, **filters):
     return Game.objects.filter(**filters, categories__slug__in=categories) \
-                       .annotate(num_categories=Count('categories')) \
-                       .filter(num_categories=len(categories)).count()
+        .annotate(num_categories=Count('categories')) \
+        .filter(num_categories=len(categories)).count()
 
 
 def get_number_of_games(**filters):
@@ -178,20 +195,20 @@ def get_game_top_level_comments(game_slug):
 def get_top_level_comment_replies(comment_id):
     return Comment.objects \
         .annotate(
-            replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
-                                     F('replied_comment__user__last_name')),
-            replied_name_color=F('replied_comment__user__kin_user__name_color')
-        ).filter(top_level_comment_id=comment_id) \
-         .order_by('created_at')
+        replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
+                                 F('replied_comment__user__last_name')),
+        replied_name_color=F('replied_comment__user__kin_user__name_color')
+    ).filter(top_level_comment_id=comment_id) \
+        .order_by('created_at')
 
 
 def get_comment_by_id(comment_id):
     return Comment.objects.annotate(
-            replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
-                                     F('replied_comment__user__last_name')),
-            replied_name_color=F('replied_comment__user__kin_user__name_color'),
-            replied_number=Count('inner_comments')
-        ).get(pk=comment_id)
+        replied_full_name=Concat(F('replied_comment__user__first_name'), Value(' '),
+                                 F('replied_comment__user__last_name')),
+        replied_name_color=F('replied_comment__user__kin_user__name_color'),
+        replied_number=Count('inner_comments')
+    ).get(pk=comment_id)
 
 
 def add_comment(username, game_slug, body, replied_on_pk=None, top_level_comment_pk=None):

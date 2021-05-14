@@ -43,3 +43,62 @@
     border-radius: 10px;
     text-align: center;
 }
+
+.form{
+    width: 100%;
+    padding: 30px;
+    text-align: center;
+    outline: 0;
+}
+.form div {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.textInput {
+    width: 100%;
+    border: 2px solid gray;
+    background: none;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    padding: 8px 12px;
+    outline: 0;
+    color: #d7d7d7;
+}
+.textInput:focus{
+    border-color: #f06d06;
+    padding: 4px 6px 20px 6px;
+}
+.textInput:valid + label{
+    /*background: #dbdbdb;*/
+    opacity: 0;
+}
+.textInput:focus + label{
+    opacity: 1;
+    background: #f06d06;
+    color: white;
+    font-size: 70%;
+    padding: 1px 6px;
+    z-index: 4;
+    text-transform: uppercase;
+    height: fit-content;
+}
+.label{
+    cursor: text;
+    transition: 0.2s;
+    position: absolute;
+    color: #151515;
+    padding: 8px 12px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: left;
+    z-index: 4;
+}
+.textInput:focus + .label{
+    top: 100%;
+    margin-top: -16px;
+}

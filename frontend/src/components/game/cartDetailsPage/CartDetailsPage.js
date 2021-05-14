@@ -4,11 +4,17 @@ import gameDetailsPage from '../detailGamePage/GameDetailsPage.module.css'
 import {connect} from "react-redux";
 import {fetchUserCartItems} from "../../../redux/reducers/cartReducer";
 import GameRow from "./gameRow/GameRow";
+import {showModalWindow} from "../../../redux/reducers/modalWindowReducer";
+import OrderForm from "./OrderForm";
 
 const CartDetailsPage = (props) => {
     useEffect(() => {
         props.fetchCart()
     }, [])
+
+    const onProceedClick = () => {
+        props.showModalWindow(<OrderForm />, 400, 700)
+    }
 
     return (
         <div className={gameDetailsPage.inner}>
@@ -17,7 +23,7 @@ const CartDetailsPage = (props) => {
 
                 <div className={s.upperRow}>
                     <h2 style={{marginRight: '20px'}}>Total ${props.finalPrice}</h2>
-                    <div className={gameDetailsPage.buyButton}>PROCEED</div>
+                    <div className={gameDetailsPage.buyButton} onClick={onProceedClick}>PROCEED</div>
                 </div>
             </div>
 
@@ -35,13 +41,14 @@ const CartDetailsPage = (props) => {
 let mapStateToProps = (state) => {
     return {
         finalPrice: state.cart.finalPrice,
-        cartItems: state.cart.cartItems
+        cartItems: state.cart.cartItems,
     }
 }
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        fetchCart: () => dispatch(fetchUserCartItems)
+        fetchCart: () => dispatch(fetchUserCartItems),
+        showModalWindow: (content, width=null, height=null) => dispatch(showModalWindow(content, width, height))
     }
 }
 

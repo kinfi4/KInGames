@@ -24,6 +24,9 @@ COLORS = (
     ('#e5b2da', 'Pink'),
     ('#ffce67', 'Yellow')
 )
+ORDER_BY_NUM_COMMENTS = 'commented_times'
+ORDER_BY_POINTS = 'av_mark'
+ORDER_BY_BOUGHT_TIMES = 'bought_times'
 
 
 class KinGamesUser(models.Model):
@@ -52,11 +55,12 @@ class Game(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     preview_image = models.ImageField(upload_to='games_previews', default='games_previews/default.png')
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.DecimalField(max_digits=7, decimal_places=2, db_index=True)
     slug = models.SlugField(unique=True, db_index=True)
     is_wide = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
     number_of_licences = models.IntegerField(default=1000)
+    bought_times = models.IntegerField(default=0, db_index=True)
 
     categories = models.ManyToManyField(Category, related_name='games', db_index=True)
 
@@ -71,6 +75,13 @@ class Game(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class UserMark(models.Model):
+    game = models.ForeignKey(Game, related_name='marks', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='estimated_games', on_delete=models.CASCADE)
+
+    mark = models.IntegerField()
 
 
 class Comment(models.Model):

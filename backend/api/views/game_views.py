@@ -14,6 +14,7 @@ from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, 
     get_number_of_games, get_number_of_games_filtered_with_categories
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 from api.permissions import IsManagerOrAdminOrReadonly
+from api.models import ORDER_BY_POINTS, ORDER_BY_NUM_COMMENTS, ORDER_BY_BOUGHT_TIMES
 
 logger = logging.Logger(__name__)
 
@@ -29,16 +30,18 @@ class GamesListView(APIView):
 
         categories = request.query_params.get('category', '').split('%')
         title = request.query_params.get('title', '')
+        order_by = request.query_params.get('order_by', ORDER_BY_NUM_COMMENTS)
 
         filters = {}
         if title:
             filters['title__icontains'] = title
 
         if categories[0]:
-            games = get_list_games_with_categories(categories, skip=page*settings.PAGE_SIZE, **filters)
+            games = get_list_games_with_categories(categories, order_by=order_by, skip=page * settings.PAGE_SIZE,
+                                                   **filters)
             games_number = get_number_of_games_filtered_with_categories(categories, **filters)
         else:
-            games = get_list_games(skip=page * settings.PAGE_SIZE, **filters)
+            games = get_list_games(order_by=order_by, skip=page * settings.PAGE_SIZE, **filters)
             games_number = get_number_of_games(**filters)
 
         games_serialized = GetGameSerializer(games, many=True)
