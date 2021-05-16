@@ -18,9 +18,6 @@ logs/
 # Backup files # 
 *.bak 
 
-# Media files
-media/
-
 # If you are using PyCharm # 
 .idea/**/workspace.xml 
 .idea/**/tasks.xml 

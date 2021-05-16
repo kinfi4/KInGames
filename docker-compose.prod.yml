@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    command: "gunicorn backend.wsgi --bind 0.0.0.0:8000"
+    ports:
+    - "8000:8000"
+    env_file:
+      - ./backend/.env.prod
+    volumes:
+    - ./backend:/backend/
+    - django_static:/backend/static
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    volumes:
+    - ./frontend:/frontend/
+    - react_build:/frontend/build
+  nginx:
+    image: nginx:latest
+    ports:
+    - 80:8080
+    volumes:
+    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    - react_build:/var/www/frontend
+    - django_static:/var/www/backend/
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  react_build:
+  django_static:

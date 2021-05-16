@@ -381,4 +381,8 @@ def create_games():
             pass
 
 
+def create_all():
+    create_users()
+    create_categories()
+    create_games()
 
