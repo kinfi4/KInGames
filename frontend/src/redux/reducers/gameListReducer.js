@@ -9,13 +9,15 @@ let initialState = {
     page: 0,
     games: [],
     activeGame: null,
-    pagination: {page: 0, lastPage: 0}
+    pagination: {page: 0, lastPage: 0},
+    loading: false
 }
 
 const GET_GAMES_LIST = 'GET_GAMES_LIST'
 const FETCH_SINGLE_GAME = 'FETCH_SINGLE_GAME'
 export const FETCH_ERROR = 'FETCH_ERROR'
 const CLEAR_STATE = 'CLEAR_STATE'
+const SET_LOADING = 'SET_LOADING'
 
 const prepareDataForSending = (title, price, description, numberOfLicence, categories, preview) => {
     let data = new FormData()
@@ -31,6 +33,9 @@ const prepareDataForSending = (title, price, description, numberOfLicence, categ
 }
 
 export let fetchListGames = (page) => (dispatch, getState) => {
+    dispatch({type: CLEAR_STATE})
+    dispatch({type: SET_LOADING})
+
     let categoriesFilter = ''
     let categories = getState().categories.chosenCategories
     if(categories.length !== 0)
@@ -40,8 +45,6 @@ export let fetchListGames = (page) => (dispatch, getState) => {
     let searchingField = getState().categories.searchingField
     if(searchingField.length !== 0)
         searchingString = `&title=${searchingField}`
-
-    dispatch({type: CLEAR_STATE})
 
     axios.get(BASE_URL + 'api/v1/games?page=' + page + categoriesFilter + searchingString)
         .then(res => dispatch({type: GET_GAMES_LIST, games: res.data.games, paginationObJ: res.data.pagination, page: page}))
@@ -108,14 +111,7 @@ export let deleteGame = (slug) => (dispatch) => {
 
     axios.delete(BASE_URL + 'api/v1/games/' + slug, {
         headers: {'Authorization': `Token ${token}`}
-    }).catch(err => {
-        let errors = Object.entries(err.response.data).map(el => `${el[0]}: ${el[1]}`)
-        showMessage(errors.map((err) => {
-            return {message: err, type: 'danger'}
-        }))
-    })
-
-    // dispatch(fetchListGames(0))
+    }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
 
@@ -125,15 +121,17 @@ export let gameListReducer = (state=initialState, action) => {
             if(action.games.length === 0)
                 return state
 
-            return {...state, page: action.page, games: action.games, pagination: {page: action.paginationObJ.current_page, lastPage: action.paginationObJ.last_page}}
+            return {...state, page: action.page, games: action.games, pagination: {page: action.paginationObJ.current_page, lastPage: action.paginationObJ.last_page}, loading: false}
         case FETCH_SINGLE_GAME:
-            return {...state, activeGame: action.game}
+            return {...state, activeGame: action.game, loading: false}
         case FETCH_ERROR:
             let errors = Object.entries(action.errors).map(el => `${el[0]}: ${el[1]}`)
             showMessage(errors.map((err) => {
                 return {message: err, type: 'danger'}
             }))
-            return state
+            return {...state, loading: false}
+        case SET_LOADING:
+            return {...state, loading: true}
         case CLEAR_STATE:
             return initialState
         default:

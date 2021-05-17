@@ -5,6 +5,7 @@ import {fetchListGames} from "../../../redux/reducers/gameListReducer";
 import GamePreviewBase from "../../game/gamePreview/GamePreviewBase";
 import FiltersBlock from "./FiltersBlock/FiltersBlock";
 import PaginationBlock from "./PaginationBlock/PaginationBlock";
+import LoadingSpinner from "../../crumbs/LoadingSpinner/LoadingSpinner";
 
 
 const MainPageBody = (props) => {
@@ -16,19 +17,22 @@ const MainPageBody = (props) => {
         let curRowFilled = 0
         let extra = []
 
-        return props.games.map((el, index) => {
-            let size = el.is_wide ? 2 : 1
+        if(props.gamesIsLoading)
+            return <LoadingSpinner width={100} height={100}/>
+        else
+            return props.games.map((el, index) => {
+                let size = el.is_wide ? 2 : 1
 
-            if(curRowFilled === 3)
-                curRowFilled = 0
+                if(curRowFilled === 3)
+                    curRowFilled = 0
 
-            if(size + curRowFilled <= 3){
-                curRowFilled += size
-                return <GamePreviewBase game={el} key={index}/>
-            }
+                if(size + curRowFilled <= 3){
+                    curRowFilled += size
+                    return <GamePreviewBase game={el} key={index}/>
+                }
 
-            extra.push(<GamePreviewBase game={el} key={index}/>)
-        }).concat(extra)
+                extra.push(<GamePreviewBase game={el} key={index}/>)
+            }).concat(extra)
     }
 
     return (
@@ -43,7 +47,7 @@ const MainPageBody = (props) => {
             </div>
 
             <hr/>
-            <PaginationBlock />
+            {props.gamesIsLoading ? null : <PaginationBlock/>}
         </div>
     );
 };
@@ -51,7 +55,8 @@ const MainPageBody = (props) => {
 let mapStateToProps = (state) => {
     return {
         games: state.listGames.games,
-        page: state.listGames.page
+        page: state.listGames.page,
+        gamesIsLoading: state.listGames.loading
     }
 }
 

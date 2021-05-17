@@ -10,12 +10,12 @@ const initialState = {
     users: [],
     searchField: '',
     page: 0,
+    loading: false
 }
 
 const FETCH_USERS_LIST = 'FETCH_USERS_LIST'
 const MANAGE_SEARCH_FIELD = 'MANAGE_SEARCH_FIELD'
 const CLEAR_THE_STATE = 'CLEAR_THE_STATE'
-
 
 export let fetchUsersList = (dispatch, getState) => {
     let page = getState().users.page
@@ -54,7 +54,7 @@ export let usersReducer = (state=initialState, action) => {
                 return state
 
             let cur_users = state.users
-            return {...state, users: [...new Set(cur_users.concat(action.users))], page: state.page + 1}
+            return {...state, users: [...new Set(cur_users.concat(action.users))], page: state.page + 1, loading: false}
         case MANAGE_SEARCH_FIELD:
             return {...state, searchField: action.text, page: 0, users: []}
         case CLEAR_THE_STATE:

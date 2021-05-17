@@ -5,6 +5,8 @@
     border-radius: 1px;
     height: auto;
     padding-bottom: 50px;
+    min-height: calc(100vh - 200px);
+    position: relative;
 }
 .mainPageBody *{
     color: white;

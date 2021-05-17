@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {clearTheState, fetchUsersList, manageSearchField} from "../../../../../../redux/reducers/usersListReducer";
 import {BiSearchAlt} from "react-icons/all";
 import UserProfile from "./UserProfileBlock/UserProfile";
+import LoadingSpinner from "../../../../../crumbs/LoadingSpinner/LoadingSpinner";
 
 const ManageUsersPanel = (props) => {
     useEffect(() => {
@@ -15,7 +16,7 @@ const ManageUsersPanel = (props) => {
     }, [])
 
     if(!props.users)
-        return <div>LOADING</div>
+        return <div style={{display: "flex", justifyContent: 'center'}}><LoadingSpinner width={100} height={100}/></div>
     else
         return <ManageUsersPanelChild {...props} />
 }
@@ -62,7 +63,7 @@ const ManageUsersPanelChild = (props) => {
 let mapStateToProps = (state) => {
     return {
         searchField: state.users.searchField,
-        users: state.users.users
+        users: state.users.users,
     }
 }
 let mapDispatchToProps = (dispatch) => {
