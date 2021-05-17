@@ -62,6 +62,10 @@ export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=tr
     }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response ? err.response.data : alert(err)}))
 }
 
+export const makeOrder = (dispatch) => {
+    window.location.href = '/'
+}
+
 
 export const cartReducer = (state=initialState, action) => {
     switch (action.type){

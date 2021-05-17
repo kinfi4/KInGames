@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import s from './GameDetailsPage.module.css'
 import gamePage from '../detailGamePage/GameDetailsPage.module.css'
 import {fetchGame} from "../../../redux/reducers/gameListReducer";
-import {BASE_URL} from "../../../config";
+import {ADMIN, BASE_URL, MANAGER} from "../../../config";
 import {manageCartGames} from "../../../redux/reducers/cartReducer";
 import {fetchTopLevelComments} from "../../../redux/reducers/commentReducer";
 import Comments from "./Comments/Comments";
@@ -24,6 +24,15 @@ let GameDetailsPage = (props) => {
 const GameDetailsPageChild = (props) => {
     let blockType = props.game.is_wide ? s.wide : s.thin
 
+    const getLicenceNumber = () => {
+        if(props.game.hidden)
+            return <div style={{color: '#ec8e8e', fontWeight: 'bold'}}>Sorry, but there is not available copies of this game( We will add them soon</div>
+
+        if(props.user && (props.user.kin_user.role === ADMIN || props.user.kin_user.role === MANAGER)) {
+            return <div style={{fontWeight: 'bold'}}>Copies left: {props.game.number_of_licences}</div>
+        }
+    }
+
     return (
         <div className={s.inner}>
             <div className={`${s.gameDetailsBlock} ${blockType}`}>
@@ -40,6 +49,7 @@ const GameDetailsPageChild = (props) => {
                     <h2>${props.game.price}</h2>
                     <div className={s.descriptionBlock}>{props.game.description}</div>
                     <div className={s.buyButton} onClick={() => props.addGameToCart(props.game.slug)}>ADD TO CART</div>
+                    {getLicenceNumber()}
                 </div>
             </div>
 

@@ -2,13 +2,17 @@ import React, {useState} from 'react';
 import {connect} from "react-redux";
 import s from './CartDetailsPage.module.css'
 import gameDetailsPage from '../detailGamePage/GameDetailsPage.module.css'
+import {makeOrder} from "../../../redux/reducers/cartReducer";
+import {showMessage} from "../../../utils/messages";
+import {NavLink} from "react-router-dom";
+import {hideModalWindow} from "../../../redux/reducers/modalWindowReducer";
 
 
 const OrderForm = (props) => {
     const [details, setDetails] = useState({
-        firstName: props.user.first_name,
-        lastName: props.user.last_name,
-        email: props.user.email,
+        firstName: props.user ? props.user.first_name : '',
+        lastName: props.user ? props.user.last_name : '',
+        email: props.user ? props.user.email: '',
         phone: '',
         comment: ''
     })
@@ -39,8 +43,13 @@ const OrderForm = (props) => {
                 </div>
             </div>
 
-            <div className={gameDetailsPage.buyButton} style={{margin: 'auto'}}>
-                ORDER
+            <div style={{textAlign: 'center'}}>
+                <NavLink to={'/'} className={gameDetailsPage.buyButton} style={{margin: 'auto'}} onClick={() => {
+                    showMessage([{message: 'You order successfully proceeded, you will get payment bill on your email.', type: 'success'}])
+                    props.hideModalWindow()
+                }}>
+                    ORDER
+                </NavLink>
             </div>
         </>
     );
@@ -52,4 +61,12 @@ let mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(OrderForm);
+let mapDispatchToProps = (dispatch) => {
+    return {
+        makeOrder: () => dispatch(makeOrder),
+        hideModalWindow: () => dispatch(hideModalWindow)
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderForm);
