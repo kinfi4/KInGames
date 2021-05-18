@@ -1,0 +1,2 @@
+class CantOrderEmptyCart(Exception):
+    pass

@@ -5,7 +5,8 @@ from django.db import transaction
 from django.core.exceptions import MultipleObjectsReturned
 
 from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment, ORDER_BY_NUM_COMMENTS, \
-    ORDER_BY_POINTS, ORDER_BY_BOUGHT_TIMES
+    ORDER_BY_POINTS
+from api.exceptions import CantOrderEmptyCart
 
 
 # Games handlers
@@ -74,6 +75,12 @@ def get_number_of_games(**filters):
     return Game.objects.filter(**filters).count()
 
 
+def change_game_hidden(game_slug):
+    game = Game.objects.get(slug=game_slug)
+    game.hidden = not game.hidden
+    game.save(update_fields=['hidden'])
+
+
 # Categories handlers
 def get_all_categories():
     return Category.objects.all()
@@ -111,23 +118,22 @@ def user_has_cart(**user_filter):
     return Cart.objects.filter(**user_filter).exists()
 
 
-@transaction.atomic
-def get_user_cart(**user_filter):
-    return Cart.objects.prefetch_related('cart_games__game').get_or_create(**user_filter)[0]
+def get_user_cart(**cart_filters):
+    return Cart.objects.prefetch_related('cart_games__game').get_or_create(**cart_filters)[0]
 
 
 @transaction.atomic
 def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
     try:
-        cart = Cart.objects.get_or_create(**cart_filter)[0]
+        cart = Cart.objects.select_for_update().get_or_create(**cart_filter)[0]
     except MultipleObjectsReturned:
         for c in Cart.objects.filter(**cart_filter):
             c.delete()
 
-        cart = Cart.objects.get_or_create(**cart_filter)[0]
+        cart = Cart.objects.select_for_update().get_or_create(**cart_filter)[0]
 
-    cart_game = CartGame.objects.filter(game__slug=game_slug, **cart_game_filter).first()
-    game = Game.objects.get(slug=game_slug)
+    cart_game = CartGame.objects.select_for_update().filter(game__slug=game_slug, **cart_game_filter).first()
+    game = Game.objects.select_for_update().get(slug=game_slug)
 
     cart.final_price += game.price
     cart.total_products += 1
@@ -146,7 +152,8 @@ def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
 
 @transaction.atomic
 def remove_game_from_cart(game_slug, remove_whole_row, **cart_filter):
-    cart_game = CartGame.objects.select_related('cart', 'game').filter(game__slug=game_slug, **cart_filter).first()
+    cart_game = CartGame.objects.select_for_update().select_related('cart', 'game').filter(game__slug=game_slug,
+                                                                                           **cart_filter).first()
     if not cart_game:
         raise ValueError(f'Game {game_slug} does not belong to the {cart_filter} cart')
 
@@ -183,6 +190,15 @@ def delete__cart_game(cart_game):
     game.save(update_fields=['number_of_licences'])
 
     cart_game.delete()
+
+
+def make_order(**cart_filters):
+    cart = get_user_cart(**cart_filters)
+
+    if not cart or cart.total_products == 0:
+        raise CantOrderEmptyCart()
+
+    cart.delete()
 
 
 # Comment handlers
