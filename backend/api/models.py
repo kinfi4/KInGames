@@ -69,7 +69,8 @@ class Game(models.Model):
         w, h = image.size
         self.is_wide = w > h * 1.5
 
-        self.hidden = self.number_of_licences == 0
+        if not self.hidden:
+            self.hidden = self.number_of_licences == 0
 
         super().save(*args, **kwargs)
 

@@ -4,7 +4,7 @@ import detailsPage from '../detailGamePage/GameDetailsPage.module.css'
 import {connect} from "react-redux";
 import {BASE_URL} from "../../../config";
 import {fetchListCategories} from "../../../redux/reducers/categoriesListReducer";
-import {addGame, fetchGame, updateGame} from "../../../redux/reducers/gameListReducer";
+import {addGame, fetchGame, hideGame, updateGame} from "../../../redux/reducers/gameListReducer";
 import {showMessage} from "../../../utils/messages";
 import {NavLink} from "react-router-dom";
 
@@ -50,11 +50,13 @@ const CreateUpdateGamePageChild = (props) => {
             description: props.game.description,
             imageOnLoad: null,
             categories: props.game.categories.map(el => el.slug),
-            previewImage: `${BASE_URL}${props.game.preview_image.slice(1)}`
+            previewImage: `${BASE_URL}${props.game.preview_image.slice(1)}`,
+            licenses: props.game.number_of_licences
         }
     }
 
     const [details, setDetails] = useState(initialState)
+    const [isHiddenMessage, setHiddenMessage] = useState(props.game.hidden ? 'This game is hidden' : 'Game is available')
 
     let onLoadImage = (file) => {
         let reader = new FileReader()
@@ -69,13 +71,31 @@ const CreateUpdateGamePageChild = (props) => {
     }
     let onSave = () => {
         if(props.isUpdate){
-            props.updateGame(props.game.slug, details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
+            props.updateGame(props.game.slug, details.title, details.price, details.description, details.licenses, details.categories, details.imageOnLoad)
         }else{
-            props.addGame(details.title, details.price, details.description, 1000, details.categories, details.imageOnLoad)
+            props.addGame(details.title, details.price, details.description, details.licenses, details.categories, details.imageOnLoad)
             setDetails(props.initialState)
         }
 
         showMessage([{message: 'Saved', type: 'success'}])
+    }
+    let getHideButton = () => {
+        if(props.isUpdate)
+            return <div>
+                <div style={{color: '#ec8e8e', fontWeight: 'bold', marginTop: '40px'}}>{isHiddenMessage}</div>
+
+                <div className={detailsPage.buyButton} onClick={() => {
+                    if(isHiddenMessage === 'This game is hidden'){
+                        setHiddenMessage('Game is available')
+                        props.hideShowGame(props.game.slug, 'Now game is available')
+                    }
+                    else{
+                        setHiddenMessage('This game is hidden')
+                        props.hideShowGame(props.game.slug, 'Game is not available now')
+                    }
+                }}>Hide/Show this game</div>
+
+            </div>
     }
 
     return (
@@ -101,11 +121,17 @@ const CreateUpdateGamePageChild = (props) => {
                 <div className={s.inputTextBlock}>
                     <input type="text" className={s.inputLine} placeholder={'Title'}
                            onInput={(e) => setDetails({...details, title: e.target.value})}
-                           value={details.title}/>
+                           value={details.title}/> <br/>
 
+                    Price <br/>
                     <input type="number" className={`${s.inputLine} ${s.shortInput}`} placeholder={'Price'} id={'price'}
                            onInput={(e) => setDetails({...details, price: e.target.value})}
-                           value={details.price}/>
+                           value={details.price}/> <br/>
+
+                    Licences <br/>
+                    <input type="number" className={`${s.inputLine} ${s.shortInput}`} placeholder={'Number of licences'} id={'n_licences'}
+                           onInput={(e) => setDetails({...details, licenses: e.target.value})}
+                           value={details.licenses}/> <br/>
 
                     <div className={s.descriptionInput}>
                         <div className={s.descriptionInputInner} contentEditable={true}
@@ -142,6 +168,7 @@ const CreateUpdateGamePageChild = (props) => {
                             })}
                         </div>
                     </div>
+                    {getHideButton()}
 
                 </div>
             </div>
@@ -165,6 +192,7 @@ let mapDispatchToProps = (dispatch) => {
         fetchGame: (slug) => dispatch(fetchGame(slug)),
         updateGame: (slug, title, price, description, numberOfLicence, categories, preview) =>
             dispatch(updateGame(slug, title, price, description, numberOfLicence, categories, preview)),
+        hideShowGame: (slug, message) => dispatch(hideGame(slug, message))
     }
 }
 

@@ -79,6 +79,7 @@ def change_game_hidden(game_slug):
     game = Game.objects.get(slug=game_slug)
     game.hidden = not game.hidden
     game.save(update_fields=['hidden'])
+    print(game.hidden)
 
 
 # Categories handlers

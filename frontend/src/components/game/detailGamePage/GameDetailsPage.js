@@ -7,6 +7,7 @@ import {ADMIN, BASE_URL, MANAGER} from "../../../config";
 import {manageCartGames} from "../../../redux/reducers/cartReducer";
 import {fetchTopLevelComments} from "../../../redux/reducers/commentReducer";
 import Comments from "./Comments/Comments";
+import LoadingSpinner from "../../crumbs/LoadingSpinner/LoadingSpinner";
 
 
 let GameDetailsPage = (props) => {
@@ -18,7 +19,10 @@ let GameDetailsPage = (props) => {
         props.fetchTopLevelComments(gameSlug)
     }, [])
 
-    return props.game && <GameDetailsPageChild game={props.game} {...props} />
+    if(!props.game)
+        return <div style={{textAlign: 'center'}}><LoadingSpinner width={100} height={100}/></div>
+    else
+        return props.game && <GameDetailsPageChild game={props.game} {...props} />
 }
 
 const GameDetailsPageChild = (props) => {
@@ -31,6 +35,13 @@ const GameDetailsPageChild = (props) => {
         if(props.user && (props.user.kin_user.role === ADMIN || props.user.kin_user.role === MANAGER)) {
             return <div style={{fontWeight: 'bold'}}>Copies left: {props.game.number_of_licences}</div>
         }
+    }
+    const getAddToCartButton = () => {
+        if(!props.game.hidden)
+            return <div className={s.buyButton} onClick={() => props.addGameToCart(props.game.slug)}>ADD TO CART</div>
+        else
+            return <div className={s.buyButton} style={{pointerEvents: 'none', backgroundColor: 'black', color: 'white'}} onClick={() => props.addGameToCart(props.game.slug)}>ADD TO CART</div>
+
     }
 
     return (
@@ -48,7 +59,7 @@ const GameDetailsPageChild = (props) => {
                     <h1>{props.game.title}</h1>
                     <h2>${props.game.price}</h2>
                     <div className={s.descriptionBlock}>{props.game.description}</div>
-                    <div className={s.buyButton} onClick={() => props.addGameToCart(props.game.slug)}>ADD TO CART</div>
+                    {getAddToCartButton()}
                     {getLicenceNumber()}
                 </div>
             </div>

@@ -114,6 +114,15 @@ export let deleteGame = (slug) => (dispatch) => {
     }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
 }
 
+export let hideGame = (slug, message) => (dispatch) => {
+    let token = localStorage.getItem('token')
+
+    axios.post(BASE_URL + 'api/v1/hide-game/' + slug, {}, {
+        headers: {'Authorization': `Token ${token}`}
+    }).then(res => showMessage([{message: message, type: 'success'}]))
+      .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+}
+
 
 export let gameListReducer = (state=initialState, action) => {
     switch (action.type){
