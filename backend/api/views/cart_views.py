@@ -7,6 +7,7 @@ from rest_framework import status
 
 from api.handlers import get_user_cart, add_game_to_cart, remove_game_from_cart, get_user_cart_size
 from api.serializers import CartSerializer
+from api.exceptions import CantAddHiddenGame
 
 logger = logging.Logger(__name__)
 
@@ -44,7 +45,11 @@ class UserCartView(APIView):
                             data={'errors': 'You did not specify game, you want to add'})
 
         if add:
-            add_game_to_cart(game_slug, cart_filter, cart_game_filter)
+            try:
+                add_game_to_cart(game_slug, cart_filter, cart_game_filter)
+            except CantAddHiddenGame:
+                return Response(status=status.HTTP_400_BAD_REQUEST,
+                                data={'errors': 'Cant add this game, it is not available now'})
         else:
             try:
                 remove_game_from_cart(game_slug, remove_whole_row, **cart_game_filter)

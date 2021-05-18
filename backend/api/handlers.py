@@ -6,7 +6,7 @@ from django.core.exceptions import MultipleObjectsReturned
 
 from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment, ORDER_BY_NUM_COMMENTS, \
     ORDER_BY_POINTS
-from api.exceptions import CantOrderEmptyCart
+from api.exceptions import CantOrderEmptyCart, CantAddHiddenGame
 
 
 # Games handlers
@@ -135,6 +135,9 @@ def add_game_to_cart(game_slug, cart_filter, cart_game_filter):
 
     cart_game = CartGame.objects.select_for_update().filter(game__slug=game_slug, **cart_game_filter).first()
     game = Game.objects.select_for_update().get(slug=game_slug)
+
+    if game.hidden:
+        raise CantAddHiddenGame()
 
     cart.final_price += game.price
     cart.total_products += 1
