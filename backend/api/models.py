@@ -10,20 +10,17 @@ USER = 'USER'
 MANAGER = 'MANAGER'
 ADMIN = 'ADMIN'
 
-ROLES = (
-    (USER, 'Simple KinGames user'),
-    (MANAGER, 'Manager'),
-    (ADMIN, 'admin of the service')
-)
-COLORS = (
-    ('#ffc6c6', 'Light red'),
-    ('#81cdd5', 'Light blue'),
-    ('#9bc17b', 'Light green'),
-    ('#ffb876', 'Orange'),
-    ('#ae81d5', 'Purple'),
-    ('#e5b2da', 'Pink'),
-    ('#ffce67', 'Yellow')
-)
+ROLES = ((USER, 'Simple KinGames user'),
+         (MANAGER, 'Manager'),
+         (ADMIN, 'admin of the service'))
+COLORS = (('#ffc6c6', 'Light red'),
+          ('#81cdd5', 'Light blue'),
+          ('#9bc17b', 'Light green'),
+          ('#ffb876', 'Orange'),
+          ('#ae81d5', 'Purple'),
+          ('#e5b2da', 'Pink'),
+          ('#ffce67', 'Yellow'))
+
 ORDER_BY_NUM_COMMENTS = 'commented_times'
 ORDER_BY_POINTS = 'av_mark'
 ORDER_BY_BOUGHT_TIMES = 'bought_times'

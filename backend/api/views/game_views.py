@@ -7,11 +7,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.conf import settings
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories, \
-    get_number_of_games, get_number_of_games_filtered_with_categories, change_game_hidden
+    get_number_of_games, get_number_of_games_filtered_with_categories, change_game_hidden, add_mark_to_the_game
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 from api.permissions import IsManagerOrAdminOrReadonly
 from api.models import ORDER_BY_NUM_COMMENTS
@@ -120,3 +120,17 @@ class HideGameView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class ChangeGameMark(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request, slug):
+        mark = request.data.get('mark')
+
+        if not (10 >= mark >= 0):
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data={'errors': 'Invalid mark, the mark must be between 0 and 10'})
+
+        new_avg = add_mark_to_the_game(slug, request.user, mark)
+        return Response(data=new_avg)

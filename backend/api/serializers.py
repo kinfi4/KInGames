@@ -124,6 +124,7 @@ class GetGameSerializer(serializers.Serializer):
     is_wide = serializers.BooleanField()
     number_of_licences = serializers.IntegerField()
     hidden = serializers.BooleanField()
+    avg_mark = serializers.FloatField(default=0)
 
     comments = GetCommentSerializer(many=True, required=False, allow_null=True)
     categories = CategorySerializer(many=True, required=False, allow_null=True)

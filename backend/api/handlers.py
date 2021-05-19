@@ -5,7 +5,7 @@ from django.db import transaction
 from django.core.exceptions import MultipleObjectsReturned
 
 from api.models import Game, Category, KinGamesUser, User, Cart, CartGame, Comment, ORDER_BY_NUM_COMMENTS, \
-    ORDER_BY_POINTS
+    ORDER_BY_POINTS, UserMark
 from api.exceptions import CantOrderEmptyCart, CantAddHiddenGame
 
 
@@ -62,7 +62,7 @@ def delete_game_by_slug(slug: str):
 
 
 def get_game_by_slug(slug: str):
-    return Game.objects.prefetch_related('categories').get(slug=slug)
+    return Game.objects.annotate(avg_mark=Avg(F('marks__mark'))).prefetch_related('categories').get(slug=slug)
 
 
 def get_number_of_games_filtered_with_categories(categories, **filters):
@@ -80,6 +80,15 @@ def change_game_hidden(game_slug):
     game.hidden = not game.hidden
     game.save(update_fields=['hidden'])
     print(game.hidden)
+
+
+# Game marks handlers
+def add_mark_to_the_game(game_slug, user, points):
+    mark = UserMark.objects.get_or_create(game=Game.objects.get(slug=game_slug), user=user)[0]
+    mark.mark = points
+    mark.save(update_fields=['mark'])
+
+    return Game.objects.aggregate(new_avg=Avg(F('marks__mark')))
 
 
 # Categories handlers
@@ -201,6 +210,11 @@ def make_order(**cart_filters):
 
     if not cart or cart.total_products == 0:
         raise CantOrderEmptyCart()
+
+    for cart_game in cart.cart_games.all():
+        game = cart_game.game
+        game.bought_times += cart_game.qty
+        game.save(update_fields=['bought_times'])
 
     cart.delete()
 
