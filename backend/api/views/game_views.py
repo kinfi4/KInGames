@@ -11,7 +11,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from django.conf import settings
 
 from api.handlers import get_list_games, delete_game_by_slug, get_game_by_slug, get_list_games_with_categories, \
-    get_number_of_games, get_number_of_games_filtered_with_categories, change_game_hidden, add_mark_to_the_game
+    get_number_of_games, get_number_of_games_filtered_with_categories, change_game_hidden, add_mark_to_the_game, \
+    get_user_mark_and_number_of_marks_for_game, get_number_of_marks_for_game
 from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameSerializer
 from api.permissions import IsManagerOrAdminOrReadonly
 from api.models import ORDER_BY_NUM_COMMENTS
@@ -122,8 +123,24 @@ class HideGameView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class ChangeGameMark(APIView):
+class GameMark(APIView):
     permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request, slug):
+        if request.user.is_anonymous:
+            data = get_number_of_marks_for_game(slug)
+            avg_mark = data.get('avg_mark') if data.get('avg_mark') is not None else 0.0
+            return Response(data={'estimated_times': data.get('estimated_times'), 'avg_mark': avg_mark})
+
+        try:
+            data = get_user_mark_and_number_of_marks_for_game(request.user, slug)
+            avg_mark = data.avg_mark if data.avg_mark is not None else 0.0
+            return Response(
+                data={'user_mark': data.mark, 'estimated_times': data.estimated_times, 'avg_mark': avg_mark})
+        except ObjectDoesNotExist:
+            data = get_number_of_marks_for_game(slug)
+            avg_mark = data.get('avg_mark') if data.get('avg_mark') is not None else 0.0
+            return Response(data={'estimated_times': data.get('estimated_times'), 'avg_mark': avg_mark})
 
     def post(self, request: Request, slug):
         mark = request.data.get('mark')

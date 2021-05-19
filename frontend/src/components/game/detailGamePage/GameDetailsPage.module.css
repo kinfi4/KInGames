@@ -7,8 +7,6 @@
     padding: 50px;
 }
 
-.gameDetailsBlock{
-}
 .gameDetailsBlock.thin{
     display: grid;
     grid-template-columns: 30% 70%;
@@ -59,4 +57,18 @@
 .buyButton:hover{
     background-color: #000000;
     color: white;
+}
+
+.estimateForm{
+    margin-top: 30px;
+}
+.estimateForm div {
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: linear 0.1s;
+}
+.active{
+    color: black;
 }

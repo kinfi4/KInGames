@@ -1,13 +1,14 @@
 import React, {useLayoutEffect} from 'react';
 import {connect} from "react-redux";
 import s from './GameDetailsPage.module.css'
-import gamePage from '../detailGamePage/GameDetailsPage.module.css'
 import {fetchGame} from "../../../redux/reducers/gameListReducer";
 import {ADMIN, BASE_URL, MANAGER} from "../../../config";
 import {manageCartGames} from "../../../redux/reducers/cartReducer";
 import {fetchTopLevelComments} from "../../../redux/reducers/commentReducer";
 import Comments from "./Comments/Comments";
 import LoadingSpinner from "../../crumbs/LoadingSpinner/LoadingSpinner";
+import EstimateGame from "./EstimationForm/EstimateGame";
+import {fetchGameMark} from "../../../redux/reducers/gameMarkReducer";
 
 
 let GameDetailsPage = (props) => {
@@ -15,6 +16,7 @@ let GameDetailsPage = (props) => {
         let urlBlocks = window.location.href.split('/')
         let gameSlug = urlBlocks[urlBlocks.length - 1]
 
+        props.fetchMarkDetails(gameSlug)
         props.fetchGame(gameSlug)
         props.fetchTopLevelComments(gameSlug)
     }, [])
@@ -47,13 +49,16 @@ const GameDetailsPageChild = (props) => {
     return (
         <div className={s.inner}>
             <div className={`${s.gameDetailsBlock} ${blockType}`}>
-                <div className={`${s.previewImage} ${blockType}`} style={{
-                    backgroundImage: `url(${BASE_URL}${props.game.preview_image.slice(1)})`,
-                    backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    backgroundColor: `#404040`,
-                    backgroundRepeat: 'no-repeat'
-                }}> </div>
+                <div>
+                    <div className={`${s.previewImage} ${blockType}`} style={{
+                        backgroundImage: `url(${BASE_URL}${props.game.preview_image.slice(1)})`,
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        backgroundColor: `#404040`,
+                        backgroundRepeat: 'no-repeat'
+                    }}> </div>
+                    <EstimateGame slug={props.game.slug} />
+                </div>
 
                 <div className={`${s.detailsBlock} ${blockType}`}>
                     <h1>{props.game.title}</h1>
@@ -83,7 +88,8 @@ let mapDispatchToProps = (dispatch) => {
     return {
         fetchGame: (slug) => dispatch(fetchGame(slug)),
         addGameToCart: (slug) => dispatch(manageCartGames(slug, true, false, false)),
-        fetchTopLevelComments: (slug) => dispatch(fetchTopLevelComments(slug))
+        fetchTopLevelComments: (slug) => dispatch(fetchTopLevelComments(slug)),
+        fetchMarkDetails: (slug) => dispatch(fetchGameMark(slug))
     }
 }
 

@@ -62,7 +62,7 @@ def delete_game_by_slug(slug: str):
 
 
 def get_game_by_slug(slug: str):
-    return Game.objects.annotate(avg_mark=Avg(F('marks__mark'))).prefetch_related('categories').get(slug=slug)
+    return Game.objects.prefetch_related('categories').get(slug=slug)
 
 
 def get_number_of_games_filtered_with_categories(categories, **filters):
@@ -89,6 +89,17 @@ def add_mark_to_the_game(game_slug, user, points):
     mark.save(update_fields=['mark'])
 
     return Game.objects.aggregate(new_avg=Avg(F('marks__mark')))
+
+
+def get_user_mark_and_number_of_marks_for_game(user, slug):
+    return UserMark.objects.annotate(estimated_times=Count('user', filter=Q(game__slug=slug)),
+                                     avg_mark=Avg(F('mark'), filter=Q(game__slug=slug))) \
+                           .get(user=user, game__slug=slug)
+
+
+def get_number_of_marks_for_game(slug):
+    return UserMark.objects.aggregate(estimated_times=Count('user', filter=Q(game__slug=slug)),
+                                      avg_mark=Avg(F('mark'), filter=Q(game__slug=slug)))
 
 
 # Categories handlers

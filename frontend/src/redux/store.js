@@ -7,6 +7,7 @@ import {categoriesListReducer} from "./reducers/categoriesListReducer";
 import {usersReducer} from "./reducers/usersListReducer";
 import {cartReducer} from "./reducers/cartReducer";
 import {commentReducer} from "./reducers/commentReducer";
+import {gameMarkReducer} from "./reducers/gameMarkReducer";
 
 let store = createStore(
     combineReducers({
@@ -16,7 +17,8 @@ let store = createStore(
         categories: categoriesListReducer,
         users: usersReducer,
         cart: cartReducer,
-        comment: commentReducer
+        comment: commentReducer,
+        marks: gameMarkReducer
     }),
     applyMiddleware(thunk)
 )

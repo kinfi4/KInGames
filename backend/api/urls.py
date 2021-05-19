@@ -1,6 +1,6 @@
 from django.urls import path
 
-from api.views.game_views import GamesListView, GameView, HideGameView, ChangeGameMark
+from api.views.game_views import GamesListView, GameView, HideGameView, GameMark
 from api.views.user_views import ConfigUserView, ManageUsersForAdmin
 from api.views.category_views import CategoryListView
 from api.views.cart_views import UserCartView, UserCartSizeView
@@ -21,5 +21,5 @@ urlpatterns = [
     path('comments/<int:pk>', ManageCommentView.as_view(), name='manage_comment'),
     path('get-comment/<int:pk>', GetSingleCommentView.as_view(), name='single_comment'),
     path('make-order', ProceedOrderView.as_view(), name='make_order'),
-    path('estimate-game/<str:slug>', ChangeGameMark.as_view(), name='estimate_game'),
+    path('estimate-game/<str:slug>', GameMark.as_view(), name='estimate_game'),
 ]

@@ -89,7 +89,10 @@ class UserMark(models.Model):
     game = models.ForeignKey(Game, related_name='marks', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='estimated_games', on_delete=models.CASCADE)
 
-    mark = models.IntegerField()
+    mark = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.game.title} - {self.mark}'
 
 
 class Comment(models.Model):
