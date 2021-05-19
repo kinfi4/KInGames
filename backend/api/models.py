@@ -35,12 +35,18 @@ class KinGamesUser(models.Model):
     role = models.CharField(max_length=10, choices=ROLES, default=USER)
     name_color = models.CharField(max_length=100, choices=COLORS, default='#ffc6c6')
 
-    def __str__(self):
-        return self.django_user.username
-
     def save(self, *args, **kwargs):
         self.name_color = choice(COLORS)[0]
         super(KinGamesUser, self).save(*args, **kwargs)
+
+    def delete(self, *args):
+        print('Deleting')
+        self.avatar.delete()
+        # self.avatar.storage.delete(self.avatar.name)
+        super().delete(*args)
+
+    def __str__(self):
+        return self.django_user.username
 
 
 class Category(models.Model):
@@ -73,6 +79,10 @@ class Game(models.Model):
             self.hidden = self.number_of_licences == 0
 
         super().save(*args, **kwargs)
+
+    def delete(self, *args):
+        self.preview_image.storage.delete(self.preview_image.name)
+        super().delete(*args)
 
     def __str__(self):
         return self.title

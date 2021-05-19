@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from api.handlers import make_order
 from api.exceptions import CantOrderEmptyCart
+from api.serializers import OrderSerializer
 
 
 class ProceedOrderView(APIView):
@@ -16,9 +17,14 @@ class ProceedOrderView(APIView):
         else:
             cart_filters['user'] = request.user
 
-        try:
-            make_order(**cart_filters)
-        except CantOrderEmptyCart:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={'errors': 'Cant make order with empty cart'})
+        order_data = OrderSerializer(data=request.data)
 
-        return Response(status=status.HTTP_200_OK)
+        if order_data.is_valid():
+            try:
+                make_order(**cart_filters)
+            except CantOrderEmptyCart:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={'errors': 'Cant make order with empty cart'})
+
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST, data={'errors': order_data.errors})

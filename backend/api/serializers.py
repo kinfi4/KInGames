@@ -181,3 +181,16 @@ class UpdateGameSerializer(serializers.Serializer):
         instance.save()
 
         return instance
+
+
+class OrderSerializer(serializers.Serializer):
+    first_name = serializers.CharField(max_length=256)
+    last_name = serializers.CharField(max_length=256)
+    email = serializers.EmailField()
+    phone = serializers.CharField(max_length=20)
+
+    def create(self, *args):
+        pass
+
+    def update(self, *args):
+        pass

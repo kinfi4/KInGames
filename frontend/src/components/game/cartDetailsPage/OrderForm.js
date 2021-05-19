@@ -3,18 +3,15 @@ import {connect} from "react-redux";
 import s from './CartDetailsPage.module.css'
 import gameDetailsPage from '../detailGamePage/GameDetailsPage.module.css'
 import {makeOrder} from "../../../redux/reducers/cartReducer";
-import {showMessage} from "../../../utils/messages";
 import {NavLink} from "react-router-dom";
-import {hideModalWindow} from "../../../redux/reducers/modalWindowReducer";
 
 
 const OrderForm = (props) => {
     const [details, setDetails] = useState({
-        firstName: props.user ? props.user.first_name : '',
-        lastName: props.user ? props.user.last_name : '',
+        first_name: props.user ? props.user.first_name : '',
+        last_name: props.user ? props.user.last_name : '',
         email: props.user ? props.user.email: '',
-        phone: '',
-        comment: ''
+        phone: ''
     })
 
     return (
@@ -23,12 +20,12 @@ const OrderForm = (props) => {
 
             <div className={s.form}>
                 <div>
-                    <input className={s.textInput} type="text" value={details.firstName} id={'firstName'} onInput={e => setDetails({...details, firstName: e.target.value})} required={true}/>
+                    <input className={s.textInput} type="text" value={details.first_name} id={'firstName'} onInput={e => setDetails({...details, first_name: e.target.value})} required={true}/>
                     <label className={s.label} htmlFor={'firstName'}>First Name</label>
                 </div>
 
                 <div>
-                    <input className={s.textInput} type="text" value={details.lastName} id={'lastName'} onInput={e => setDetails({...details, lastName: e.target.value})} required={true}/>
+                    <input className={s.textInput} type="text" value={details.last_name} id={'lastName'} onInput={e => setDetails({...details, last_name: e.target.value})} required={true}/>
                     <label className={s.label} htmlFor={'lastName'}>Last Name</label>
                 </div>
 
@@ -44,12 +41,11 @@ const OrderForm = (props) => {
             </div>
 
             <div style={{textAlign: 'center'}}>
-                <NavLink to={'/'} className={gameDetailsPage.buyButton} style={{margin: 'auto'}} onClick={() => {
-                    showMessage([{message: 'You order successfully proceeded, you will get payment bill on your email.', type: 'success'}])
-                    props.hideModalWindow()
+                <div className={gameDetailsPage.buyButton} style={{margin: 'auto'}} onClick={() => {
+                    props.makeOrder(details)
                 }}>
                     ORDER
-                </NavLink>
+                </div>
             </div>
         </>
     );
@@ -63,8 +59,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        makeOrder: () => dispatch(makeOrder),
-        hideModalWindow: () => dispatch(hideModalWindow)
+        makeOrder: (data) => dispatch(makeOrder(data)),
     }
 }
 

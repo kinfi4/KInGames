@@ -56,7 +56,7 @@ const CreateUpdateGamePageChild = (props) => {
     }
 
     const [details, setDetails] = useState(initialState)
-    const [isHiddenMessage, setHiddenMessage] = useState(props.game.hidden ? 'This game is hidden' : 'Game is available')
+    const [isHiddenMessage, setHiddenMessage] = useState(props.game ? props.game.hidden ? 'This game is hidden' : 'Game is available' : '')
 
     let onLoadImage = (file) => {
         let reader = new FileReader()

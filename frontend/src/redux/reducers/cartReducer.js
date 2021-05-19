@@ -1,6 +1,8 @@
 import axios from "axios";
 import {BASE_URL} from "../../config";
 import {FETCH_ERROR} from "./gameListReducer";
+import {showMessage} from "../../utils/messages";
+import {HIDE_MODAL_WINDOW} from "./modalWindowReducer";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -45,11 +47,7 @@ export const fetchUserCartItems = (dispatch) => {
 export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=true) => (dispatch) => {
     let token = localStorage.getItem('token')
 
-    let headers;
-    if(token)
-        headers = {'Authorization': `Token ${token}`, 'Content-Type': 'application/json'}
-    else
-        headers = {'Content-Type': 'application/json'}
+    let headers = token ? {'Authorization': `Token ${token}`, 'Content-Type': 'application/json'} : {'Content-Type': 'application/json'};
 
     const data = JSON.stringify({game_slug: gameSlug, add: add, remove_whole_row: remove_whole_row})
     axios.post(BASE_URL + 'api/v1/user-cart', data, {
@@ -62,8 +60,17 @@ export const manageCartGames = (gameSlug, add, remove_whole_row=false, reload=tr
     }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response ? err.response.data : alert(err)}))
 }
 
-export const makeOrder = (dispatch) => {
-    window.location.href = '/'
+export const makeOrder = (data) => (dispatch) => {
+    let token = localStorage.getItem('token')
+    let headers = token ? {'Authorization': `Token ${token}`, 'Content-Type': 'application/json'} : {'Content-Type': 'application/json'};
+
+
+    axios.post(BASE_URL + 'api/v1/make-order', JSON.stringify(data), {headers: headers})
+        .then(() => {
+            window.location.href = '/'
+            showMessage([{message: 'You order successfully proceeded, you will get payment bill on your email.', type: 'success'}])
+            dispatch({type: HIDE_MODAL_WINDOW})
+        }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data.errors}))
 }
 
 
