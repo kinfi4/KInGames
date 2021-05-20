@@ -124,7 +124,7 @@ class HideGameView(APIView):
 
 
 class GameMark(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request: Request, slug):
         if request.user.is_anonymous:
@@ -133,10 +133,11 @@ class GameMark(APIView):
             return Response(data={'estimated_times': data.get('estimated_times'), 'avg_mark': avg_mark})
 
         try:
-            data = get_user_mark_and_number_of_marks_for_game(request.user, slug)
-            avg_mark = data.avg_mark if data.avg_mark is not None else 0.0
+            user_mark = get_user_mark_and_number_of_marks_for_game(request.user, slug)
+            data = get_number_of_marks_for_game(slug)
+            avg_mark = data.get('avg_mark') if data.get('avg_mark') is not None else 0.0
             return Response(
-                data={'user_mark': data.mark, 'estimated_times': data.estimated_times, 'avg_mark': avg_mark})
+                data={'user_mark': user_mark.mark, 'estimated_times': data.get('estimated_times'), 'avg_mark': avg_mark})
         except ObjectDoesNotExist:
             data = get_number_of_marks_for_game(slug)
             avg_mark = data.get('avg_mark') if data.get('avg_mark') is not None else 0.0

@@ -92,9 +92,7 @@ def add_mark_to_the_game(game_slug, user, points):
 
 
 def get_user_mark_and_number_of_marks_for_game(user, slug):
-    return UserMark.objects.annotate(estimated_times=Count('user', filter=Q(game__slug=slug)),
-                                     avg_mark=Avg(F('mark'), filter=Q(game__slug=slug))) \
-                           .get(user=user, game__slug=slug)
+    return UserMark.objects.get(user=user, game__slug=slug)
 
 
 def get_number_of_marks_for_game(slug):

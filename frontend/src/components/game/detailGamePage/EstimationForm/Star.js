@@ -12,7 +12,7 @@ const Star = (props) => {
              className={starActiveClass}
              onMouseEnter={() => {props.changeCurMark(props.n)}}
              onMouseLeave={() => {
-                 props.changeCurMark(Math.ceil(props.avg_mark))
+                 props.changeCurMark(Math.round(props.avg_mark))
              }}>
             <AiTwotoneStar />
         </div>
