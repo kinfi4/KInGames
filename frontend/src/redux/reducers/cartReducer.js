@@ -67,7 +67,6 @@ export const makeOrder = (data) => (dispatch) => {
 
     axios.post(BASE_URL + 'api/v1/make-order', JSON.stringify(data), {headers: headers})
         .then(() => {
-            window.location.href = '/'
             showMessage([{message: 'You order successfully proceeded, you will get payment bill on your email.', type: 'success'}])
             dispatch({type: HIDE_MODAL_WINDOW})
         }).catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data.errors}))
