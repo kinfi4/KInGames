@@ -4,8 +4,9 @@ from random import choice
 
 from django.db.utils import IntegrityError
 from django.conf import settings
+from django.core.management import BaseCommand
 
-from api.models import User, KinGamesUser, USER, MANAGER, Game, Category
+from api.models import User, KinGamesUser, USER, MANAGER, Game, Category, Comment
 from api.utils.create_random_string import generate_random_string
 from api.utils.generate_slug import generate_slug_from_title
 
@@ -340,6 +341,24 @@ GAMES = [
 CATEGORIES = ['Action', 'Race', 'Zombie', 'Stealth', 'Rpg', 'Horror', 'Fighting', 'Arcade', 'Sport', 'Strategy',
               'Simulation', 'Adventure', '1st Person']
 
+COMMENTS_BODIES = [
+    'Wow, that is the best game I ve ever played!',
+    'Disagree',
+    'You are snob',
+    'Just some random text around here',
+    'I write this late at night, while handling depression. I hope I aint gonna die tomorrow',
+    'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution.',
+    'Wow, thats some random text, awesome',
+    'Ahahahahaha',
+    'There are many variations of passages of Lorem Ipsum available',
+    'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC,',
+    'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly',
+    'I am running out of imagination',
+    'Ahahahahahah',
+    'Hope this is gonna look pretty',
+    'And some more random text'
+]
+
 
 def create_users():
     avatars = glob.glob(os.path.join(settings.MEDIA_ROOT, 'user_avatars/img*.png'))
@@ -381,8 +400,41 @@ def create_games():
             pass
 
 
+def create_comments():
+    def get_random_user():
+        return choice(list(User.objects.all()))
+
+    def get_random_comment():
+        if choice([0, 1, 2]) == 0:
+            return
+
+        comments = list(Comment.objects.exclude(top_level_comment=None))
+        if not comments:
+            return
+
+        return choice(comments)
+
+    game_slug = generate_slug_from_title('Cyberpunk 2077')
+    game = Game.objects.get(slug=game_slug)
+
+    top_level_comment = Comment.objects.create(body=COMMENTS_BODIES[0], user=get_random_user(), game=game)
+
+    for comment_i in range(1, len(COMMENTS_BODIES)):
+        Comment.objects.create(body=COMMENTS_BODIES[comment_i], user=get_random_user(), game=game,
+                               top_level_comment=top_level_comment, replied_comment=get_random_comment())
+
+    last_comment = Comment.objects.get(body=COMMENTS_BODIES[-1])
+    last_comment.replied_comment = Comment.objects.get(body=COMMENTS_BODIES[1])
+    last_comment.save()
+
+
 def create_all():
     create_users()
     create_categories()
     create_games()
+    create_comments()
 
+
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        create_comments()

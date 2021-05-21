@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./backend:/app/backend
+      - ./backend:/backend
     ports:
       - "8000:8000"
     stdin_open: true
