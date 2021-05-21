@@ -12,7 +12,7 @@ services:
       - ./backend/.env.prod
     volumes:
     - ./backend:/backend/
-    - django_static:/backend/static
+    - django_static:/backend/django_static
   frontend:
     build:
       context: ./frontend
