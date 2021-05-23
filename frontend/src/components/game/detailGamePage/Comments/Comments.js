@@ -31,7 +31,7 @@ const CommentsChild = (props) => {
     }, [])
 
     return (
-        <div className={s.commentsBlock}>
+        <div className={`${s.commentsBlock}`}>
             <AddCommentDialog slug={props.slug} />
 
             {

@@ -5,7 +5,7 @@ import {ADMIN, BASE_URL, MANAGER} from "../../../../../config";
 import {AiFillEdit, AiTwotoneDelete} from 'react-icons/all'
 import {connect} from "react-redux";
 import {
-    fetchTopLevelCommentReplies,
+    fetchTopLevelCommentReplies, manageBlinking,
     manageDeletedComments, manageShowManageButtons, manageShowReplyInput, manageUpdateObject
 } from "../../../../../redux/reducers/commentReducer";
 import moment from 'moment'
@@ -15,12 +15,22 @@ import TopLevelComment from "./TopLevelComment";
 
 const Comment = (props) => {
     useEffect(() => {
-        if(props.comment)
+        if(props.comment){
             props.showManageButtonsForId === props.comment.id ? setManageButtonShow(s.visible) : setManageButtonShow(s.hidden)
 
-    }, [props.showManageButtonsForId])
+            if(props.blinkingObj.show && props.blinkingObj.commentId === props.comment.id)
+                setBlinkingClass(s.blinking)
+        }
+
+        if(props.blinkingObj.show && props.blinkingObj.commentId === props.comment.id)
+            setTimeout(() => {
+                setBlinkingClass(null)
+                props.manageBlinking({show: false, commentId: null})
+            }, 1500)
+    }, [props.showReplyInput, props.blinkingObj])
 
     const [manageButtonShow, setManageButtonShow] = useState(s.hidden)
+    const [blinkingClass, setBlinkingClass] = useState()
 
     const getDeleteButton = () => {
         return (
@@ -94,6 +104,7 @@ const Comment = (props) => {
                         top: findPos(document.getElementById(`Comment${props.comment.replied_comment}`)),
                         behavior: 'smooth'
                     })
+                    props.manageBlinking({show: true, commentId: props.comment.replied_comment})
                 }}>
                     <div className={s.repliedBox}>
                         <strong style={{color: props.comment.replied_name_color}}>{props.comment.replied_full_name}</strong> <br/>
@@ -152,7 +163,7 @@ const Comment = (props) => {
 
     if(props.comment)
         return (
-            <>
+            <div className={`${blinkingClass}`}>
                 {getBodyPart()}
 
                 <div style={{marginLeft: '70px', marginTop: '20px'}}>
@@ -162,7 +173,7 @@ const Comment = (props) => {
                 <div style={{marginLeft: '70px'}}>
                     {getInnerPart()}
                 </div>
-            </>
+            </div>
         );
     else
         return (
@@ -178,7 +189,8 @@ let mapStateToProps = (state) => {
         showManageButtonsForId: state.comment.showManageButtonsForId,
         showManageButtons: state.comment.showManageButtons,
         updateObject: state.comment.updateObject,
-        showReplyInput: state.comment.showReplyInput
+        showReplyInput: state.comment.showReplyInput,
+        blinkingObj: state.comment.showBlinking
     }
 }
 
@@ -188,7 +200,8 @@ let mapDispatchToProps = (dispatch) => {
         manageDeleted: (deletedComments) => dispatch(manageDeletedComments(deletedComments)),
         manageShowManageButtons: (showManageButtonsForId) => dispatch(manageShowManageButtons(showManageButtonsForId)),
         manageUpdateObject: (newUpdateObj) => dispatch(manageUpdateObject(newUpdateObj)),
-        manageShowReply: (newReplyInput) => dispatch(manageShowReplyInput(newReplyInput))
+        manageShowReply: (newReplyInput) => dispatch(manageShowReplyInput(newReplyInput)),
+        manageBlinking: (newBlinkingOjb) => dispatch(manageBlinking(newBlinkingOjb))
     }
 }
 

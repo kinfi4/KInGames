@@ -13,7 +13,7 @@ services:
     stdin_open: true
     tty: true
     env_file:
-      - ./backend/.env.prod
+      - ./backend/.env.dev
     command: python3 manage.py runserver 0.0.0.0:8000
     depends_on:
       - db

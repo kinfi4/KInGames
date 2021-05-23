@@ -48,7 +48,7 @@ export let fetchListGames = (page) => (dispatch, getState) => {
 
     axios.get(BASE_URL + 'api/v1/games?page=' + page + categoriesFilter + searchingString)
         .then(res => dispatch({type: GET_GAMES_LIST, games: res.data.games, paginationObJ: res.data.pagination, page: page}))
-        .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data}))
+        .catch(err => dispatch({type: FETCH_ERROR, errors: err.response.data})).catch(() => alert('hel'))
 }
 
 export let fetchGame = (slug) => (dispatch) => {
@@ -128,7 +128,7 @@ export let gameListReducer = (state=initialState, action) => {
     switch (action.type){
         case GET_GAMES_LIST:
             if(action.games.length === 0)
-                return state
+                return {...state, loading: false}
 
             return {...state, page: action.page, games: action.games, pagination: {page: action.paginationObJ.current_page, lastPage: action.paginationObJ.last_page}, loading: false}
         case FETCH_SINGLE_GAME:

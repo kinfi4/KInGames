@@ -19,20 +19,24 @@ const MainPageBody = (props) => {
 
         if(props.gamesIsLoading)
             return <LoadingSpinner width={100} height={100}/>
-        else
-            return props.games.map((el, index) => {
-                let size = el.is_wide ? 2 : 1
+        else{
+            if(props.games.length === 0)
+                return <h1 style={{fontWeight: 'bold', fontSize: 'large', marginTop: '40px'}}>Nothing was found (</h1>
+            else
+                return props.games.map((el, index) => {
+                    let size = el.is_wide ? 2 : 1
 
-                if(curRowFilled === 3)
-                    curRowFilled = 0
+                    if(curRowFilled === 3)
+                        curRowFilled = 0
 
-                if(size + curRowFilled <= 3){
-                    curRowFilled += size
-                    return <GamePreviewBase game={el} key={index}/>
-                }
+                    if(size + curRowFilled <= 3){
+                        curRowFilled += size
+                        return <GamePreviewBase game={el} key={index}/>
+                    }
 
-                extra.push(<GamePreviewBase game={el} key={index}/>)
-            }).concat(extra)
+                    extra.push(<GamePreviewBase game={el} key={index}/>)
+                }).concat(extra)
+        }
     }
 
     return (

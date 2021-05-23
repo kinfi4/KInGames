@@ -15,6 +15,7 @@ const UPDATE_COMMENT = 'UPDATE_COMMENT'
 const MANAGE_UPDATE_OBJECT = 'MANAGE_UPDATE_OBJECT'
 const MANAGE_SHOW_REPLY_INPUT = 'MANAGE_SHOW_REPLY_INPUT'
 const ON_ADD_COMMENT = 'ON_ADD_COMMENT'
+const MANAGE_BLINKING = 'MANAGE_BLINKING'
 
 
 const initialState = {
@@ -23,7 +24,8 @@ const initialState = {
     showManageButtonsForId: null,
     showManageButtons: false,
     updateObject: {onUpdate: false, updatedId: null},
-    showReplyInput: {show: false, commentId: null}
+    showReplyInput: {show: false, commentId: null},
+    showBlinking: {show: false, commentId: null}
 }
 
 export const fetchTopLevelComments = (gameSlug) => (dispatch) => {
@@ -111,6 +113,10 @@ export const manageShowReplyInput = (newReplyInput) => (dispatch) => {
     dispatch({type: MANAGE_SHOW_REPLY_INPUT, showReplyInput: newReplyInput})
 }
 
+export const manageBlinking = (newBlinkObject) => (dispatch) => {
+    dispatch({type: MANAGE_BLINKING, newBlinkObject: newBlinkObject})
+}
+
 
 export const commentReducer = (state=initialState, action) => {
     switch (action.type){
@@ -130,6 +136,8 @@ export const commentReducer = (state=initialState, action) => {
             return {...state, updateObject: action.updateObject}
         case MANAGE_SHOW_REPLY_INPUT:
             return {...state, showReplyInput: action.showReplyInput}
+        case MANAGE_BLINKING:
+            return {...state, showBlinking: action.newBlinkObject}
         case ON_ADD_COMMENT:
             let newComments = [...state.topLevelComments]
 

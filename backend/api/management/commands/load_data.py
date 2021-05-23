@@ -437,4 +437,4 @@ def create_all():
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        create_comments()
+        create_all()

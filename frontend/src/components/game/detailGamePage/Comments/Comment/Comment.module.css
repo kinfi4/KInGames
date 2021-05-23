@@ -62,3 +62,15 @@
     font-size: 12px;
     cursor: pointer;
 }
+
+@keyframes blinking {
+    0% {}
+    100% {
+        background-color: #5e5e5e;
+        border-radius: 10px;
+    }
+}
+.blinking {
+    /* NAME | TIME | ITERATION */
+    animation: blinking 1.5s reverse;
+}
