@@ -13,6 +13,7 @@ services:
     volumes:
     - ./backend:/backend/
     - django_static:/backend/django_static
+    - django_media:/backend/media
   frontend:
     build:
       context: ./frontend
@@ -28,6 +29,7 @@ services:
     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     - react_build:/var/www/frontend
     - django_static:/var/www/backend/
+    - django_media:/var/www/media
     depends_on:
       - frontend
       - backend
@@ -35,3 +37,4 @@ services:
 volumes:
   react_build:
   django_static:
+  django_media:
