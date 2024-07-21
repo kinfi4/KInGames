@@ -1,11 +1,20 @@
 from django.urls import path
 
-from api.views.game_views import GamesListView, GameView, HideGameView, GameMark
-from api.views.user_views import ConfigUserView, ManageUsersForAdmin
-from api.views.category_views import CategoryListView
-from api.views.cart_views import UserCartView, UserCartSizeView
-from api.views.comments_views import ManageCommentView, TopLevelCommentsView, GetSingleCommentView
-from api.views.order_views import ProceedOrderView
+from api.views import (
+    GamesListView,
+    GameView,
+    HideGameView,
+    ConfigUserView,
+    CategoryListView,
+    ManageUsersForAdmin,
+    UserCartView,
+    UserCartSizeView,
+    TopLevelCommentsView,
+    ManageCommentView,
+    GetSingleCommentView,
+    ProceedOrderView,
+    GameMark
+)
 
 
 urlpatterns = [

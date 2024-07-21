@@ -12,6 +12,8 @@ from api.handlers import create_default_kin_user, delete_user, get_list_users, c
 from api.permissions import IsAdmin
 from api.models import MANAGER, USER
 
+__all__ = ["ConfigUserView", "ManageUsersForAdmin"]
+
 logger = logging.Logger(__name__)
 
 

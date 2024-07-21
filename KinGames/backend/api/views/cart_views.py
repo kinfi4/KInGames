@@ -11,6 +11,8 @@ from api.exceptions import CantAddHiddenGame
 
 logger = logging.Logger(__name__)
 
+__all__ = ["UserCartView", "UserCartSizeView"]
+
 
 class UserCartView(APIView):
     def get(self, request: Request):

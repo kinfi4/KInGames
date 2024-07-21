@@ -7,6 +7,8 @@ from api.handlers import make_order
 from api.exceptions import CantOrderEmptyCart
 from api.serializers import OrderSerializer
 
+__all__ = ["ProceedOrderView"]
+
 
 class ProceedOrderView(APIView):
     def post(self, request: Request):

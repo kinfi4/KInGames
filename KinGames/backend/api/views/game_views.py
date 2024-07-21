@@ -17,6 +17,8 @@ from api.serializers import GetGameSerializer, CreateGameSerializer, UpdateGameS
 from api.permissions import IsManagerOrAdminOrReadonly
 from api.models import ORDER_BY_NUM_COMMENTS
 
+__all__ = ["GamesListView", "HideGameView", "GameMark", "GameView"]
+
 logger = logging.Logger(__name__)
 
 

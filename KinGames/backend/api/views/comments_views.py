@@ -10,6 +10,7 @@ from api.permissions import CommentManagePermission
 from api.serializers import GetCommentSerializer, CreateUpdateCommentSerializer
 from api.handlers import get_game_top_level_comments, get_top_level_comment_replies, delete_comment, get_comment_by_id
 
+__all__ = ["TopLevelCommentsView", "ManageCommentView", "GetSingleCommentView"]
 
 logger = logging.Logger(__name__)
 

@@ -7,6 +7,8 @@ from api.handlers import get_all_categories
 from api.serializers import CategorySerializer
 from api.permissions import IsManagerOrAdminOrReadonly
 
+__all__ = ["CategoryListView"]
+
 
 class CategoryListView(APIView):
     permission_classes = [IsManagerOrAdminOrReadonly]
